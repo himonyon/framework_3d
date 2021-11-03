@@ -1,0 +1,19 @@
+// ピクセルシェーダ入力パラメータ
+struct PS_INPUT {
+	float4 position : SV_POSITION;
+	float4 color: COLOR;
+	float2 tx0 : TEXCOORD0;
+};
+
+Texture2D txDiffuse : register(t0);
+SamplerState samLinear : register(s0);
+
+//================================================================================
+// ピクセルシェーダ
+//================================================================================
+float4 main(PS_INPUT input) : SV_TARGET
+{
+	float4 color = txDiffuse.Sample(samLinear, input.tx0) * input.color;
+
+	return color;
+}

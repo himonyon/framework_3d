@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Src">
+      <UniqueIdentifier>{ff24a042-6954-430c-987b-adfd2ecaa753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework">
+      <UniqueIdentifier>{664b4b81-7414-432d-830c-8d55fe621cee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Animation">
+      <UniqueIdentifier>{c8016be8-8f37-4448-bec5-cb7115438cad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Public">
+      <UniqueIdentifier>{bbff6aa8-f5ac-4bf3-bcb2-46fec6453696}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Public\Scene">
+      <UniqueIdentifier>{f466f55e-aeef-4611-b6ae-9aa27f3ffde0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Shader">
+      <UniqueIdentifier>{0151189c-7f8d-4728-bc64-cf71a2f01716}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="my_framework.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader11.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Direct3D.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Font.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Main.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Model.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Shader.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Sound.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Sprite.h">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="environment.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h">
+      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\scene.h">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\scene_game.h">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\scene_title.h">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\sceneTable.h">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="my_framework.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader11.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Direct3D.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Font.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Main.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Model.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Shader.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Sound.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Sprite.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Animation\SpriteAnimation.cpp">
+      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\scene.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\scene_game.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\scene_title.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\sceneTable.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="my_framework.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="my_framework.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Shader\texture.hlsl">
+      <Filter>ソース ファイル\Src\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\ps_2d.psh">
+      <Filter>ソース ファイル\Src\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\vs_2d.vsh">
+      <Filter>ソース ファイル\Src\Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
