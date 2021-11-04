@@ -1,7 +1,7 @@
 #pragma once
 
 //’¸“_\‘¢‘Ì
-struct stVertex
+struct stVertex2D
 {
 	float x, y;
 	float r, g, b, a;
@@ -23,7 +23,7 @@ public:
 
 	float rot = 0;
 
-	stVertex vtx[4];
+	stVertex2D vtx[4];
 
 private:
 	int renderPriority; //•`‰æ‡

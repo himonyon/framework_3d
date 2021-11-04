@@ -9,6 +9,7 @@ bool Shader::InitShader() {
 	if (vertexShader)
 	{
 		vertexShader[(unsigned int)eVertexShader::VS_2D] = new VertexShader("Src/Shader/vs_2d.cso");
+		vertexShader[(unsigned int)eVertexShader::VS_3D] = new VertexShader("Src/Shader/vs_3d.cso");
 	}
 
 	//ピクセルシェーダの作成
@@ -16,6 +17,7 @@ bool Shader::InitShader() {
 	if (pixelShader)
 	{
 		pixelShader[(unsigned int)ePixelShader::PS_2D] = new PixelShader("Src/Shader/ps_2d.cso");
+		pixelShader[(unsigned int)ePixelShader::PS_3D] = new PixelShader("Src/Shader/ps_3d.cso");
 	}
 	return (vertexShader != NULL && pixelShader != NULL);
 }

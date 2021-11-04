@@ -16,7 +16,7 @@ ID3D11SamplerState* Sprite::pSamplerState = 0;
 ID3D11BlendState* Sprite::pBlendState = 0;
 ID3D11DepthStencilState* Sprite::pDepthStencilState = 0;
 ID3D11InputLayout* Sprite::pInputLayout = 0;
-UINT Sprite::VertexStrides = sizeof(stVertex);
+UINT Sprite::VertexStrides = sizeof(stVertex2D);
 UINT Sprite::VertexOffsets = 0;
 
 bool Sprite::Initialize() {
@@ -164,7 +164,7 @@ Sprite::Sprite(float x, float y, float width, float height,  const WCHAR* textur
 	//頂点バッファの設定
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(stVertex) * 4;
+	bd.ByteWidth = sizeof(stVertex2D) * 4;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;

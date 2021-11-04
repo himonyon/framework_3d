@@ -10,12 +10,14 @@ bool SceneTitle::Initialize() {
 	sound0 = new Sound(L"Data/Sound/title_bgm.wav");
 	sound0->Play();
 
+	model = new Model(L"Data/Object/cube.obj");
+
 
 	return true;
 }
 
 void SceneTitle::Terminate() {
-
+	delete model;
 }
 
 //ˆ—
@@ -55,4 +57,5 @@ void SceneTitle::Execute() {
 //•`‰æ
 void SceneTitle::Render() {
 	Scene::Render();
+	model->Render();
 }

@@ -19,6 +19,7 @@ bool Main::Init(void* hWnd) {
 	Font::Initialize(hWnd);
 	Shader::InitShader();
 	Sprite::Initialize();
+	Model::InitStaticMesh();
 	Sound::InitSound();
 	Input::InitInput(hWnd);
 
@@ -36,6 +37,7 @@ void Main::Destroy() {
 
 	Input::DestroyInput();
 	Sound::DestroySound();
+	Model::DestroyStaticMesh();
 	Sprite::Destroy();
 	Shader::DestroyShader();
 	Font::Destroy();

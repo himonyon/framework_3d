@@ -5,12 +5,14 @@ public:
 	//シェーダーの種類
 	enum class eVertexShader {
 		VS_2D,
+		VS_3D,
 		VS_MAX,
 	};
 
 	enum class ePixelShader
 	{
 		PS_2D,
+		PS_3D,
 		PS_MAX,
 	};
 

@@ -64,10 +64,11 @@ using namespace DirectX;
 
 
 //フレームワークのヘッダー
+#include "Src/Framework/Model.h"
+#include "Src/Framework/Sprite.h"
 #include "Src/Framework/Font.h"
 #include "Src/Framework/Input.h"
 #include "Src/Framework/Sound.h"
-#include "Src/Framework/Sprite.h"
 #include "Src/Framework/Shader.h"
 #include "Src/Framework/Direct3D.h"
 #include "Src/Framework/Main.h"

@@ -6,6 +6,8 @@ private:
 	Sprite* sprite2;
 	Sound* sound0;
 
+	Model* model;
+
 private:
 	//‰Šú‰»
 	bool Initialize();
