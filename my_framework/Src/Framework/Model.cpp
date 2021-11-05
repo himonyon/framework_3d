@@ -68,6 +68,10 @@ Model::Model(const WCHAR* fileName) {
 	pVertexBuffer = NULL;
 	pIndexBuffer = NULL;
 
+	vtx.pos.x = 0;
+	vtx.pos.y = 0;
+	vtx.pos.z = 0;
+
 	//座標読み取り用
 	float x, y, z;
 	int v1 = 0, v2 = 0, v3 = 0;
@@ -169,18 +173,35 @@ Model::~Model() {
 }
 
 void Model::Render() {
-	XMMATRIX world;
-	XMMATRIX view;
-	XMMATRIX proj;
-	//ワールドトランスフォーム（絶対座標変換）
-	world = XMMatrixRotationY(timeGetTime() / 1100.0f);//単純にyaw回転させる
+	XMMATRIX mWorld;
+	XMMATRIX mView;
+	XMMATRIX mProj;
+	
+	mWorld = XMMatrixIdentity();
+	mView = XMMatrixIdentity();
+	mProj = XMMatrixIdentity();
+
+	/// <summary>
+	//移動・回転・スケーリングの設定
+	/// </summary>
+	//スケーリング
+	XMMATRIX mScale = GetScaleMatrix();
+	mWorld = mWorld * mScale; //ワールド行列へ反映
+	//回転
+	XMMATRIX mRot = GetRotMatrix();
+	mWorld = mWorld * mRot; //ワールド行列へ反映
+	//移動
+	XMMATRIX mPos = GetPosMatrix();
+	mWorld = mWorld * mPos; //ワールド行列へ反映
+
 	// ビュートランスフォーム（視点座標変換）
-	XMFLOAT3 vEyePt(0.0f, 1.0f, -2.0f); //カメラ（視点）位置
+	XMFLOAT3 vEyePt(0.0f, 1.0f, -20.0f); //カメラ（視点）位置
 	XMFLOAT3 vLookatPt(0.0f, 0.0f, 0.0f);//注視位置
 	XMFLOAT3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
-	view = XMMatrixLookAtLH(ToXMVECTOR(vEyePt), ToXMVECTOR(vLookatPt), ToXMVECTOR(vUpVec));
+	mView = XMMatrixLookAtLH(ToXMVECTOR(vEyePt), ToXMVECTOR(vLookatPt), ToXMVECTOR(vUpVec));
 	// プロジェクショントランスフォーム（射影変換）
-	proj = XMMatrixPerspectiveFovLH(XM_PI / 4, (FLOAT)WINDOW_WIDTH / (FLOAT)WINDOW_HEIGHT, 0.1f, 110.0f);
+	mProj = XMMatrixPerspectiveFovLH(XM_PI / 4, (FLOAT)WINDOW_WIDTH / (FLOAT)WINDOW_HEIGHT, 0.1f, 110.0f);
+
 
 	//使用するシェーダーの登録	
 	Direct3D::getDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_3D)->getShader(), NULL, 0);
@@ -191,7 +212,7 @@ void Model::Render() {
 	if (SUCCEEDED(Direct3D::getDeviceContext()->Map(pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		XMMATRIX m = world * view * proj;
+		XMMATRIX m = mWorld * mView * mProj;
 		m = XMMatrixTranspose(m);
 		cb.WVP = m;
 
@@ -215,4 +236,24 @@ void Model::Render() {
 	Direct3D::getDeviceContext()->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	//プリミティブをレンダリング
 	Direct3D::getDeviceContext()->DrawIndexed(faceNum * 3, 0, 0);
+}
+
+XMMATRIX Model::GetPosMatrix() {
+	//現在の座標を頂点座標にセット
+	vtx.pos.x = posX;
+	vtx.pos.y = posY;
+	vtx.pos.z = posZ;
+	return XMMatrixTranslation(vtx.pos.x, vtx.pos.y, vtx.pos.z);
+}
+
+XMMATRIX Model::GetRotMatrix() {
+	XMMATRIX mPitch, mHeading, mBank;//回転行列用
+	mPitch = XMMatrixRotationX(rotX);
+	mHeading = XMMatrixRotationY(rotY);
+	mBank = XMMatrixRotationZ(rotZ);
+	return mPitch * mHeading * mBank;
+}
+
+XMMATRIX Model::GetScaleMatrix() {
+	return XMMatrixScaling(scaleX, scaleY, scaleZ);
 }

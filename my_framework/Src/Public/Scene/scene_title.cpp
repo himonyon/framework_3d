@@ -26,20 +26,86 @@ void SceneTitle::Execute() {
 		switchScene(eSceneTable::Game);
 	}
 
-	if (Input::GetJoyLX()) {
-		sprite2->posX += Input::GetJoyLX() * 2;
+	////
+	///移動・回転・スケーリング
+	////
+	// 
+	//回転
+	if (Input::KeyOn(DIK_R)) {
+		if (Input::KeyOn(DIK_LEFT)) {
+			model->rotX -= 0.1f;
+		}
+		if (Input::KeyOn(DIK_RIGHT)) {
+			model->rotX += 0.1f;
+		}
+		if (Input::KeyOn(DIK_LSHIFT)) {
+			if (Input::KeyOn(DIK_DOWN)) {
+				model->rotY += 0.1f;
+			}
+			if (Input::KeyOn(DIK_UP)) {
+				model->rotY -= 0.1f;
+			}
+		}
+		else {
+			if (Input::KeyOn(DIK_DOWN)) {
+				model->rotZ += 0.1f;
+			}
+			if (Input::KeyOn(DIK_UP)) {
+				model->rotZ -= 0.1f;
+			}
+		}
+	}
+	//スケーリング
+	else if (Input::KeyOn(DIK_S)) {
+		if (Input::KeyOn(DIK_LEFT)) {
+			model->scaleX -= 0.1f;
+		}
+		if (Input::KeyOn(DIK_RIGHT)) {
+			model->scaleX += 0.1f;
+		}
+		if (Input::KeyOn(DIK_LSHIFT)) {
+			if (Input::KeyOn(DIK_DOWN)) {
+				model->scaleY += 0.1f;
+			}
+			if (Input::KeyOn(DIK_UP)) {
+				model->scaleY -= 0.1f;
+			}
+		}
+		else {
+			if (Input::KeyOn(DIK_DOWN)) {
+				model->scaleZ += 0.1f;
+			}
+			if (Input::KeyOn(DIK_UP)) {
+				model->scaleZ -= 0.1f;
+			}
+		}
+	}
+	else {
+		//移動
+		if (Input::KeyOn(DIK_LEFT)) {
+			model->posX -= 0.1f;
+		}
+		if (Input::KeyOn(DIK_RIGHT)) {
+			model->posX += 0.1f;
+		}
+		if (Input::KeyOn(DIK_LSHIFT)) {
+			if (Input::KeyOn(DIK_UP)) {
+				model->posY += 0.1f;
+			}
+			if (Input::KeyOn(DIK_DOWN)) {
+				model->posY -= 0.1f;
+			}
+		}
+		else {
+			if (Input::KeyOn(DIK_UP)) {
+				model->posZ += 0.1f;
+			}
+			if (Input::KeyOn(DIK_DOWN)) {
+				model->posZ -= 0.1f;
+			}
+		}
 	}
 
-	if (Input::JoyButtonTrg(JOY_SQUARE)) {
-		sprite->isRenderEnable() ? sprite->SetRenderEnable(false) : sprite->SetRenderEnable(true);
-	}
-
-	if (Input::JoyButtonTrg(JOY_CIRCLE)) {
-		sprite->SetRenderPriority(-1);
-	}
-	if (Input::JoyButtonTrg(JOY_TRIANGLAR)) {
-		sprite->SetRenderPriority(2);
-	}
 
 	Font::SetRect(200, 100, 500, WINDOW_HEIGHT);
 	Font::SetTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
