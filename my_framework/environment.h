@@ -41,7 +41,7 @@
 #include <xaudio2.h>
 #include <dinput.h>
 
-#include <stdio.h>
+#include <iostream>
 #include <vector>
 #include <locale.h>
 #include <mmsystem.h>

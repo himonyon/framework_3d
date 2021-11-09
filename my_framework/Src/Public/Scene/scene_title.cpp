@@ -7,11 +7,8 @@ bool SceneTitle::Initialize() {
 	sprite->SetRenderPriority(2);
 	sprite->vtx[0].a = 0.2f;
 	sprite2 = new Sprite(100, 300, 200, 200, L"Data/Image/sample.png");
-	sound0 = new Sound(L"Data/Sound/title_bgm.wav");
-	sound0->Play();
 
-	model = new Model(L"Data/Object/cube.obj");
-
+	model = new Model(L"Data/Object/Chips.obj");
 
 	return true;
 }
@@ -39,18 +36,18 @@ void SceneTitle::Execute() {
 			model->rotX += 0.1f;
 		}
 		if (Input::KeyOn(DIK_LSHIFT)) {
-			if (Input::KeyOn(DIK_DOWN)) {
+			if (Input::KeyOn(DIK_UP)) {
 				model->rotY += 0.1f;
 			}
-			if (Input::KeyOn(DIK_UP)) {
+			if (Input::KeyOn(DIK_DOWN)) {
 				model->rotY -= 0.1f;
 			}
 		}
 		else {
-			if (Input::KeyOn(DIK_DOWN)) {
+			if (Input::KeyOn(DIK_UP)) {
 				model->rotZ += 0.1f;
 			}
-			if (Input::KeyOn(DIK_UP)) {
+			if (Input::KeyOn(DIK_DOWN)) {
 				model->rotZ -= 0.1f;
 			}
 		}
@@ -64,18 +61,18 @@ void SceneTitle::Execute() {
 			model->scaleX += 0.1f;
 		}
 		if (Input::KeyOn(DIK_LSHIFT)) {
-			if (Input::KeyOn(DIK_DOWN)) {
+			if (Input::KeyOn(DIK_UP)) {
 				model->scaleY += 0.1f;
 			}
-			if (Input::KeyOn(DIK_UP)) {
+			if (Input::KeyOn(DIK_DOWN)) {
 				model->scaleY -= 0.1f;
 			}
 		}
 		else {
-			if (Input::KeyOn(DIK_DOWN)) {
+			if (Input::KeyOn(DIK_UP)) {
 				model->scaleZ += 0.1f;
 			}
-			if (Input::KeyOn(DIK_UP)) {
+			if (Input::KeyOn(DIK_DOWN)) {
 				model->scaleZ -= 0.1f;
 			}
 		}

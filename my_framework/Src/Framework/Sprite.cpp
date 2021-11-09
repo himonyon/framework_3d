@@ -236,12 +236,6 @@ void Sprite::Render() {
 	//頂点バッファの更新
 	Direct3D::getDeviceContext()->UpdateSubresource(pVertexBuffer, 0, NULL, vtx, 0, 0);
 
-	//ブレンドステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetBlendState(pBlendState, NULL, 0xffffffff);
-	//深度ステンシルステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetDepthStencilState(pDepthStencilState, 0);
-	//ラスタライザーをコンテキストに設定
-	Direct3D::getDeviceContext()->RSSetState(pRasterizerState);
 	//頂点インプットレイアウトをセット
 	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout);
 	//このコンスタントバッファーを使うシェーダーの登録
