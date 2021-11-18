@@ -32,3 +32,56 @@ public:
 	float y;
 	float z;
 };
+
+//3Dオブジェクト頂点構造体
+struct stVertex3D {
+	XMFLOAT3 pos; //座標
+	XMFLOAT3 nor; //法線
+	XMFLOAT2 tex; //テクスチャ座標
+};
+
+
+//2Dオブジェクト頂点構造体
+struct stVertex
+{
+	float x, y;
+	float r, g, b, a;
+	float u, v;
+};
+
+//マテリアル構造体
+struct stMaterial
+{
+	char name[111];
+	XMFLOAT4 ambient;//アンビエント
+	XMFLOAT4 diffuse;//ディフューズ
+	XMFLOAT4 specular;//スペキュラー
+	char textureName[110];//テクスチャーファイル名
+	ID3D11ShaderResourceView* pTexture;
+	int faceNum;//そのマテリアルであるポリゴン数
+	stMaterial()
+	{
+		ZeroMemory(this, sizeof(stMaterial));
+	}
+	~stMaterial()
+	{
+		SAFE_RELEASE(pTexture);
+	}
+};
+
+//ワールド座標返還用コンスタントバッファ
+struct ConstantBuffer0
+{
+	XMMATRIX mW;//ワールド行列
+	XMMATRIX mWVP;//ワールドから射影までの変換行列
+	XMFLOAT4 lightDir;//ライト方向
+	XMFLOAT4 eye;//カメラ位置
+};
+
+//マテリアル用コンスタントバッファ
+struct ConstantBuffer1
+{
+	XMFLOAT4 ambient;//アンビエント光
+	XMFLOAT4 diffuse;//ディフューズ色
+	XMFLOAT4 specular;//スペキュラー（鏡面反射）
+};

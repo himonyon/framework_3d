@@ -22,8 +22,9 @@ bool SceneTitle::Initialize() {
 	pAnim = CreateAnimation(pObj2, true);
 	pAnim->SetKeyFrameRot(0, 0, 0);
 	pAnim->SetKeyFrameRot(1, 3.14f, 30);
-	pAnim->SetKeyFrameSprite(1, pSp0, 30);
+	pAnim->SetKeyFrameSprite(1, pSp0);
 	pAnim->SetKeyFrameRot(2, 6.24f, 60);
+	pAnim->SetKeyFrameRot(3, 6.24f, 60);
 	pAnim->SetAnimEnable(true);
 	return true;
 }
