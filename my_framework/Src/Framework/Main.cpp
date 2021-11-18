@@ -18,11 +18,10 @@ bool Main::Init(void* hWnd) {
 	Direct3D::InitD3D(hWnd);
 	Font::Initialize(hWnd);
 	Shader::InitShader();
-	Sprite::Initialize();
-	Model::InitStaticMesh();
+	GameObject2D::Initialize();
+	GameObject3D::Initialize();
 	Sound::InitSound();
-	Input::InitInput(hWnd);
-
+	DirectInput::InitInput(hWnd);
 
 	//シーン作成
 	switchScene();
@@ -35,10 +34,10 @@ bool Main::Init(void* hWnd) {
 void Main::Destroy() {
 	deleteScene();
 
-	Input::DestroyInput();
+	DirectInput::DestroyInput();
 	Sound::DestroySound();
-	Model::DestroyStaticMesh();
-	Sprite::Destroy();
+	GameObject2D::Destroy();
+	GameObject3D::Destroy();
 	Shader::DestroyShader();
 	Font::Destroy();
 	Direct3D::DestroyD3D();
@@ -51,6 +50,8 @@ void Main::App() {
 	{	//フレームの開始時間を取得
 		QueryPerformanceCounter(&startCount);
 	}
+
+	Timer::FrameTimeExecute();
 
 	Execute();
 
@@ -92,7 +93,7 @@ void Main::App() {
 // 
 // 
 void Main::Execute() {
-	Input::KeyManager();
+	DirectInput::KeyManager();
 
 	pScene->Execute();
 }

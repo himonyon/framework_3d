@@ -8,27 +8,26 @@ private:
 	bool isLoop = false;
 	float flameCount = 0; //アニメーションフレーム数
 
-
-	Sprite* showSprite = NULL; //表示するスプライト
-	int currentKeyFlameIndex = -1; //現在到達しているキーフレーム配列番号
+	noDel_ptr<GameObject2D> pAnimObj = NULL; //表示するスプライト
+	int currentKeyFrameIndex = -1; //現在到達しているキーフレーム配列番号
 
 public:
 	//アニメーションのキーフレーム
-	class KeyFlame {
+	class KeyFrame {
 	public:
-		Sprite* pSprite;
-		float flame;
-		float x, y;
-		float r, b, g, a;
-		float scaleX, scaleY;
-		float rot;
+		noDel_ptr<Sprite> pSprite = 0;
+		float flame = 0;
+		float x = 0, y = 0;
+		float r = 0, b = 0, g = 0, a = 0;
+		float scaleX = 0, scaleY = 0;
+		float rot = 0;
 	};
 
 private:
-	std::vector<KeyFlame*> keyFlame;
+	std::vector<KeyFrame*> keyFrame;
 
 public:
-	SpriteAnimation(Sprite* pSprite, bool loop = false);
+	SpriteAnimation(noDel_ptr<GameObject2D> obj, bool loop = false);
 
 	bool isAnimEnable();
 	void SetAnimEnable(bool flag);
@@ -38,22 +37,22 @@ public:
 
 
 	//arrayIndexは配列の番号を指定
-	void SetKeyFlameSprite(int index, Sprite* sprite);
-	void SetKeyFlameSprite(int index, Sprite* sprite, float flame);
+	void SetKeyFrameSprite(int keyIndex, noDel_ptr<Sprite> sprite);
+	void SetKeyFrameSprite(int keyIndex, noDel_ptr<Sprite> sprite, float flame);
 
-	void SetKeyFlamePos(int index, float x, float y);
-	void SetKeyFlamePos(int index, float x, float y, float flame);
+	void SetKeyFramePos(int keyIndex, float x, float y);
+	void SetKeyFramePos(int keyIndex, float x, float y, float flame);
 
-	void SetKeyFlameCol(int index, float r, float g, float b, float a);
-	void SetKeyFlameCol(int index, float r, float g, float b, float a, float flame);
+	void SetKeyFrameCol(int keyIndex, float r, float g, float b, float a);
+	void SetKeyFrameCol(int keyIndex, float r, float g, float b, float a, float flame);
 
-	void SetKeyFlameScale(int index, float x, float y);
-	void SetKeyFlameScale(int index, float x, float y, float flame);
+	void SetKeyFrameScale(int keyIndex, float x, float y);
+	void SetKeyFrameScale(int keyIndex, float x, float y, float flame);
 
-	void SetKeyFlameRot(int index, float rot);
-	void SetKeyFlameRot(int index, float rot, float flame);
+	void SetKeyFrameRot(int keyIndex, float rot);
+	void SetKeyFrameRot(int keyIndex, float rot, float flame);
 
 private:
 	void AnimLoop(); //アニメーションをもう一度再生
-	void CreateKeyFlame(int keyNum);
+	void CreateKeyFrame(int keyNum);
 };

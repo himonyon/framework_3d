@@ -10,8 +10,8 @@ enum class eSceneTable
 
 //シーンクラス定義ファイル
 #include "scene.h"
-#include "scene_title.h"
-#include "scene_game.h"
+#include "Title/scene_title.h"
+#include "Game/scene_game.h"
 
 
 

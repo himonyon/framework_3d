@@ -5,150 +5,112 @@
 //コンストラクタ
 Scene::Scene()
 {
-	for (int i = 0; i < MaxSprites; i++) {
-		pObject2D_array[i] = NULL;
-	}
 }
 
 //デストラクタ
 Scene::~Scene()
 {
-	for (int i = 0; i < MaxSprites; i++) {
-		if (pObject2D_array[i] == NULL) continue;
-		delete pObject2D_array[i];
-		pObject2D_array[i] = NULL;
-	}
-
-	for (int i = 0; i < pSpriteAnimation_array.size(); i++) {
-		delete pSpriteAnimation_array[i];
-		pSpriteAnimation_array[i] = NULL;
-		pSpriteAnimation_array.erase(pSpriteAnimation_array.begin() + i);
-	}
 }
 
 //処理
 void Scene::Execute()
 {
 	//画像の処理
-	bool isSorted = false; //すでにソートされたか
-	for (int i = 0; i < MaxSprites; i++) {
-		if (pObject2D_array[i] == NULL) continue;
-		if (pObject2D_array[i]->isExecuteEnable() == false) continue;
-		pObject2D_array[i]->Execute();
-
-		//描画順が変更された場合ソート
-		if (pObject2D_array[i]->isSortEnable()) {
-			if (isSorted) pObject2D_array[i]->SetSortEnable(false);
-			else {
-				pObject2D_array[i]->SetSortEnable(false);
-				RenderOrderSort(0, MaxSprites - 1);
-				isSorted = true;
-			}
-		}
-	}
-
-	//アニメーション処理
-	for (int i = 0; i < pSpriteAnimation_array.size(); i++) {
-		if (pSpriteAnimation_array[i]->isAnimEnable()) {
-			pSpriteAnimation_array[i]->AnimOn();
-		}
-	}
+	GameObjectManager::Execute();
+	AnimationManager::Execute();
 }
 
 void Scene::Render()
 {
-	for (int i = 0; i < MaxSprites; i++) {
-		if (pObject2D_array[i] == NULL) return;
-		if (pObject2D_array[i]->isRenderEnable() == false) continue;
-		//親のレンダー状態を確認
-		if (pObject2D_array[i]->pParent != NULL && pObject2D_array[i]->pParent->isRenderEnable() == false) continue;
-		pObject2D_array[i]->Render();
-	}
+	GameObjectManager::Render();
 }
 
-
-bool Scene::RegisterObject(Sprite* p) {
-	if (p == NULL) return false;
-
-	for (int i = 0; i < MaxSprites; i++) {
-		if (pObject2D_array[i] != NULL) continue;
-		pObject2D_array[i] = p;
-		return true;
+//スプライト同士の衝突を検出する
+//戻り値 eCollideState : 衝突の状態
+//引数
+//vnBlock2D *p1 : 衝突を検出する1つ目のオブジェクト
+//vnBlock2D *p2 : 衝突を検出する2つ目のオブジェクト
+//bool resolve : 衝突の解消を行う(p1を動かして、p2は固定する)
+Scene::eCollideState Scene::IsCollide2D(noDel_ptr<GameObject2D> p1, noDel_ptr<GameObject2D> p2, bool resolve)
+{
+	//引数のエラーチェック
+	if (p1 == NULL || p2 == NULL)
+	{
+		return eCollideState::None;
 	}
 
-	return false;
-}
+	//戻り値用の変数
+	eCollideState hit = eCollideState::None;
 
-void Scene::DeleteObject(Sprite* p) {
-	if (p == NULL) return;
+	//衝突の検出
+	float rx = 0.0f;	//重なっている長方形(Rectangle)の幅
+	float ry = 0.0f;	//重なっている長方形(Rectangle)の高さ
 
-	for (int i = 0; i < MaxSprites; i++) {
-		if (pObject2D_array[i] == NULL) continue;
-		if (pObject2D_array[i] == p) {
-			delete pObject2D_array[i];
-			pObject2D_array[i] = NULL;
-			return;
-		}
-	}
-}
+	//横(X)方向
 
-void Scene::RenderOrderSort(int start, int end) {
-	int left = start;
-	int right = end;
+	//スプライトの中心同士の座標の差分(differencial)
+	float dx = fabsf(p1->position.x - p2->position.x);
+	//2つのスプライトの幅(半分)をスケールの合計
+	float sx = p1->sizeX * 0.5f * p1->scale.x + p2->sizeX * 0.5f * p2->scale.x;
 
-	while (pObject2D_array[left] == NULL) {
-		left++;
-	}
-	if (right <= left) return;
+	if (dx < sx)	//差分が幅より小さければ横(X)方向で当たっている
+	{
+		//縦(Y)方向
 
-	int pivot = pObject2D_array[left]->GetRenderPriority();
+		//スプライトの中心同士の座標の差分(differencial)
+		float dy = fabsf(p1->position.y - p2->position.y);
+		//2つのスプライトの高さ(半分)をスケールの合計
+		float sy = p1->sizeY * 0.5f * p1->scale.y + p2->sizeY * 0.5f * p2->scale.y;
 
-	while (true) {
-		while (pObject2D_array[left] == NULL) left++;
-		while (pObject2D_array[right] == NULL) right--;
-		while (pObject2D_array[left]->GetRenderPriority() < pivot) left++;
-		while (pObject2D_array[right]->GetRenderPriority() > pivot) right--;
+		if (dy < sy)	//差分が高さより小さければ縦(Y)方向で当たっている
+		{
+			//当たっていないという情報から当たったという情報に書き換える
+			hit = eCollideState::FromLeft;
 
-		if (left < right) {
-			Sprite* sprite = pObject2D_array[left];
-			pObject2D_array[left] = pObject2D_array[right];
-			pObject2D_array[right] = sprite;
+			//重なっている長方形のサイズを保持
+			rx = sx - dx;
+			ry = sy - dy;
 
-			left++;
-			right--;
-		}
-		else {
-			break;
+			Font::Print(640, 40, L"r : %.3f, %.3f", rx, ry);
 		}
 	}
 
-	// 左側再帰
-	RenderOrderSort(start, left - 1);
-	// 右側再帰
-	RenderOrderSort(right + 1, end);
-}
-
-bool Scene::RegisterAnimation(SpriteAnimation* anim) {
-	if (anim == NULL) return false;
-
-	if (pSpriteAnimation_array.size() >= MaxAnimation) return false;
-	pSpriteAnimation_array.emplace_back(anim);
-	return true;
-}
-
-
-bool Scene::isCollider(Sprite* p, float x, float y) {
-	if (x > p->vtx[0].x && x < p->vtx[1].x && y > p->vtx[0].y && y < p->vtx[2].y) {
-		return true;
+	//衝突がある場合、めり込みを解消する
+	//p1を動かして、p2は動かさない
+	if (hit != eCollideState::None && resolve == true)
+	{
+		if (rx < ry)
+		{	//重なった領域(長方形)が縦長→左右から衝突
+			if (p1->position.x < p2->position.x)
+			{	//p1が左から衝突
+				Font::Print(640, 60, L"from Left");
+				p1->position.x -= rx;
+				hit = eCollideState::FromLeft;
+			}
+			else
+			{	//p1が右から衝突
+				Font::Print(640, 60, L"from Right");
+				p1->position.x += rx;
+				hit = eCollideState::FromRight;
+			}
+		}
+		else
+		{	//重なった領域(長方形)が横長→上下から衝突
+			if (p1->position.y < p2->position.y)
+			{	//p1が上から衝突
+				Font::Print(640, 60, L"from Top");
+				p1->position.y -= ry;
+				hit = eCollideState::FromTop;
+			}
+			else
+			{	//p1が下から衝突
+				Font::Print(640, 60, L"from Bottom");
+				p1->position.y += ry;
+				hit = eCollideState::FromBottom;
+			}
+		}
 	}
 
-	return false;
-}
-bool Scene::isCollider(Sprite* p, int x, int y) {
-	if (x > p->vtx[0].x && x < p->vtx[1].x && y > p->vtx[0].y && y < p->vtx[2].y) {
-		return true;
-	}
-
-	return false;
+	return hit;
 }
 

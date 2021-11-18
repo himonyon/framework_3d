@@ -33,7 +33,7 @@ void switchScene()
 	//シーンの作成
 	switch (reserveScene)
 	{
-	case eSceneTable::Title:			pScene = new SceneTitle();			break;
+	case eSceneTable::Title:		pScene = new SceneTitle();			break;
 	case eSceneTable::Game:			pScene = new SceneGame();			break;
 	}
 
@@ -50,7 +50,6 @@ void deleteScene()
 	if (pScene != NULL)
 	{
 		//シーンの終了
-		Sound::DeleteSounds();
 		delete pScene;
 		pScene = NULL;
 	}

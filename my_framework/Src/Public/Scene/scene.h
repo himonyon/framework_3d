@@ -1,13 +1,9 @@
 #pragma once
+#include "../../Framework/Input/InputConfig.h"
 
-#define MaxSprites (256) //１シーンに管理できる画像数
-#define MaxAnimation (64) //１シーンに管理できるアニメーション
-
-class Scene {
-private:
-	Sprite* pObject2D_array[MaxSprites];
-	std::vector<SpriteAnimation*> pSpriteAnimation_array;
-
+class Scene : public GameObjectManager, public SpriteManager, public SoundManager, public AnimationManager,
+	 public MeshManager
+{
 public:
 	//コンストラクタ
 	Scene();
@@ -26,16 +22,15 @@ public:
 	//描画
 	virtual void Render();
 
-
-	bool RegisterObject(Sprite* p);
-	void DeleteObject(Sprite* p);
-
-	bool RegisterAnimation(SpriteAnimation* anim);
-
-
 	//当たり判定
-	static bool isCollider(Sprite* collider, float x, float y); //画像と座標
-	static bool isCollider(Sprite* collider, int x, int y); //画像と座標
-private:
-	void RenderOrderSort(int start, int end);
+	enum class eCollideState	//衝突の状態を表す列挙子(enum)
+	{
+		None,		//衝突していない
+		FromLeft,	//左側から衝突
+		FromRight,	//右側から衝突
+		FromTop,	//上側から衝突
+		FromBottom,	//下側から衝突
+	};
+	//bool resolve : 衝突の解消を行う(p1を動かして、p2は固定する)
+	eCollideState IsCollide2D(noDel_ptr<GameObject2D> p1, noDel_ptr<GameObject2D> p2, bool resolve = true);
 };

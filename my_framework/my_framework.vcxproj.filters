@@ -31,6 +31,42 @@
     <Filter Include="ソース ファイル\Src\Shader">
       <UniqueIdentifier>{0151189c-7f8d-4728-bc64-cf71a2f01716}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Font">
+      <UniqueIdentifier>{62c95d0b-215f-4997-b52b-3a2aa5fb9bab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\GameObject">
+      <UniqueIdentifier>{5282a66c-4451-49b9-87d0-89f34cdf3d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Sound">
+      <UniqueIdentifier>{e84b4953-a320-479a-a78a-44932dfb5063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Sprite">
+      <UniqueIdentifier>{68df229c-2c0c-474a-8f57-1b949f9dc129}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Direct3D">
+      <UniqueIdentifier>{4054f1d1-6648-4874-9bc2-27fbcab55d4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Shader">
+      <UniqueIdentifier>{051c525e-01b7-4f18-b77a-6e0f6b238228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Input">
+      <UniqueIdentifier>{018047f7-de4b-4a2f-8ad5-8738d31a99fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Timer">
+      <UniqueIdentifier>{5206ffb4-62c7-4fa4-9292-ac757582c07b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Utility">
+      <UniqueIdentifier>{0b8d24a2-4e89-460d-9cf4-f027ed6343f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Public\Scene\Game">
+      <UniqueIdentifier>{561e5d4f-e5c5-45a5-986f-0c8907331a67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Public\Scene\Title">
+      <UniqueIdentifier>{39cca962-789a-41c0-8b9d-b92fc9ceb34d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Mesh">
+      <UniqueIdentifier>{5d693f46-8e6d-4f7d-a919-27b4b7762272}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -48,47 +84,95 @@
     <ClInclude Include="WICTextureLoader11.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Direct3D.h">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClInclude Include="environment.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Font.h">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClInclude Include="Src\Framework\Animation\AnimationManager.h">
+      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Input.h">
+    <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h">
+      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\GraphicsUtility.h">
       <Filter>ソース ファイル\Src\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Src\Framework\Main.h">
       <Filter>ソース ファイル\Src\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Model.h">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClInclude Include="Src\Framework\Font\Font.h">
+      <Filter>ソース ファイル\Src\Framework\Font</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Shader.h">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClInclude Include="Src\Framework\GameObject\GameObject.h">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Sound.h">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClInclude Include="Src\Framework\GameObject\GameObject2D.h">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="environment.h">
-      <Filter>ソース ファイル</Filter>
+    <ClInclude Include="Src\Framework\GameObject\GameObjectManager.h">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h">
-      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
+    <ClInclude Include="Src\Framework\Direct3D\Direct3D.h">
+      <Filter>ソース ファイル\Src\Framework\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input\DirectInput.h">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input\Input.h">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input\InputConfig.h">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input\Joystick.h">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input\Keyboard.h">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Input\Mouse.h">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Timer\Timer.h">
+      <Filter>ソース ファイル\Src\Framework\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Shader\Shader.h">
+      <Filter>ソース ファイル\Src\Framework\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Sprite\Sprite.h">
+      <Filter>ソース ファイル\Src\Framework\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Sprite\SpriteManager.h">
+      <Filter>ソース ファイル\Src\Framework\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Sound\Sound.h">
+      <Filter>ソース ファイル\Src\Framework\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Sound\SoundManager.h">
+      <Filter>ソース ファイル\Src\Framework\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utility\noDel_ptr.h">
+      <Filter>ソース ファイル\Src\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Src\Public\Scene\scene.h">
-      <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Public\Scene\scene_game.h">
-      <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Public\Scene\scene_title.h">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Src\Public\Scene\sceneTable.h">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Sprite.h">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClInclude Include="Src\Public\Scene\Title\scene_title.h">
+      <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\Game\scene_game.h">
+      <Filter>ソース ファイル\Src\Public\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\Mesh.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\MeshManager.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\GameObject\GameObject3D.h">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -98,44 +182,77 @@
     <ClCompile Include="WICTextureLoader11.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Framework\Direct3D.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Font.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Input.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Main.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Model.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Shader.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Sound.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Sprite.cpp">
-      <Filter>ソース ファイル\Src\Framework</Filter>
+    <ClCompile Include="Src\Framework\Animation\AnimationManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Src\Framework\Animation\SpriteAnimation.cpp">
       <Filter>ソース ファイル\Src\Framework\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Framework\Main.cpp">
+      <Filter>ソース ファイル\Src\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Font\Font.cpp">
+      <Filter>ソース ファイル\Src\Framework\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\GameObject\GameObject.cpp">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\GameObject\GameObject2D.cpp">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\GameObject\GameObjectManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Direct3D\Direct3D.cpp">
+      <Filter>ソース ファイル\Src\Framework\Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input\DirectInput.cpp">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input\Input.cpp">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input\InputConfig.cpp">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input\Joystick.cpp">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input\Keyboard.cpp">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Input\Mouse.cpp">
+      <Filter>ソース ファイル\Src\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Timer\Timer.cpp">
+      <Filter>ソース ファイル\Src\Framework\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Shader\Shader.cpp">
+      <Filter>ソース ファイル\Src\Framework\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Sprite\Sprite.cpp">
+      <Filter>ソース ファイル\Src\Framework\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Sound\Sound.cpp">
+      <Filter>ソース ファイル\Src\Framework\Sound</Filter>
+    </ClCompile>
     <ClCompile Include="Src\Public\Scene\scene.cpp">
-      <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Public\Scene\scene_game.cpp">
-      <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Public\Scene\scene_title.cpp">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Src\Public\Scene\sceneTable.cpp">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\Title\scene_title.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\Game\scene_game.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\Mesh.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\GameObject\GameObject3D.cpp">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
