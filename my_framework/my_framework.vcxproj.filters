@@ -156,9 +156,6 @@
     <ClInclude Include="Src\Public\Scene\scene.h">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Public\Scene\sceneTable.h">
-      <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Public\Scene\Title\scene_title.h">
       <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
     </ClInclude>
@@ -173,6 +170,15 @@
     </ClInclude>
     <ClInclude Include="Src\Framework\GameObject\GameObject3D.h">
       <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\SceneManager.h">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\GameObject\Behavior.h">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utility\UtilFunc.h">
+      <Filter>ソース ファイル\Src\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,9 +245,6 @@
     <ClCompile Include="Src\Public\Scene\scene.cpp">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Public\Scene\sceneTable.cpp">
-      <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Public\Scene\Title\scene_title.cpp">
       <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
     </ClCompile>
@@ -253,6 +256,15 @@
     </ClCompile>
     <ClCompile Include="Src\Framework\GameObject\GameObject3D.cpp">
       <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\SceneManager.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\GameObject\Behavior.cpp">
+      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utility\UtilFunc.cpp">
+      <Filter>ソース ファイル\Src\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -123,17 +123,16 @@ void GameObject2D::Destroy() {
 GameObject2D::GameObject2D(float x, float y, float width, float height, noDel_ptr<Sprite> sprite, bool isRender, noDel_ptr<GameObject> parent)
 	: GameObject(x,y,0,isRender,parent)
 {
-	//描画順
 	renderPriority = 0;
 	sortEnable = true;
-	//画像サイズ
+
 	sizeX = width;
 	sizeY = height;
-	//色
+
 	for (int i = 0; i < Sprite::VertexNum; i++) {
-		col_r[i] = 1; col_g[i] = 1; col_b[i] = 1; col_a[i] = 1;
+		color[i].r = 1; color[i].g = 1; color[i].b = 1; color[i].a = 1;
 	}
-	//画像
+
 	if (sprite == NULL) return; //スプライトがない場合return
 	pRenderSprite = sprite;
 
@@ -173,47 +172,17 @@ void GameObject2D::SetVertexState() {
 	pRenderSprite->vtx[3].y = (vtx_x - position.x) * sinf(rot.z) + (vtx_y - position.y) * cosf(rot.z) + position.y;
 
 	//カラー
-	pRenderSprite->vtx[0].r = col_r[0]; pRenderSprite->vtx[0].g = col_g[0];
-	pRenderSprite->vtx[0].b = col_b[0]; pRenderSprite->vtx[0].a = col_a[0];
+	pRenderSprite->vtx[0].r = color[0].r; pRenderSprite->vtx[0].g = color[0].g;
+	pRenderSprite->vtx[0].b = color[0].b; pRenderSprite->vtx[0].a = color[0].a;
 
-	pRenderSprite->vtx[1].r = col_r[1]; pRenderSprite->vtx[1].g = col_g[1];
-	pRenderSprite->vtx[1].b = col_b[1]; pRenderSprite->vtx[1].a = col_a[1];
+	pRenderSprite->vtx[1].r = color[1].r; pRenderSprite->vtx[1].g = color[1].g;
+	pRenderSprite->vtx[1].b = color[1].b; pRenderSprite->vtx[1].a = color[1].a;
 
-	pRenderSprite->vtx[2].r = col_r[2]; pRenderSprite->vtx[2].g = col_g[2];
-	pRenderSprite->vtx[2].b = col_b[2]; pRenderSprite->vtx[2].a = col_a[2];
+	pRenderSprite->vtx[2].r = color[2].r; pRenderSprite->vtx[2].g = color[2].g;
+	pRenderSprite->vtx[2].b = color[2].b; pRenderSprite->vtx[2].a = color[2].a;
 
-	pRenderSprite->vtx[3].r = col_r[3]; pRenderSprite->vtx[3].g = col_g[3];
-	pRenderSprite->vtx[3].b = col_b[3]; pRenderSprite->vtx[3].a = col_a[3];
-}
-
-void GameObject2D::Execute() {
-	if (pRenderSprite == NULL) return;
-
-	//親の変化に合わせて子要素の各要素も変化させる
-	if (pChildren.size() != 0) {
-		stVector3 diff_position = position - before_position;
-		stVector3 diff_rot = rot - before_rot;
-		stVector3 diff_scale = scale - before_scale;
-		if (diff_position != 0 || diff_rot != 0 || diff_scale != 0) {
-			for (noDel_ptr<GameObject> child : pChildren) {
-				if (diff_position != 0) child->position += diff_position; //移動
-				if (diff_rot != 0) child->rot += diff_rot; //回転
-				//スケールとそれに伴い相対的に移動させる
-				if (diff_scale != 0) {
-					child->scale += diff_scale;
-					float dis = (before_position.x - child->before_position.x) * (sizeX * scale.x) / (sizeX * before_scale.x);
-					child->position.x = position.x - dis;
-					dis = (before_position.y - child->before_position.y) * (sizeY * scale.y) / (sizeY * before_scale.y);
-					child->position.y = position.y - dis;
-				}
-			}
-		}
-	}
-	
-	//前フレームの座標更新
-	before_position = position;
-	before_rot = rot;
-	before_scale = scale;
+	pRenderSprite->vtx[3].r = color[3].r; pRenderSprite->vtx[3].g = color[3].g;
+	pRenderSprite->vtx[3].b = color[3].b; pRenderSprite->vtx[3].a = color[3].a;
 }
 
 void GameObject2D::Render() {
@@ -253,12 +222,24 @@ void GameObject2D::Render() {
 }
 
 //setter/getter
+void GameObject2D::SetSize(float width, float height) {
+	sizeX = width;
+	sizeY = height;
+}
 void GameObject2D::SetColor(float r, float g, float b, float a) {
 	for (int i = 0; i < Sprite::VertexNum; i++) {
-		col_r[i] = r;
-		col_g[i] = g;
-		col_b[i] = b;
-		col_a[i] = a;
+		color[i].r = r;
+		color[i].g = g;
+		color[i].b = b;
+		color[i].a = a;
+	}
+}
+void GameObject2D::SetColor(stColor4 color) {
+	for (int i = 0; i < Sprite::VertexNum; i++) {
+		this->color[i].r = color.r;
+		this->color[i].g = color.g;
+		this->color[i].b = color.b;
+		this->color[i].a = color.a;
 	}
 }
 void GameObject2D::SetRotation(float rot) {

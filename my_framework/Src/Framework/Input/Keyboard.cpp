@@ -21,15 +21,18 @@ BYTE Keyboard::GetRelKeyType() {
 	return 0;
 }
 bool Keyboard::On(BYTE key) {
+	if (key > 223 || key < 0) return false;
 	BYTE* cur = DirectInput::GetCurrentKeyboard();
 	return (cur[key] != 0);
 }
 bool Keyboard::Trg(BYTE key) {
+	if (key > 223 || key < 0) return false;
 	BYTE* cur = DirectInput::GetCurrentKeyboard();
 	BYTE* old = DirectInput::GetOldKeyboard();
 	return (cur[key] != 0 && old[key] == 0);
 }
 bool Keyboard::Rel(BYTE key) {
+	if (key > 223 || key < 0) return false;
 	BYTE* cur = DirectInput::GetCurrentKeyboard();
 	BYTE* old = DirectInput::GetOldKeyboard();
 	return (cur[key] == 0 && old[key] != 0);

@@ -3,7 +3,10 @@
 
 //èâä˙âª
 bool SceneGame::Initialize() {
-	pSample0 = noDel_ptr<GameObject2D>(CreateObject2D(10, 10, 200, 200, CreateSprite(L"Data/Image/sample.png",0.5f)));
+	pSample0 = noDel_ptr<GameObject2D>(CreateObject2D<GameObject2D>(
+		new GameObject2D(10, 10, 200, 200, 
+			CreateSprite(L"Data/Image/sample.png",0.5f))));
+
 	pSound0 = noDel_ptr<Sound>(CreateSound(L"Data/Sound/title_bgm.wav"));
 	pSound0->Play();
 
@@ -16,10 +19,9 @@ void SceneGame::Terminate() {
 
 //èàóù
 void SceneGame::Execute() {
-	if (Input::Trg(InputConfig::Cansel)) {
-		switchScene(eSceneTable::Title);
+	if (Input::Trg(InputConfig::cancel)) {
+		SceneManager::SwitchScene(eSceneTable::Title);
 	}
-
 
 	Scene::Execute();
 }

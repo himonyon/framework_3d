@@ -9,7 +9,6 @@
 #define FONT_CHARACTER_MAX	(0x2000)	//1フレームで描画できる文字の数
 
 
-
 #define DIRECTINPUT_VERSION 0x0800
 
 //マクロ
@@ -25,6 +24,7 @@
 #include <dinput.h>
 
 #include <iostream>
+#include <string>
 #include <time.h>
 #include <vector>
 #include <locale.h>
@@ -48,6 +48,7 @@ using namespace DirectX;
 //Utility
 #include "Src/Framework/GraphicsUtility.h"
 #include "Src//Utility/noDel_ptr.h"
+#include "Src//Utility/UtilFunc.h"
 
 //フレームワークのヘッダー
 #include "Src/Framework/Sprite/Sprite.h"
@@ -55,6 +56,8 @@ using namespace DirectX;
 
 #include "Src//Framework//Mesh/Mesh.h"
 #include "Src//Framework//Mesh/MeshManager.h"
+
+#include "Src/Framework/GameObject/Behavior.h"
 
 #include "Src/Framework/GameObject/GameObject.h"
 #include "Src/Framework/GameObject/GameObject2D.h"
@@ -85,6 +88,6 @@ using namespace DirectX;
 #include "Src/Framework/Animation/AnimationManager.h"
 
 //シーン関係のヘッダ
-#include "Src/Public/Scene/sceneTable.h"
+#include "Src/Public/Scene/SceneManager.h"
 
 

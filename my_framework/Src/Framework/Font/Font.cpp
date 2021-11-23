@@ -168,8 +168,8 @@ void Font::RenderString() {
 		}
 
 		//•`‰æˆÊ’u‚ÌÝ’è
-		rect.left = fonts[i]->rectL;
-		rect.top = fonts[i]->rectT;
+		rect.left = fonts[i]->rectL + fonts[i]->posX;
+		rect.top = fonts[i]->rectT + fonts[i]->posY;
 		rect.right = fonts[i]->rectR;
 		rect.bottom = fonts[i]->rectB;
 		fonts[i]->pTextFormat->SetTextAlignment(fonts[i]->alignment);
@@ -251,13 +251,13 @@ void Font::Print(const WCHAR* string, ...) {
 	}
 }
 
-void Font::Print(float rectL, float rectT, const WCHAR* string, ...) {
+void Font::Print(float left, float top, const WCHAR* string, ...) {
 	if (string == NULL)return;
 	for (int i = 0; i < MaxFontNum; i++) {
 		if (fonts[i]->isDraw == false) {
 			fonts[i]->isDraw = true;
-			RectL = rectL;
-			RectT = rectT;
+			PosX = left;
+			PosY = top;
 			va_list	va;
 			va_start(va, string);
 			WCHAR buf[0x100];
@@ -307,6 +307,10 @@ void Font::SetColor(DWORD color) {
 void Font::SetFontStyle(float size, const WCHAR* fontName) {
 	Size = size;
 	FontStyle = (WCHAR*)fontName;
+}
+
+void Font::SetFontSize(float size) {
+	Size = size;
 }
 
 void Font::SetTextAlignment(DWRITE_TEXT_ALIGNMENT textAlignment) {

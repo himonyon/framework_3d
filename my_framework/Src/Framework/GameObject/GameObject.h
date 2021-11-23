@@ -1,10 +1,14 @@
 #pragma once
+/*-----------------------------------------------------------
+
+	ゲームオブジェクトクラス
+		2D,3Dオブジェクトの共通の管理
+
+-------------------------------------------------------------*/
 
 
-
-class GameObject {
+class GameObject : public Behavior {
 public:
-
 	//座標
 	stVector3 position;
 	//スケール
@@ -20,6 +24,9 @@ protected:
 	bool renderEnable; //描画管理
 
 public:
+	//オブジェクトの所属シーン(eSceneTable)
+	int belongSceneType = 0;
+
 	//前フレームでの座標
 	stVector3 before_position;
 	//前フレームでのスケール
@@ -31,8 +38,13 @@ public:
 	GameObject(float x, float y, float z, bool isRender = true, noDel_ptr<GameObject> parent = nullptr);
 	~GameObject(void);
 
-	virtual void Render(void);
-	virtual void Execute(void);
+	virtual void Render(void); //描画処理
+
+	//オブジェクトの座標、回転、スケールの更新
+	void UpdateObjState();
+
+	void Start() {};
+	void Update() {};
 
 	//getter, setter
 	noDel_ptr<GameObject> GetParent() { return pParent; }
@@ -44,4 +56,8 @@ public:
 	bool isRenderEnable(); //描画状態になっているか
 	void SetExecuteEnable(bool flag); //実行状態の設定
 	bool isExecuteEnable(); //実行状態になっているかどうか
+
+private:
+	//親オブジェクトに対して子オブジェクトの座標、回転、スケールを相対的に設定
+	void SetRelativeState();
 };

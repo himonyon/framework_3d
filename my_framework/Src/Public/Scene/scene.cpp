@@ -114,3 +114,12 @@ Scene::eCollideState Scene::IsCollide2D(noDel_ptr<GameObject2D> p1, noDel_ptr<Ga
 	return hit;
 }
 
+//”ÍˆÍ“à‚Å”Žš‚ð‘Œ¸‚³‚¹‚é
+int Scene::CountUpInRange(int target, int maxRange) {
+	if (target + 1 > maxRange) return 0;
+	return ++target;
+}
+int Scene::CountDownInRange(int target, int maxRange) {
+	if (target - 1 < 0) return maxRange;
+	return --target;
+}

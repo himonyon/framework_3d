@@ -1,4 +1,5 @@
-#include "../../environment.h"
+#include "../../../framework.h"
+#include "../../../environment.h"
 
 Shader::VertexShader** Shader::vertexShader = NULL;
 Shader::PixelShader** Shader::pixelShader = NULL;

@@ -9,7 +9,8 @@ private:
 	noDel_ptr<SpriteAnimation> pAnim;
 
 	noDel_ptr<GameObject3D> pChips;
-	noDel_ptr<Mesh> pTest;
+	noDel_ptr<GameObject3D> pTest;
+	noDel_ptr<Mesh> pTest_mesh;
 
 private:
 	//‰Šú‰»

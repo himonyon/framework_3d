@@ -5,14 +5,27 @@
 bool SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pSp0 = CreateSprite(L"Data/Image/bg.jpg");
-	pObj1 = CreateObject2D(500, 300, 200, 200, CreateSprite(L"Data/Image/sample.png"));
+
+	pObj1 = noDel_ptr<GameObject2D>(CreateObject2D<GameObject2D>(
+		new GameObject2D(500, 300, 200, 200, 
+			CreateSprite(L"Data/Image/sample.png"))));
 	pObj1->SetRenderPriority(2);
 	pObj1->pRenderSprite->vtx[0].a = 0.2f;
-	pObj2 = CreateObject2D(100, 300, 200, 200, CreateSprite(L"Data/Image/sample.png"));
+
+	pObj2 = noDel_ptr<GameObject2D>(CreateObject2D<GameObject2D>(
+		new GameObject2D(100, 300, 200, 200, 
+			CreateSprite(L"Data/Image/sample.png"))));
 
 	//３Dオブジェクト
-	pChips = CreateObject3D(0, 0, 5, CreateMesh(L"Data/Object/Chips.obj"));
-	pTest = CreateMesh(L"Data/Object/test.obj");
+	pTest = noDel_ptr<GameObject3D>(CreateObject3D<GameObject3D>(
+		new GameObject3D(0, 0, 5, 
+			CreateMesh(L"Data/Object/test.obj"))));
+
+	pChips = noDel_ptr<GameObject3D>(CreateObject3D<GameObject3D>(
+		new GameObject3D(0, 0, 5,
+			CreateMesh(L"Data/Object/Chips.obj"), true, pTest)));
+
+	pTest_mesh = CreateMesh(L"Data/Object/test.obj");
 
 	//サウンド
 	pSound0 = CreateSound(L"Data/Sound/title_bgm.wav");
@@ -34,8 +47,8 @@ void SceneTitle::Terminate() {
 
 //処理
 void SceneTitle::Execute() {
-	if (Input::Trg(InputConfig::Decide)) {
-		switchScene(eSceneTable::Game);
+	if (Input::Trg(InputConfig::decide)) {
+		SceneManager::SwitchScene(eSceneTable::Game);
 	}
 
 	if (IsCollide2D(pObj1, pObj2) != eCollideState::None) {
@@ -48,7 +61,16 @@ void SceneTitle::Execute() {
 	else if (Joystick::GetRY()) {
 		pChips->rot.x += Joystick::GetRY() / 10;
 	}
-	if (Joystick::GetLX() && Joystick::On(JOY_L)) {
+
+	if ((Joystick::GetLX() || Joystick::GetLY()) && Joystick::On(JOY_L) && Joystick::On(JOY_SQUARE)) {
+		pTest->scale.x += Joystick::GetLX() / 20;
+		pTest->scale.y -= Joystick::GetLY() / 20;
+	}
+	else if((Joystick::GetLX() || Joystick::GetLY()) && Joystick::On(JOY_SQUARE)) {
+		pTest->position.x += Joystick::GetLX() / 20;
+		pTest->position.y += Joystick::GetLY() / 20;
+	}
+	else if ((Joystick::GetLX()||Joystick::GetLY()) && Joystick::On(JOY_L)) {
 		pChips->scale.x += Joystick::GetLX() /20;
 		pChips->scale.y -= Joystick::GetLY() /20;
 	}
@@ -57,17 +79,17 @@ void SceneTitle::Execute() {
 		pChips->position.y += Joystick::GetLY()/20;
 	}
 
-	if (Joystick::On(JOY_SQUARE)) {
+	if (Joystick::On(JOY_L2)) {
 		pChips->position.z += 0.1f;
 	}
 	if (Joystick::On(JOY_CROSS)) {
 		pChips->position.z -= 0.1f;
 	}
 	if (Joystick::On(JOY_TRIANGLAR)) {
-		pChips->rot.z += 0.1f;
+		pTest->rot.z += 0.1f;
 	}
 	if (Joystick::Trg(JOY_R2)) {
-		pChips->pRenderMesh = pTest;
+		pChips->pRenderMesh = pTest_mesh;
 	}
 
 	Font::Print(900, 500, L"%f, %f", Joystick::GetLX(), Joystick::GetLY());

@@ -1,6 +1,14 @@
+/*-----------------------------------------------------------
+
+	フォントクラス
+		フォントの出力
+		全シーン共通で利用する配列を用意している
+		Print関数を通して配列に毎フレームフォント情報を設定
+
+-------------------------------------------------------------*/
 #pragma once
 
-#define MaxFontNum (20)	//1フレームの描画できる文字列
+#define MaxFontNum (64)	//1フレームの描画できる文字列
 
 class Font {
 private:
@@ -9,19 +17,20 @@ private:
 	static ID2D1RenderTarget* pRenderTarget;
 	static ID2D1SolidColorBrush* pBrush;
 
+public:
+	//変換用
+	static WCHAR* FontStyle;
+	static float Size;
+	static DWORD Color;
+	static float PosX, PosY;
+	static float RectL, RectR, RectT, RectB;
+	static DWRITE_TEXT_ALIGNMENT Alignment;
+
 private:
 	IDWriteTextFormat* pTextFormat = 0;
 	static D2D1_RECT_F	rect;
 
 	static Font* fonts[MaxFontNum];
-
-	//変換用
-	static WCHAR* FontStyle;
-	static float Size;
-	static DWORD Color; 
-	static float PosX, PosY;
-	static float RectL, RectR, RectT, RectB;
-	static DWRITE_TEXT_ALIGNMENT Alignment;
 
 	//実データ
 	WCHAR* fontStyle;
@@ -56,6 +65,7 @@ public:
 	static void SetRectWH(float x, float y, float width, float height);
 	static void SetColor(DWORD color);
 	static void SetFontStyle(float size, const WCHAR* fontname);
+	static void SetFontSize(float size);
 	static void SetTextAlignment(DWRITE_TEXT_ALIGNMENT alignment);
 
 	static void Render();

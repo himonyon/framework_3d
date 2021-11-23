@@ -16,10 +16,10 @@ void SpriteAnimation::CreateKeyFrame(int keyNum) {
 		keyFrame[i]->pSprite = pAnimObj->pRenderSprite;
 		keyFrame[i]->x = pAnimObj->position.x;
 		keyFrame[i]->y = pAnimObj->position.y;
-		keyFrame[i]->r = pAnimObj->col_r[0];
-		keyFrame[i]->g = pAnimObj->col_g[0];
-		keyFrame[i]->b = pAnimObj->col_b[0];
-		keyFrame[i]->a = pAnimObj->col_a[0];
+		keyFrame[i]->color.r = pAnimObj->color[0].r;
+		keyFrame[i]->color.g = pAnimObj->color[0].g;
+		keyFrame[i]->color.b = pAnimObj->color[0].b;
+		keyFrame[i]->color.a = pAnimObj->color[0].a;
 		keyFrame[i]->scaleX = pAnimObj->scale.x;
 		keyFrame[i]->scaleY = pAnimObj->scale.y;
 		keyFrame[i]->rot = pAnimObj->rot.z;
@@ -49,7 +49,7 @@ void SpriteAnimation::AnimOn() {
 			}
 
 			pAnimObj->SetPosition(keyFrame[i]->x, keyFrame[i]->y);
-			pAnimObj->SetColor(keyFrame[i]->r, keyFrame[i]->g, keyFrame[i]->b, keyFrame[i]->a);
+			pAnimObj->SetColor(keyFrame[i]->color.r, keyFrame[i]->color.g, keyFrame[i]->color.b, keyFrame[i]->color.a);
 			pAnimObj->SetScale(keyFrame[i]->scaleX, keyFrame[i]->scaleY);
 			pAnimObj->rot.z = keyFrame[i]->rot;
 
@@ -79,12 +79,12 @@ void SpriteAnimation::AnimOn() {
 		pAnimObj->position.y = keyFrame[currentKeyFrameIndex]->y + move_y;
 
 		//col
-		float r_diff = (keyFrame[i]->r - keyFrame[currentKeyFrameIndex]->r) * rate;
-		float g_diff = (keyFrame[i]->g - keyFrame[currentKeyFrameIndex]->g) * rate;
-		float b_diff = (keyFrame[i]->b - keyFrame[currentKeyFrameIndex]->b) * rate;
-		float a_diff = (keyFrame[i]->a - keyFrame[currentKeyFrameIndex]->a) * rate;
-		pAnimObj->SetColor(keyFrame[currentKeyFrameIndex]->r + r_diff, keyFrame[currentKeyFrameIndex]->g + g_diff,
-			keyFrame[currentKeyFrameIndex]->b + b_diff, keyFrame[currentKeyFrameIndex]->a + a_diff);
+		float r_diff = (keyFrame[i]->color.r - keyFrame[currentKeyFrameIndex]->color.r) * rate;
+		float g_diff = (keyFrame[i]->color.g - keyFrame[currentKeyFrameIndex]->color.g) * rate;
+		float b_diff = (keyFrame[i]->color.b - keyFrame[currentKeyFrameIndex]->color.b) * rate;
+		float a_diff = (keyFrame[i]->color.a - keyFrame[currentKeyFrameIndex]->color.a) * rate;
+		pAnimObj->SetColor(keyFrame[currentKeyFrameIndex]->color.r + r_diff, keyFrame[currentKeyFrameIndex]->color.g + g_diff,
+			keyFrame[currentKeyFrameIndex]->color.b + b_diff, keyFrame[currentKeyFrameIndex]->color.a + a_diff);
 
 		//scale
 		float scaleX_diff = (keyFrame[i]->scaleX - keyFrame[currentKeyFrameIndex]->scaleX) * rate;
@@ -144,17 +144,17 @@ void SpriteAnimation::SetKeyFramePos(int keyIndex, float x, float y, float flame
 
 void SpriteAnimation::SetKeyFrameCol(int keyIndex, float r, float g, float b, float a) {
 	if (keyIndex >= keyFrame.size()) CreateKeyFrame(keyIndex);
-	keyFrame[keyIndex]->r = r;
-	keyFrame[keyIndex]->g = g;
-	keyFrame[keyIndex]->b = b;
-	keyFrame[keyIndex]->a = a;
+	keyFrame[keyIndex]->color.r = r;
+	keyFrame[keyIndex]->color.g = g;
+	keyFrame[keyIndex]->color.b = b;
+	keyFrame[keyIndex]->color.a = a;
 }
 void SpriteAnimation::SetKeyFrameCol(int keyIndex, float r, float g, float b, float a, float flame) {
 	if (keyIndex >= keyFrame.size()) CreateKeyFrame(keyIndex);
-	keyFrame[keyIndex]->r = r;
-	keyFrame[keyIndex]->g = g;
-	keyFrame[keyIndex]->b = b;
-	keyFrame[keyIndex]->a = a;
+	keyFrame[keyIndex]->color.r = r;
+	keyFrame[keyIndex]->color.g = g;
+	keyFrame[keyIndex]->color.b = b;
+	keyFrame[keyIndex]->color.a = a;
 	keyFrame[keyIndex]->flame = flame;
 }
 

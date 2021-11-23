@@ -1,3 +1,10 @@
+/*-----------------------------------------------------------
+
+	スプライトアニメーションクラス
+		キーをフレーム数と共に設定して各キーの時間になると
+		その処理を行うアニメーション機能
+
+-------------------------------------------------------------*/
 #pragma once
 
 #define MAX_ANIMATION2D (50)
@@ -18,7 +25,7 @@ public:
 		noDel_ptr<Sprite> pSprite = 0;
 		float flame = 0;
 		float x = 0, y = 0;
-		float r = 0, b = 0, g = 0, a = 0;
+		stColor4 color;;
 		float scaleX = 0, scaleY = 0;
 		float rot = 0;
 	};

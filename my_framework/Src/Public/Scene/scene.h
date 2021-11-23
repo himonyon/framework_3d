@@ -1,9 +1,15 @@
+/*-----------------------------------------------------------
+
+	シーンクラス（基底クラス）
+		各シーンの共通のクラス・抽象クラス
+
+-------------------------------------------------------------*/
 #pragma once
 #include "../../Framework/Input/InputConfig.h"
 
-class Scene : public GameObjectManager, public SpriteManager, public SoundManager, public AnimationManager,
-	 public MeshManager
-{
+class Scene : public GameObjectManager, public SpriteManager, public MeshManager, public SoundManager, public AnimationManager {
+public:
+
 public:
 	//コンストラクタ
 	Scene();
@@ -32,5 +38,9 @@ public:
 		FromBottom,	//下側から衝突
 	};
 	//bool resolve : 衝突の解消を行う(p1を動かして、p2は固定する)
-	eCollideState IsCollide2D(noDel_ptr<GameObject2D> p1, noDel_ptr<GameObject2D> p2, bool resolve = true);
+	static eCollideState IsCollide2D(noDel_ptr<GameObject2D> p1, noDel_ptr<GameObject2D> p2, bool resolve = true);
+
+	//int型の数字の＋１ー１を指定の幅(0~maxNum)で行う
+	static int CountUpInRange(int target, int maxRange);
+	static int CountDownInRange(int target, int maxRange);
 };

@@ -237,9 +237,6 @@ void GameObject3D::Render() {
 	}
 }
 
-void GameObject3D::Execute() {
-}
-
 XMMATRIX GameObject3D::GetPosMatrix() {
 	//現在の座標を頂点座標にセット
 	return XMMatrixTranslation(position.x, -position.y, position.z);

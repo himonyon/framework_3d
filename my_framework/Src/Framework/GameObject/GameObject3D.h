@@ -22,7 +22,6 @@ public:
 	~GameObject3D(void);
 
 	void Render(void) override;
-	void Execute(void) override;
 
 private:
 	XMMATRIX GetPosMatrix();

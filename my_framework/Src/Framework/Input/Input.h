@@ -1,3 +1,9 @@
+/*-----------------------------------------------------------
+
+	Inputクラス
+		InputConfigでまとめた配列を利用して各デバイスの入力を検知する
+
+-------------------------------------------------------------*/
 #pragma once
 #include <functional>
 
@@ -8,27 +14,27 @@
 
 class Input {
 private:
-	static std::function<bool(int(&inputs)[2])> funcTrg;
-	static std::function<bool(int(&inputs)[2])> funcOn;
-	static std::function<bool(int(&inputs)[2])> funcRel;
+	static std::function<bool(std::vector<int>& inputs)> funcTrg;
+	static std::function<bool(std::vector<int>& inputs)> funcOn;
+	static std::function<bool(std::vector<int>& inputs)> funcRel;
 
-	static bool BothDevTrg(int(&inputs)[2]);
-	static bool KeyboardDevTrg(int(&inputs)[2]);
-	static bool JoystickDevTrg(int(&inputs)[2]);
+	static bool BothDevTrg(std::vector<int>& intuts);
+	static bool KeyboardDevTrg(std::vector<int>& intuts);
+	static bool JoystickDevTrg(std::vector<int>& intuts);
 
-	static bool BothDevOn(int(&inputs)[2]);
-	static bool KeyboardDevOn(int(&inputs)[2]);
-	static bool JoystickDevOn(int(&inputs)[2]);
+	static bool BothDevOn(std::vector<int>& inputs);
+	static bool KeyboardDevOn(std::vector<int>& inputs);
+	static bool JoystickDevOn(std::vector<int>& inputs);
 
-	static bool BothDevRel(int(&inputs)[2]);
-	static bool KeyboardDevRel(int(&inputs)[2]);
-	static bool JoystickDevRel(int(&inputs)[2]);
+	static bool BothDevRel(std::vector<int>& inputs);
+	static bool KeyboardDevRel(std::vector<int>& inputs);
+	static bool JoystickDevRel(std::vector<int>& inputs);
 
 
 public:
-	static bool Trg(int(&inputs)[2]);
-	static bool On(int(&inputs)[2]);
-	static bool Rel(int(&inputs)[2]);
+	static bool Trg(std::vector<int>& inputs);
+	static bool On(std::vector<int>& inputs);
+	static bool Rel(std::vector<int>& inputs);
 
 	//デバイスの変更
 	static void SetKeyboardDevice();

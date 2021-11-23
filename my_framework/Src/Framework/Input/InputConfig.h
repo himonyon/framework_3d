@@ -1,3 +1,10 @@
+/*-----------------------------------------------------------
+
+	入力コンフィグクラス
+		入力するボタンを用途別にまとめるクラス
+		テキストファイルからそれぞれの用途に対応するボタンを取得
+
+-------------------------------------------------------------*/
 #pragma once
 
 /// <summary>
@@ -6,9 +13,13 @@
 /// </summary>
 
 class InputConfig {
-private:
-	static const int DeviceNum = 2;
 public:
-	static int Decide[DeviceNum];
-	static int Cansel[DeviceNum];
+	static std::vector<int> decide;
+	static std::vector<int> cancel;
+	static std::vector<int> cursorUp;
+	static std::vector<int> cursorDown;
+	static std::vector<int> cursorRight;
+	static std::vector<int> cursorLeft;
+
+	static bool SetUpConfig();
 };

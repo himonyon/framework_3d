@@ -6,34 +6,11 @@ GameObjectManager::~GameObjectManager() {
 		delete sprite;
 	}
 	objects2d.clear();
-}
 
-noDel_ptr<GameObject2D> GameObjectManager::CreateObject2D(GameObject2D* instance) {
-	objects2d.emplace_back(instance);
-	noDel_ptr<GameObject2D> p = noDel_ptr<GameObject2D>(objects2d.back());
-	return p;
-}
-noDel_ptr<GameObject2D> GameObjectManager::CreateObject2D(float x, float y, float width, float height,
-	noDel_ptr<Sprite> sprite, bool isRender, noDel_ptr<GameObject> parent)
-{
-	GameObject2D* instance = new GameObject2D(x, y, width, height, sprite, isRender, parent);
-	objects2d.emplace_back(instance);
-	noDel_ptr<GameObject2D> p = noDel_ptr<GameObject2D>(objects2d.back());
-	return p;
-}
-
-noDel_ptr<GameObject3D> GameObjectManager::CreateObject3D(GameObject3D* instance) {
-	objects3d.emplace_back(instance);
-	noDel_ptr<GameObject3D> p = noDel_ptr<GameObject3D>(objects3d.back());
-	return p;
-}
-noDel_ptr<GameObject3D> GameObjectManager::CreateObject3D(float x, float y, float z,
-	noDel_ptr<Mesh> mesh, bool isRender, noDel_ptr<GameObject> parent)
-{
-	GameObject3D* instance = new GameObject3D(x, y, z, mesh, isRender, parent);
-	objects3d.emplace_back(instance);
-	noDel_ptr<GameObject3D> p = noDel_ptr<GameObject3D>(objects3d.back());
-	return p;
+	for (auto& sprite : objects3d) {
+		delete sprite;
+	}
+	objects3d.clear();
 }
 
 void GameObjectManager::Render() {
@@ -61,7 +38,7 @@ void GameObjectManager::Execute() {
 		if (obj == nullptr) continue;
 		if (obj->isExecuteEnable() == false) continue;
 		if (obj->GetParent() != nullptr && obj->GetParent()->isExecuteEnable() == false) continue;
-		obj->Execute();
+		obj->UpdateObjState();
 
 		//描画順が変更された場合ソート
 		if (obj->isSortEnable()) {
@@ -76,7 +53,7 @@ void GameObjectManager::Execute() {
 		if (obj == nullptr) continue;
 		if (obj->isExecuteEnable() == false) continue;
 		if (obj->GetParent() != nullptr && obj->GetParent()->isExecuteEnable() == false) continue;
-		obj->Execute();
+		obj->UpdateObjState();
 	}
 }
 

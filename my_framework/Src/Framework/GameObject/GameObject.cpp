@@ -32,22 +32,49 @@ GameObject::GameObject(float x, float y,float z, bool isRender, noDel_ptr<GameOb
 GameObject::~GameObject() {
 }
 
-
-void GameObject::Execute() {
+void GameObject::SetRelativeState() {
 	stVector3 diff_position = position - before_position;
 	stVector3 diff_rot = rot - before_rot;
-	stVector3 diff_scale = scale - before_scale;
+	stVector3 diff_scale = scale / before_scale;
 
 	if (diff_position != 0 || diff_rot != 0 || diff_scale != 0) {
 		for (noDel_ptr<GameObject> child : pChildren) {
-			if (diff_position != 0) child->position += diff_position;
-			if (diff_rot != 0) child->rot += diff_rot;
+			if (diff_position != 0) child->position += diff_position; //移動
+			if (diff_rot != 0) child->rot += diff_rot; //回転
+			//スケールとそれに伴い相対的に移動させる
 			if (diff_scale != 0) {
-				child->scale += diff_scale;
+				child->scale *= diff_scale;
+				//ｘ成分
+				float dis = position.x - child->position.x;
+				dis *= diff_scale.x;
+				child->position.x = position.x - dis;
+				//ｙ成分
+				dis = position.y - child->position.y;
+				dis *= diff_scale.y;
+				child->position.y = position.y - dis;
+				//ｙ成分
+				dis = position.z - child->position.z;
+				dis *= diff_scale.z;
+				child->position.z = position.z - dis;
 			}
+
+			//子オブジェクトの子オブジェクトがあればそのオブジェクトの相対位置を変更
+			if (child->pChildren.size() != 0) child->SetRelativeState();
+
+			child->before_position = child->position;
+			child->before_rot = child->rot;
+			child->before_scale = child->scale;
 		}
 	}
-	
+}
+
+void GameObject::UpdateObjState() {
+	//親の変化に合わせて子要素の各要素も変化させる
+	if (pParent == nullptr && pChildren.size() != 0) {
+		SetRelativeState();
+	}
+
+	//前フレームの座標更新
 	before_position = position;
 	before_rot = rot;
 	before_scale = scale;

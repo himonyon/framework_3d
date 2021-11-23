@@ -61,6 +61,12 @@ public:
 
     ~noDel_ptr() {}
 
+
+    //生ポインタの取得
+    T* get() {
+        return ptr;
+    }
+
 private:
     // 外部からアクセスできない形でポインタ変数を宣言
     T* ptr = nullptr;
