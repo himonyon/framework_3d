@@ -5,7 +5,7 @@
 
 -------------------------------------------------------------*/
 #pragma once
-#include "../../Framework/Input/InputConfig.h"
+#include "../InputConfig.h"
 
 class Scene : public GameObjectManager, public SpriteManager, public MeshManager, public SoundManager, public AnimationManager {
 public:

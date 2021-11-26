@@ -56,10 +56,10 @@ void SceneTitle::Execute() {
 	}
 
 	if (Joystick::GetRX()) {
-		pChips->rot.y += Joystick::GetRX() / 10;
+		pObj1->rot.y += Joystick::GetRX();
 	}
 	else if (Joystick::GetRY()) {
-		pChips->rot.x += Joystick::GetRY() / 10;
+		pObj1->rot.x += Joystick::GetRY();
 	}
 
 	if ((Joystick::GetLX() || Joystick::GetLY()) && Joystick::On(JOY_L) && Joystick::On(JOY_SQUARE)) {
@@ -71,32 +71,19 @@ void SceneTitle::Execute() {
 		pTest->position.y += Joystick::GetLY() / 20;
 	}
 	else if ((Joystick::GetLX()||Joystick::GetLY()) && Joystick::On(JOY_L)) {
-		pChips->scale.x += Joystick::GetLX() /20;
-		pChips->scale.y -= Joystick::GetLY() /20;
+		pObj1->scale.x += Joystick::GetLX();
+		pObj1->scale.y -= Joystick::GetLY();
 	}
 	else {
-		pChips->position.x += Joystick::GetLX()/20;
-		pChips->position.y += Joystick::GetLY()/20;
-	}
-
-	if (Joystick::On(JOY_L2)) {
-		pChips->position.z += 0.1f;
-	}
-	if (Joystick::On(JOY_CROSS)) {
-		pChips->position.z -= 0.1f;
-	}
-	if (Joystick::On(JOY_TRIANGLAR)) {
-		pTest->rot.z += 0.1f;
-	}
-	if (Joystick::Trg(JOY_R2)) {
-		pChips->pRenderMesh = pTest_mesh;
+		pObj1->position.x += Joystick::GetLX();
+		pObj1->position.y += Joystick::GetLY();
 	}
 
 	Font::Print(900, 500, L"%f, %f", Joystick::GetLX(), Joystick::GetLY());
 	Font::SetRect(200, 100, 500, WINDOW_HEIGHT);
-	Font::SetTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
+	Font::SetTextAlignment(eTextAlignment::Center);
 	Font::SetColor(0xffffffff);
-	Font::Print(L"変更後　%d ", Joystick::PovOn(18000));
+	Font::Print(500, 200, L"変更後　%d ", Joystick::PovOn(18000));
 	Font::SetColor(0xff88ff88);
 	Font::Print(200, 130, L"vvv　%d ", Joystick::PovOn(18000));
 	Font::Print(200, 160, L"vvv　%d ", Joystick::PovOn(18000));
