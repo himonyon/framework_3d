@@ -10,17 +10,17 @@ bool Joystick::IsValid() {
 bool Joystick::On(int button) {
 	//キーボードと併用するのにジョイボタンを+300に設定しているため-300をかけて利用
 	button -= 300;
-	if (button > 128 || button < 0) return false;
+	if (button > 127 || button < 0) return false;
 	return (DirectInput::GetCurrentJoystick().rgbButtons[button] != 0);
 }
 bool Joystick::Trg(int button) {
 	button -= 300;
-	if (button > 128 || button < 0) return false;
+	if (button > 127 || button < 0) return false;
 	return (DirectInput::GetCurrentJoystick().rgbButtons[button] != 0 && DirectInput::GetOldJoystick().rgbButtons[button] == 0);
 }
 bool Joystick::Rel(int button) {
 	button -= 300;
-	if (button > 128 || button < 0) return false;
+	if (button > 127 || button < 0) return false;
 	return (DirectInput::GetCurrentJoystick().rgbButtons[button] == 0 && DirectInput::GetOldJoystick().rgbButtons[button] != 0);
 }
 float Joystick::GetLX() {

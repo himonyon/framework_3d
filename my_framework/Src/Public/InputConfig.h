@@ -20,6 +20,8 @@ public:
 	static std::vector<int> cursorDown;
 	static std::vector<int> cursorRight;
 	static std::vector<int> cursorLeft;
+	static std::vector<int> moveX;
+	static std::vector<int> moveY;
 
 	static bool SetUpConfig();
 };

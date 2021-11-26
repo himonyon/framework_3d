@@ -24,13 +24,18 @@ int Mouse::GetDX() {
 int Mouse::GetDY() {
 	return DirectInput::GetMouseState().lY;
 }
+
+//キーボードとジョイスティックと併用するためボタンを+500に設定しているため-500をかけて利用
 bool Mouse::On(int mouse) {
+	mouse -= 500;
 	return (mouse & on);
 }
 bool Mouse::Trg(int mouse) {
+	mouse -= 500;
 	return (mouse & trg);
 }
 bool Mouse::Rel(int mouse) {
+	mouse -= 500;
 	return (mouse & rel);
 }
 

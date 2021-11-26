@@ -2,13 +2,13 @@
 #include "../../../environment.h"
 
 GameObjectManager::~GameObjectManager() {
-	for (auto& sprite : objects2d) {
-		delete sprite;
+	for (auto& obj : objects2d) {
+		delete obj;
 	}
 	objects2d.clear();
 
-	for (auto& sprite : objects3d) {
-		delete sprite;
+	for (auto& obj : objects3d) {
+		delete obj;
 	}
 	objects3d.clear();
 }

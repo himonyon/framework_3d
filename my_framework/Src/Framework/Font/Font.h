@@ -10,6 +10,12 @@
 
 #define MaxFontNum (64)	//1ÉtÉåÅ[ÉÄÇÃï`âÊÇ≈Ç´ÇÈï∂éöóÒ
 
+enum class eTextAlignment {
+	Left,
+	Right,
+	Center
+};
+
 class Font {
 private:
 	static ID2D1Factory* pD2d1Factory;
@@ -24,7 +30,7 @@ public:
 	static DWORD Color;
 	static float PosX, PosY;
 	static float RectL, RectR, RectT, RectB;
-	static DWRITE_TEXT_ALIGNMENT Alignment;
+	static eTextAlignment Alignment;
 
 private:
 	IDWriteTextFormat* pTextFormat = 0;
@@ -39,7 +45,7 @@ private:
 	float posX, posY;
 	float rectL, rectR, rectT, rectB;
 	DWORD color = 0xffffffff;
-	DWRITE_TEXT_ALIGNMENT alignment;
+	eTextAlignment alignment;
 	WCHAR* ptr = NULL;
 	UINT32 count = 0;
 
@@ -49,6 +55,8 @@ private:
 	static void registerString(int fontNum, const WCHAR* string, UINT32 count);
 	bool Create(const WCHAR* fontname, int size);
 
+	static void AdjustTextAlignment(Font* font);
+	static float GetTextLength(Font* font);
 
 public:
 	static bool Initialize(void* hdl);
@@ -58,15 +66,15 @@ public:
 	~Font();
 
 	static void RenderString();
-	static void Print(const WCHAR* string, ...);
 	static void Print(float left, float top, const WCHAR* string, ...);
+	static void Print(float left, float top, eTextAlignment alignment, const WCHAR* string, ...);
 	static void SetRect();
 	static void SetRect(float left, float top, float right, float bottom);
 	static void SetRectWH(float x, float y, float width, float height);
 	static void SetColor(DWORD color);
 	static void SetFontStyle(float size, const WCHAR* fontname);
 	static void SetFontSize(float size);
-	static void SetTextAlignment(DWRITE_TEXT_ALIGNMENT alignment);
+	static void SetTextAlignment(eTextAlignment alignment);
 
 	static void Render();
 

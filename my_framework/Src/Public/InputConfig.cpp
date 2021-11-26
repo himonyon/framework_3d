@@ -1,5 +1,5 @@
-#include "../../../framework.h"
-#include "../../../environment.h"
+#include "../../framework.h"
+#include "../../environment.h"
 
 /// <summary>
 /// ユーザー設定インプット情報の初期化
@@ -10,6 +10,8 @@ std::vector<int> InputConfig::cursorUp = {};
 std::vector<int> InputConfig::cursorDown = {};
 std::vector<int> InputConfig::cursorRight = {};
 std::vector<int> InputConfig::cursorLeft = {};
+std::vector<int> InputConfig::moveX = {};
+std::vector<int> InputConfig::moveY = {};
 
 bool InputConfig::SetUpConfig() {
 	char _key[256] = { 0 };
@@ -24,7 +26,7 @@ bool InputConfig::SetUpConfig() {
 	while (!feof(fp))
 	{
 		//キーワード読み込み
-		fscanf_s(fp, "%s ", _key, (int)sizeof(_key));
+		fscanf_s(fp, "%s", _key, (int)sizeof(_key));
 		//ボタン名
 		if (strcmp(_key, "decide") == 0) temp_vec = &decide;
 		else if (strcmp(_key, "cancel") == 0) temp_vec = &cancel;
@@ -32,6 +34,8 @@ bool InputConfig::SetUpConfig() {
 		else if (strcmp(_key, "cursorDown") == 0) temp_vec = &cursorDown;
 		else if (strcmp(_key, "cursorRight") == 0) temp_vec = &cursorRight;
 		else if (strcmp(_key, "cursorLeft") == 0) temp_vec = &cursorLeft;
+		else if (strcmp(_key, "moveX") == 0) temp_vec = &moveX;
+		else if (strcmp(_key, "moveY") == 0) temp_vec = &moveY;
 		//各コンテナに数字を格納する
 		else if (strcmp(_key, "") != 0){
 			int temp_i = std::stoi(_key);

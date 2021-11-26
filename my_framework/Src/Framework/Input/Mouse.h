@@ -6,6 +6,11 @@
 -------------------------------------------------------------*/
 #pragma once
 
+#define MOUSE_L (501)
+#define MOUSE_R (504)
+#define MOUSE_WHEEEl (502)
+#define MOUSE_DXY (502)
+
 class Mouse {
 public:
 	//É}ÉEÉX(L(1) R(4) R(2))

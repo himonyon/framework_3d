@@ -120,9 +120,6 @@
     <ClInclude Include="Src\Framework\Input\Input.h">
       <Filter>ソース ファイル\Src\Framework\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Input\InputConfig.h">
-      <Filter>ソース ファイル\Src\Framework\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Framework\Input\Joystick.h">
       <Filter>ソース ファイル\Src\Framework\Input</Filter>
     </ClInclude>
@@ -180,6 +177,9 @@
     <ClInclude Include="Src\Utility\UtilFunc.h">
       <Filter>ソース ファイル\Src\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Public\InputConfig.h">
+      <Filter>ソース ファイル\Src\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp">
@@ -216,9 +216,6 @@
       <Filter>ソース ファイル\Src\Framework\Input</Filter>
     </ClCompile>
     <ClCompile Include="Src\Framework\Input\Input.cpp">
-      <Filter>ソース ファイル\Src\Framework\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Input\InputConfig.cpp">
       <Filter>ソース ファイル\Src\Framework\Input</Filter>
     </ClCompile>
     <ClCompile Include="Src\Framework\Input\Joystick.cpp">
@@ -265,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="Src\Utility\UtilFunc.cpp">
       <Filter>ソース ファイル\Src\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\InputConfig.cpp">
+      <Filter>ソース ファイル\Src\Public</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

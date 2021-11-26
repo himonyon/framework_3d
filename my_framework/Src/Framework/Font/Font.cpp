@@ -10,7 +10,7 @@ D2D1_RECT_F	Font::rect = { 0 };
 Font* Font::fonts[] = {0};
 
 DWORD Font::Color = 0xffffffff;
-DWRITE_TEXT_ALIGNMENT Font::Alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;
+eTextAlignment Font::Alignment = eTextAlignment::Left;
 WCHAR font[] = L"Meiryo";
 WCHAR* Font::FontStyle = font;
 float Font::Size = 18.0f;
@@ -100,6 +100,7 @@ bool Font::Initialize(void* hdl) {
 	return true;
 }
 void Font::Destroy(void) {
+	for (int i = 0; i < MaxFontNum; i++) delete fonts[i];
 	SAFE_RELEASE(pBrush);
 	SAFE_RELEASE(pRenderTarget);
 	SAFE_RELEASE(pDWFactory);
@@ -168,11 +169,11 @@ void Font::RenderString() {
 		}
 
 		//•`‰æˆÊ’u‚ÌÝ’è
+		AdjustTextAlignment(fonts[i]);
 		rect.left = fonts[i]->rectL + fonts[i]->posX;
 		rect.top = fonts[i]->rectT + fonts[i]->posY;
 		rect.right = fonts[i]->rectR;
 		rect.bottom = fonts[i]->rectB;
-		fonts[i]->pTextFormat->SetTextAlignment(fonts[i]->alignment);
 
 		//•`‰æF‚ÌÝ’è
 		if (Color != fonts[i]->color)
@@ -209,6 +210,32 @@ void Font::RenderString() {
 	return;
 }
 
+void Font::AdjustTextAlignment(Font* font) {
+	if (font->alignment == eTextAlignment::Center) {
+		font->posX -= GetTextLength(font) / 2;
+	}else if (font->alignment == eTextAlignment::Right) {
+		font->posX -= GetTextLength(font);
+	}
+}
+
+float Font::GetTextLength(Font* font) {
+	int count = 0;
+	float length = 0;
+	float maxLength = 0; //•¡”s‚ ‚éŽž‚Éˆê”Ô’·‚¢s‚ð‘ÎÛ‚Æ‚·‚é
+	while (font->ptr[count] != '\0') {
+		if (font->ptr[count] == '\n') {
+			if (maxLength < length) maxLength = length;
+			length = 0;
+			count++;
+			continue;
+		}
+		length += font->ptr[count] < 0xa7 ? 0.5f : 1;
+		count++;
+	}
+	if (maxLength == 0) maxLength = length;
+	return maxLength * font->size;
+}
+
 bool Font::Create(const WCHAR* fontname, int size) {
 	HRESULT hr;
 
@@ -234,11 +261,14 @@ bool Font::Create(const WCHAR* fontname, int size) {
 	return true;
 }
 
-void Font::Print(const WCHAR* string, ...) {
+void Font::Print(float left, float top, eTextAlignment alignment, const WCHAR* string, ...) {
 	if (string == NULL)return;
 	for (int i = 0; i < MaxFontNum; i++) {
 		if (fonts[i]->isDraw == false) {
 			fonts[i]->isDraw = true;
+			PosX = left;
+			PosY = top;
+			Alignment = alignment;
 			va_list	va;
 			va_start(va, string);
 			WCHAR buf[0x100];
@@ -313,16 +343,16 @@ void Font::SetFontSize(float size) {
 	Size = size;
 }
 
-void Font::SetTextAlignment(DWRITE_TEXT_ALIGNMENT textAlignment) {
+void Font::SetTextAlignment(eTextAlignment textAlignment) {
 	switch (textAlignment) {
-	case DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING:
-		Alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;
+	case eTextAlignment::Left:
+		Alignment = eTextAlignment::Left;
 		break;
-	case DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_TRAILING:
-		Alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_TRAILING;
+	case eTextAlignment::Right:
+		Alignment = eTextAlignment::Right;
 		break;
-	case DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER:
-		Alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER;
+	case eTextAlignment::Center:
+		Alignment = eTextAlignment::Center;
 		break;
 	}
 }

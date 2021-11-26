@@ -31,6 +31,8 @@
 #define JOY_LSTICKL (355)
 #define JOY_LSTICKU (356)
 #define JOY_LSTICKD (357)
+#define JOY_LSTICK (358)
+#define JOY_RSTICK (359)
 
 //è\éöÉLÅ[
 #define JOY_POVU (10000)

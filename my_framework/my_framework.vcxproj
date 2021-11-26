@@ -157,7 +157,6 @@
     <ClInclude Include="Src\Framework\GraphicsUtility.h" />
     <ClInclude Include="Src\Framework\Input\DirectInput.h" />
     <ClInclude Include="Src\Framework\Input\Input.h" />
-    <ClInclude Include="Src\Framework\Input\InputConfig.h" />
     <ClInclude Include="Src\Framework\Input\Joystick.h" />
     <ClInclude Include="Src\Framework\Input\Keyboard.h" />
     <ClInclude Include="Src\Framework\Input\Mouse.h" />
@@ -170,6 +169,7 @@
     <ClInclude Include="Src\Framework\Sprite\Sprite.h" />
     <ClInclude Include="Src\Framework\Sprite\SpriteManager.h" />
     <ClInclude Include="Src\Framework\Timer\Timer.h" />
+    <ClInclude Include="Src\Public\InputConfig.h" />
     <ClInclude Include="Src\Public\Scene\Game\scene_game.h" />
     <ClInclude Include="Src\Public\Scene\scene.h" />
     <ClInclude Include="Src\Public\Scene\SceneManager.h" />
@@ -192,7 +192,6 @@
     <ClCompile Include="Src\Framework\GameObject\GameObjectManager.cpp" />
     <ClCompile Include="Src\Framework\Input\DirectInput.cpp" />
     <ClCompile Include="Src\Framework\Input\Input.cpp" />
-    <ClCompile Include="Src\Framework\Input\InputConfig.cpp" />
     <ClCompile Include="Src\Framework\Input\Joystick.cpp" />
     <ClCompile Include="Src\Framework\Input\Keyboard.cpp" />
     <ClCompile Include="Src\Framework\Input\Mouse.cpp" />
@@ -202,6 +201,7 @@
     <ClCompile Include="Src\Framework\Sound\Sound.cpp" />
     <ClCompile Include="Src\Framework\Sprite\Sprite.cpp" />
     <ClCompile Include="Src\Framework\Timer\Timer.cpp" />
+    <ClCompile Include="Src\Public\InputConfig.cpp" />
     <ClCompile Include="Src\Public\Scene\Game\scene_game.cpp" />
     <ClCompile Include="Src\Public\Scene\scene.cpp" />
     <ClCompile Include="Src\Public\Scene\SceneManager.cpp" />
