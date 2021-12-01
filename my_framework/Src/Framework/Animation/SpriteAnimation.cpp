@@ -2,189 +2,123 @@
 #include "../../environment.h"
 
 //一度すべての配列の情報を初期化
-SpriteAnimation::SpriteAnimation(Sprite* pSprite, bool loop) {
-	showSprite = pSprite; //現在表示するスプライト
+SpriteAnimation::SpriteAnimation(const WCHAR* texture_file, bool loop) {
 	isLoop = loop;
 
-	if (pScene != NULL) {
-		pScene->RegisterAnimation(this);
+	FILE* fp = NULL;
+	char _key[256] = { 0 };
+	_wfopen_s(&fp, texture_file, L"rt");
+	if (fp == NULL) {
+		return;
+	}
+
+	KeyFrame* setKey = new KeyFrame();
+
+	while (!feof(fp))
+	{
+		//キーワード読み込み
+		fscanf_s(fp, "%s", _key, (int)sizeof(_key));
+		
+		if (strcmp(_key, "newkey") == 0) {
+			KeyFrame* temp = new KeyFrame();
+			setKey = temp;
+		}
+		else if (strcmp(_key, "fr") == 0) {
+			if(setKey != nullptr) fscanf_s(fp, "%f", &setKey->frame);
+		}
+		else if (strcmp(_key, "sprite") == 0) {
+			fscanf_s(fp, "%s", _key, (int)sizeof(_key));
+			if (strcmp(_key, "0") == 0) continue;
+			if (setKey != nullptr) setKey->pSprite = SpriteManager::Find(_key);
+		}
+		else if (strcmp(_key, "pos") == 0) {
+			if (setKey != nullptr) fscanf_s(fp, "%f %f", &setKey->x, &setKey->y);
+		}
+		else if (strcmp(_key, "color") == 0) {
+			if (setKey != nullptr) fscanf_s(fp, "%f %f %f %f", &setKey->color.r, &setKey->color.g, &setKey->color.b, &setKey->color.a);
+		}
+		else if (strcmp(_key, "scale") == 0) {
+			if (setKey != nullptr) fscanf_s(fp, "%f %f", &setKey->scaleX, &setKey->scaleY);
+		}
+		else if (strcmp(_key, "rot") == 0) {
+			if (setKey != nullptr) fscanf_s(fp, "%f", &setKey->rot);
+			keyFrames.emplace_back(setKey);
+			setKey = nullptr;
+		}
 	}
 }
 
-void SpriteAnimation::CreateKeyFlame(int keyNum) {
-	for (int i = 0; i < keyNum + 1; i++) {
-		if (i < keyFlame.size()) continue;
-		keyFlame.emplace_back(new KeyFlame());
-
-		keyFlame[i]->flame = 0;
-		keyFlame[i]->pSprite = showSprite;
-		keyFlame[i]->x = showSprite->posX;
-		keyFlame[i]->y = showSprite->posY;
-		keyFlame[i]->r = showSprite->vtx[0].r;
-		keyFlame[i]->g = showSprite->vtx[0].g;
-		keyFlame[i]->b = showSprite->vtx[0].b;
-		keyFlame[i]->a = showSprite->vtx[0].a;
-		keyFlame[i]->scaleX = showSprite->scaleX;
-		keyFlame[i]->scaleY = showSprite->scaleY;
-		keyFlame[i]->rot = showSprite->rot;
+SpriteAnimation::~SpriteAnimation() {
+	for (auto& key : keyFrames) {
+		delete key;
 	}
 }
 
 void SpriteAnimation::AnimOn() {
 	//各キーフレームを照合する
-	for (int i = 0; i < keyFlame.size(); i++) {
-		if (currentKeyFlameIndex >= i) continue; //到達しているキーフレームより小さい場合はとばす
-		if (keyFlame[i]->flame < flameCount) { //未到達指定キーフレーム数より現在の経過フレーム数が大きい場合
-			if (i == keyFlame.size() - 1) {
-				if (isLoop) AnimLoop();
-				else AnimOff();
-				return;
-			}
-			continue;
-		}
+	for (int i = 0; i < keyFrames.size(); i++) {
+		if (currentKeyFrameIndex >= i) continue; //到達しているキーフレームより小さい場合はとばす
 
-		//フレーム数が同じ場合、全ての状態を変更
-		if (flameCount == keyFlame[i]->flame) {
-			currentKeyFlameIndex = i;
+		/*フレーム数が同じ場合、全ての状態を変更*/
+		if (frameCount == keyFrames[i]->frame) {
+			currentKeyFrameIndex = i; //到達キーフレーム更新
 
-			//スプライト状態変更
-			if (keyFlame[i]->pSprite != showSprite) {
-				showSprite->SetRenderEnable(false);
-				keyFlame[i]->pSprite->SetRenderEnable(true);
-				showSprite = keyFlame[i]->pSprite;
+			/*スプライト状態変更*/
+			if (keyFrames[i]->pSprite != pAnimRenderer->pRenderSprite && keyFrames[i]->pSprite != nullptr) {
+				pAnimRenderer->pRenderSprite = keyFrames[i]->pSprite;
 			}
 
-			if (showSprite->isRenderEnable() == false) showSprite->SetRenderEnable(true);
+			pAnimRenderer->SetColor(keyFrames[i]->color.r, keyFrames[i]->color.g, keyFrames[i]->color.b, keyFrames[i]->color.a);
+			pAnimRenderer->transform->SetScale(keyFrames[i]->scaleX, keyFrames[i]->scaleY);
+			pAnimRenderer->transform->rotation.z = keyFrames[i]->rot;
 
-			showSprite->SetPosition(keyFlame[i]->x, keyFlame[i]->y);
-			showSprite->SetColor(keyFlame[i]->r, keyFlame[i]->g, keyFlame[i]->b, keyFlame[i]->a);
-			showSprite->SetScale(keyFlame[i]->scaleX, keyFlame[i]->scaleY);
-			showSprite->rot = keyFlame[i]->rot;
-
-			//キーフレームの最後に到達した場合
-			if (currentKeyFlameIndex == keyFlame.size() - 1) {
-				if (isLoop) AnimLoop();
-				else AnimOff();
+			/*キーフレームの最後に到達した場合*/
+			if (currentKeyFrameIndex == keyFrames.size() - 1) {
+				AnimOff();
  				return;
 			}
 
 			break;
 		}
 
-		//
+		if (currentKeyFrameIndex < 0) break; //初期値の場合終了
+
 		//次のキーフレームに向けて徐々に状態を遷移
-		// 
-		
-		if (currentKeyFlameIndex < 0) break; //初期値の場合終了
-
 		//次のキーフレームまでの進捗割合(現在のフレーム数-到達しているキーフレーム数) / (次のキーフレーム数-到達しているキーフレーム数)
-		float rate = (flameCount - keyFlame[currentKeyFlameIndex]->flame) / 
-			(keyFlame[i]->flame - keyFlame[currentKeyFlameIndex]->flame);
+		float rate = (frameCount - keyFrames[currentKeyFrameIndex]->frame) / 
+			(keyFrames[i]->frame - keyFrames[currentKeyFrameIndex]->frame);
 
-		//pos
-		float move_x = (keyFlame[i]->x - keyFlame[currentKeyFlameIndex]->x) * rate;
-		showSprite->posX = keyFlame[currentKeyFlameIndex]->x + move_x;
-		float move_y = (keyFlame[i]->y - keyFlame[currentKeyFlameIndex]->y) * rate;
-		showSprite->posY = keyFlame[currentKeyFlameIndex]->y + move_y;
+		//pos(キーフレームのx,yの長さを次のキーまでのフレーム数で割った値(1フレームでの移動量)をPositionに足す)
+		float move_x = keyFrames[i]->x / (keyFrames[i]->frame - keyFrames[currentKeyFrameIndex]->frame);
+		pAnimRenderer->transform->position.x += move_x;
+		float move_y = keyFrames[i]->y / (keyFrames[i]->frame - keyFrames[currentKeyFrameIndex]->frame);
+		pAnimRenderer->transform->position.y += move_y;
 
 		//col
-		float r_diff = (keyFlame[i]->r - keyFlame[currentKeyFlameIndex]->r) * rate;
-		float g_diff = (keyFlame[i]->g - keyFlame[currentKeyFlameIndex]->g) * rate;
-		float b_diff = (keyFlame[i]->b - keyFlame[currentKeyFlameIndex]->b) * rate;
-		float a_diff = (keyFlame[i]->a - keyFlame[currentKeyFlameIndex]->a) * rate;
-		showSprite->SetColor(keyFlame[currentKeyFlameIndex]->r + r_diff, keyFlame[currentKeyFlameIndex]->g + g_diff,
-			keyFlame[currentKeyFlameIndex]->b + b_diff, keyFlame[currentKeyFlameIndex]->a + a_diff);
+		float r_diff = (keyFrames[i]->color.r - keyFrames[currentKeyFrameIndex]->color.r) * rate;
+		float g_diff = (keyFrames[i]->color.g - keyFrames[currentKeyFrameIndex]->color.g) * rate;
+		float b_diff = (keyFrames[i]->color.b - keyFrames[currentKeyFrameIndex]->color.b) * rate;
+		float a_diff = (keyFrames[i]->color.a - keyFrames[currentKeyFrameIndex]->color.a) * rate;
+		pAnimRenderer->SetColor(keyFrames[currentKeyFrameIndex]->color.r + r_diff, keyFrames[currentKeyFrameIndex]->color.g + g_diff,
+			keyFrames[currentKeyFrameIndex]->color.b + b_diff, keyFrames[currentKeyFrameIndex]->color.a + a_diff);
 
 		//scale
-		float scaleX_diff = (keyFlame[i]->scaleX - keyFlame[currentKeyFlameIndex]->scaleX) * rate;
-		float scaleY_diff = (keyFlame[i]->scaleY - keyFlame[currentKeyFlameIndex]->scaleY) * rate;
-		showSprite->SetScale(keyFlame[currentKeyFlameIndex]->scaleX + scaleX_diff,
-			keyFlame[currentKeyFlameIndex]->scaleY + scaleY_diff);
+		float scaleX_diff = (keyFrames[i]->scaleX - keyFrames[currentKeyFrameIndex]->scaleX) * rate;
+		float scaleY_diff = (keyFrames[i]->scaleY - keyFrames[currentKeyFrameIndex]->scaleY) * rate;
+		pAnimRenderer->transform->SetScale(keyFrames[currentKeyFrameIndex]->scaleX + scaleX_diff,
+			keyFrames[currentKeyFrameIndex]->scaleY + scaleY_diff);
 
 		//rot
-		float rot_diff = (keyFlame[i]->rot - keyFlame[currentKeyFlameIndex]->rot) * rate;
-		showSprite->rot = keyFlame[currentKeyFlameIndex]->rot + rot_diff;
+		float rot_diff = (keyFrames[i]->rot - keyFrames[currentKeyFrameIndex]->rot) * rate;
+		pAnimRenderer->transform->rotation.z = keyFrames[currentKeyFrameIndex]->rot + rot_diff;
 
 		break;
 	}
 
-	flameCount++; //フレームカウント更新
+	frameCount++; //フレームカウント更新
 }
 
 void SpriteAnimation::AnimOff() {
-	animEnable = false;
-	flameCount = 0;
-	currentKeyFlameIndex = -1;
-}
-void SpriteAnimation::AnimLoop() {
-	flameCount = 0;
-	currentKeyFlameIndex = -1;
-}
-
-
-bool SpriteAnimation::isAnimEnable() {
-	return animEnable;
-}
-void SpriteAnimation::SetAnimEnable(bool flag) {
-	animEnable = flag;
-}
-
-void SpriteAnimation::SetKeyFlameSprite(int index, Sprite* sprite) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->pSprite = sprite;
-}
-void SpriteAnimation::SetKeyFlameSprite(int index, Sprite* sprite, float flame) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->pSprite = sprite;
-	keyFlame[index]->flame = flame;
-}
-
-void SpriteAnimation::SetKeyFlamePos(int index, float x, float y) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->x = x;
-	keyFlame[index]->y = y;
-}
-void SpriteAnimation::SetKeyFlamePos(int index, float x, float y, float flame) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->x = x;
-	keyFlame[index]->y = y;
-	keyFlame[index]->flame = flame;
-}
-
-void SpriteAnimation::SetKeyFlameCol(int index, float r, float g, float b, float a) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->r = r;
-	keyFlame[index]->g = g;
-	keyFlame[index]->b = b;
-	keyFlame[index]->a = a;
-}
-void SpriteAnimation::SetKeyFlameCol(int index, float r, float g, float b, float a, float flame) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->r = r;
-	keyFlame[index]->g = g;
-	keyFlame[index]->b = b;
-	keyFlame[index]->a = a;
-	keyFlame[index]->flame = flame;
-}
-
-void SpriteAnimation::SetKeyFlameScale(int index, float x, float y) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->scaleX = x;
-	keyFlame[index]->scaleY = y;
-}
-void SpriteAnimation::SetKeyFlameScale(int index, float x, float y, float flame) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->scaleX = x;
-	keyFlame[index]->scaleY = y;
-	keyFlame[index]->flame = flame;
-}
-
-void SpriteAnimation::SetKeyFlameRot(int index, float rot) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->rot = rot;
-}
-void SpriteAnimation::SetKeyFlameRot(int index, float rot, float flame) {
-	if (index >= keyFlame.size()) CreateKeyFlame(index);
-	keyFlame[index]->rot = rot;
-	keyFlame[index]->flame = flame;
+	frameCount = 0;
+	currentKeyFrameIndex = -1;
 }

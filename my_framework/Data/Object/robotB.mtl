@@ -1,0 +1,81 @@
+newmtl Gear
+Ka 0 0 0
+Kd 0 1 0
+Ks 0.3 0.3 0.3
+Ni 1
+Ns 159
+Tf 1 1 1
+d 1
+
+newmtl body_base
+Ka 0 0 0
+Kd 0.501961 0.501961 0.25098
+Ks 0.9 0.9 0.9
+Ni 1
+Ns 639
+Tf 1 1 1
+d 1
+
+newmtl gear1
+Ka 0 0 0
+Kd 1 1 0
+Ks 0.3 0.3 0.3
+Ni 1
+Ns 159
+Tf 1 1 1
+d 1
+
+newmtl glass
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0.8 0.8 0.8
+Ni 1.6
+Ns 400
+Tf 1 1 1
+d 0.1
+
+newmtl inside
+Ka 0 0 0
+Kd 0 0 1
+Ks 0.72 0.72 0.72
+Ni 1
+Ns 564
+Tf 1 1 1
+d 1
+
+newmtl red
+Ka 0 0 0
+Kd 1 0 0
+Ks 0.975 0.975 0.975
+Ni 1
+Ns 790
+Tf 1 1 1
+d 1
+
+newmtl silver
+Ka 0 0 0
+Kd 0.913725 0.913725 0.847059
+Ks 0.9 0.9 0.9
+Ni 1
+Ns 639
+Tf 1 1 1
+d 1
+
+newmtl siren
+Ka 0 0 0
+Kd 1 0 0
+Ks 0.72 0.72 0.72
+Ni 1
+Ns 564
+Tf 1 1 1
+d 0.4
+
+newmtl yellow
+Ka 0 0 0
+Kd 1 1 0
+Ks 0.72 0.72 0.72
+Ni 1
+Ns 564
+Tf 1 1 1
+d 1
+

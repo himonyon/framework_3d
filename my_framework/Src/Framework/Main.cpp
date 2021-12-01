@@ -18,13 +18,15 @@ bool Main::Init(void* hWnd) {
 	Direct3D::InitD3D(hWnd);
 	Font::Initialize(hWnd);
 	Shader::InitShader();
-	Sprite::Initialize();
+	SpriteRenderer::Initialize();
+	MeshRenderer::Initialize();
 	Sound::InitSound();
-	Input::InitInput(hWnd);
+	DirectInput::InitInput(hWnd);
+	InputConfig::SetUpConfig();
 
-
+	SpritePool::Initialize();
 	//シーン作成
-	switchScene();
+	SceneManager::SwitchScene();
 
 	return true;
 }
@@ -32,11 +34,13 @@ bool Main::Init(void* hWnd) {
 //
 // 
 void Main::Destroy() {
-	deleteScene();
+	SceneManager::DeleteScene();
 
-	Input::DestroyInput();
+	SpriteManager::Destroy();
+	DirectInput::DestroyInput();
 	Sound::DestroySound();
-	Sprite::Destroy();
+	SpriteRenderer::Destroy();
+	MeshRenderer::Destroy();
 	Shader::DestroyShader();
 	Font::Destroy();
 	Direct3D::DestroyD3D();
@@ -49,6 +53,8 @@ void Main::App() {
 	{	//フレームの開始時間を取得
 		QueryPerformanceCounter(&startCount);
 	}
+
+	Timer::FrameTimeExecute();
 
 	Execute();
 
@@ -67,7 +73,7 @@ void Main::App() {
 
 	Render();
 
-	switchScene();
+	SceneManager::SwitchScene();
 
 	if (performanceCounter)
 	{	//フレームの終了時間を取得
@@ -90,14 +96,14 @@ void Main::App() {
 // 
 // 
 void Main::Execute() {
-	Input::KeyManager();
+	DirectInput::KeyManager();
 
-	pScene->Execute();
+	SceneManager::GetMainScene()->Execute();
 }
 //
 //
 //
 void Main::Render() {
-	pScene->Render();
+	SceneManager::GetMainScene()->Render();
 	Font::Render();
 }

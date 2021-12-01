@@ -116,10 +116,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>\DirectXTex\Bin\Desktop_2019\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,37 +145,88 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="my_framework.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Src\Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h" />
-    <ClInclude Include="Src\Framework\Direct3D.h" />
-    <ClInclude Include="Src\Framework\Font.h" />
-    <ClInclude Include="Src\Framework\Input.h" />
+    <ClInclude Include="Src\Framework\Component\Animator\Animator.h" />
+    <ClInclude Include="Src\Framework\Component\Behaviour\Behaviour.h" />
+    <ClInclude Include="Src\Framework\Component\Collider\Collider2D.h" />
+    <ClInclude Include="Src\Framework\Component\Component.h" />
+    <ClInclude Include="Src\Framework\Component\Physics\Physics2D.h" />
+    <ClInclude Include="Src\Framework\Component\Renderer\MeshRenderer.h" />
+    <ClInclude Include="Src\Framework\Component\Renderer\SpriteRenderer.h" />
+    <ClInclude Include="Src\Framework\Component\Transform\Transform.h" />
+    <ClInclude Include="Src\Framework\Direct3D\Direct3D.h" />
+    <ClInclude Include="Src\Framework\Font\Font.h" />
+    <ClInclude Include="Src\Framework\GraphicsUtility.h" />
+    <ClInclude Include="Src\Framework\Input\DirectInput.h" />
+    <ClInclude Include="Src\Framework\Input\Input.h" />
+    <ClInclude Include="Src\Framework\Input\Joystick.h" />
+    <ClInclude Include="Src\Framework\Input\Keyboard.h" />
+    <ClInclude Include="Src\Framework\Input\Mouse.h" />
     <ClInclude Include="Src\Framework\Main.h" />
-    <ClInclude Include="Src\Framework\Model.h" />
-    <ClInclude Include="Src\Framework\Shader.h" />
-    <ClInclude Include="Src\Framework\Sound.h" />
-    <ClInclude Include="Src\Framework\Sprite.h" />
+    <ClInclude Include="Src\Framework\Mesh\Mesh.h" />
+    <ClInclude Include="Src\Framework\Mesh\MeshManager.h" />
+    <ClInclude Include="Src\Framework\MessageSystem\MessageSystem.h" />
+    <ClInclude Include="Src\Framework\Object\GameObject.h" />
+    <ClInclude Include="Src\Framework\Object\GameObjectManager.h" />
+    <ClInclude Include="Src\Framework\Object\Object.h" />
+    <ClInclude Include="Src\Framework\Shader\Shader.h" />
+    <ClInclude Include="Src\Framework\Sound\Sound.h" />
+    <ClInclude Include="Src\Framework\Sound\SoundManager.h" />
+    <ClInclude Include="Src\Framework\Sprite\Sprite.h" />
+    <ClInclude Include="Src\Framework\Sprite\SpriteManager.h" />
+    <ClInclude Include="Src\Framework\Timer\Timer.h" />
+    <ClInclude Include="Src\Public\InputConfig.h" />
+    <ClInclude Include="Src\Public\Scene\Game\scene_game.h" />
     <ClInclude Include="Src\Public\Scene\scene.h" />
-    <ClInclude Include="Src\Public\Scene\sceneTable.h" />
-    <ClInclude Include="Src\Public\Scene\scene_game.h" />
-    <ClInclude Include="Src\Public\Scene\scene_title.h" />
+    <ClInclude Include="Src\Public\Scene\SceneManager.h" />
+    <ClInclude Include="Src\Public\Scene\Title\move.h" />
+    <ClInclude Include="Src\Public\Scene\Title\scale.h" />
+    <ClInclude Include="Src\Public\Scene\Title\scene_title.h" />
+    <ClInclude Include="Src\Public\SpritePool.h" />
+    <ClInclude Include="Src\Utility\noDel_ptr.h" />
+    <ClInclude Include="Src\Utility\UtilFunc.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WICTextureLoader11.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp" />
+    <ClCompile Include="Src\Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Src\Framework\Animation\SpriteAnimation.cpp" />
-    <ClCompile Include="Src\Framework\Direct3D.cpp" />
-    <ClCompile Include="Src\Framework\Font.cpp" />
-    <ClCompile Include="Src\Framework\Input.cpp" />
+    <ClCompile Include="Src\Framework\Component\Animator\Animaor.cpp" />
+    <ClCompile Include="Src\Framework\Component\Behaviour\Behaviour.cpp" />
+    <ClCompile Include="Src\Framework\Component\Collider\Collider2D.cpp" />
+    <ClCompile Include="Src\Framework\Component\Component.cpp" />
+    <ClCompile Include="Src\Framework\Component\Physics\Physics2D.cpp" />
+    <ClCompile Include="Src\Framework\Component\Renderer\MeshRenderer.cpp" />
+    <ClCompile Include="Src\Framework\Component\Renderer\SpriteRenderer.cpp" />
+    <ClCompile Include="Src\Framework\Component\Transform\Transform.cpp" />
+    <ClCompile Include="Src\Framework\Direct3D\Direct3D.cpp" />
+    <ClCompile Include="Src\Framework\Font\Font.cpp" />
+    <ClCompile Include="Src\Framework\Input\DirectInput.cpp" />
+    <ClCompile Include="Src\Framework\Input\Input.cpp" />
+    <ClCompile Include="Src\Framework\Input\Joystick.cpp" />
+    <ClCompile Include="Src\Framework\Input\Keyboard.cpp" />
+    <ClCompile Include="Src\Framework\Input\Mouse.cpp" />
     <ClCompile Include="Src\Framework\Main.cpp" />
-    <ClCompile Include="Src\Framework\Model.cpp" />
-    <ClCompile Include="Src\Framework\Shader.cpp" />
-    <ClCompile Include="Src\Framework\Sound.cpp" />
-    <ClCompile Include="Src\Framework\Sprite.cpp" />
+    <ClCompile Include="Src\Framework\Mesh\Mesh.cpp" />
+    <ClCompile Include="Src\Framework\MessageSystem\MessageSystem.cpp" />
+    <ClCompile Include="Src\Framework\Object\GameObject.cpp" />
+    <ClCompile Include="Src\Framework\Object\GameObjectManager.cpp" />
+    <ClCompile Include="Src\Framework\Object\Object.cpp" />
+    <ClCompile Include="Src\Framework\Shader\Shader.cpp" />
+    <ClCompile Include="Src\Framework\Sound\Sound.cpp" />
+    <ClCompile Include="Src\Framework\Sprite\Sprite.cpp" />
+    <ClCompile Include="Src\Framework\Timer\Timer.cpp" />
+    <ClCompile Include="Src\Public\InputConfig.cpp" />
+    <ClCompile Include="Src\Public\Scene\Game\scene_game.cpp" />
     <ClCompile Include="Src\Public\Scene\scene.cpp" />
-    <ClCompile Include="Src\Public\Scene\sceneTable.cpp" />
-    <ClCompile Include="Src\Public\Scene\scene_game.cpp" />
-    <ClCompile Include="Src\Public\Scene\scene_title.cpp" />
+    <ClCompile Include="Src\Public\Scene\SceneManager.cpp" />
+    <ClCompile Include="Src\Public\Scene\Title\move.cpp" />
+    <ClCompile Include="Src\Public\Scene\Title\scale.cpp" />
+    <ClCompile Include="Src\Public\Scene\Title\scene_title.cpp" />
+    <ClCompile Include="Src\Public\SpritePool.cpp" />
+    <ClCompile Include="Src\Utility\UtilFunc.cpp" />
     <ClCompile Include="WICTextureLoader11.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -187,13 +240,19 @@
     <FxCompile Include="Src\Shader\ps_2d.psh">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(RelativeDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\texture.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">vsMain</EntryPointName>
+    <FxCompile Include="Src\Shader\ps_3d.psh">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(RelativeDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Src\Shader\vs_2d.vsh">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(RelativeDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\vs_3d.vsh">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(RelativeDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

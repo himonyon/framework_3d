@@ -1,0 +1,8 @@
+decide 57 302
+cancel 14 301
+cursorUp 200 10000 356
+cursorDown 208 28000 357
+cursorRight 205 19000 354
+cursorLeft 203 37000 355
+moveX 358 -30 32
+moveY 358 31 -17

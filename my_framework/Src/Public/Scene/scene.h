@@ -1,12 +1,16 @@
+/*-----------------------------------------------------------
+
+	シーンクラス（基底クラス）
+		各シーンの共通のクラス・抽象クラス
+
+-------------------------------------------------------------*/
 #pragma once
+#include "../InputConfig.h"
 
-#define MaxSprites (256) //１シーンに管理できる画像数
-#define MaxAnimation (64) //１シーンに管理できるアニメーション
 
-class Scene {
-private:
-	Sprite* pObject2D_array[MaxSprites];
-	std::vector<SpriteAnimation*> pSpriteAnimation_array;
+
+class Scene : public GameObjectManager, public MeshManager, public SoundManager {
+public:
 
 public:
 	//コンストラクタ
@@ -26,16 +30,7 @@ public:
 	//描画
 	virtual void Render();
 
-
-	bool RegisterObject(Sprite* p);
-	void DeleteObject(Sprite* p);
-
-	bool RegisterAnimation(SpriteAnimation* anim);
-
-
-	//当たり判定
-	static bool isCollider(Sprite* collider, float x, float y); //画像と座標
-	static bool isCollider(Sprite* collider, int x, int y); //画像と座標
-private:
-	void RenderOrderSort(int start, int end);
+	//int型の数字の＋１ー１を指定の幅(0~maxNum)で行う
+	static int CountUpInRange(int target, int maxRange);
+	static int CountDownInRange(int target, int maxRange);
 };

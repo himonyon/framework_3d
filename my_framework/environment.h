@@ -5,27 +5,9 @@
 #define SCREEN_HEIGHT (WINDOW_HEIGHT) //スクリーン高さ
 #define SCREEN_WIDTH_CENTER (SCREEN_WIDTH / 2) //スクリーン幅
 #define SCREEN_HEIGHT_CENTER (SCREEN_HEIGHT / 2) //スクリーン高さ
-#define MOVE_SPEED 1 //ジョイスティック幅
 #define FONT_STRING_MAX	(0x0400)	//1フレームで実行できるrenderの数
 #define FONT_CHARACTER_MAX	(0x2000)	//1フレームで描画できる文字の数
-#define MaxFontNum (20)	//1フレームの描画できる文字列
-#define MaxSounds (50)
 
-//ジョイスティック
-#define JOY_SQUARE (0)
-#define JOY_CROSS (1)
-#define JOY_CIRCLE (2)
-#define JOY_TRIANGLAR (3)
-#define JOY_L (4)
-#define JOY_R (5)
-#define JOY_L2 (6)
-#define JOY_R2 (7)
-#define JOY_SHARE (8)
-#define JOY_OPTION (9)
-#define JOY_L_STICK (10)
-#define JOY_R_STICK (11)
-#define JOY_R_PS (12)
-#define JOY_PAD (13)
 
 #define DIRECTINPUT_VERSION 0x0800
 
@@ -41,14 +23,15 @@
 #include <xaudio2.h>
 #include <dinput.h>
 
-#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <time.h>
 #include <vector>
 #include <locale.h>
 #include <mmsystem.h>
 
 #include <DirectXMath.h>
 #include "WICTextureLoader11.h"
-
 
 
 //ライブラリとネームスペース
@@ -62,21 +45,86 @@
 
 using namespace DirectX;
 
+//Utility
+#include "Src/Framework/GraphicsUtility.h"
+#include "Src//Utility/noDel_ptr.h"
+#include "Src//Utility/UtilFunc.h"
+
 
 //フレームワークのヘッダー
-#include "Src/Framework/Font.h"
-#include "Src/Framework/Input.h"
-#include "Src/Framework/Sound.h"
-#include "Src/Framework/Sprite.h"
-#include "Src/Framework/Shader.h"
-#include "Src/Framework/Direct3D.h"
+//スプライト
+#include "Src/Framework/Sprite/Sprite.h"
+#include "Src/Framework/Sprite/SpriteManager.h"
+
+//メッシュ
+#include "Src//Framework//Mesh/Mesh.h"
+#include "Src//Framework//Mesh/MeshManager.h"
+
+//Objectクラス
+#include "Src/Framework/Object/Object.h"
+
+//メッセージシステム
+#include "Src//Framework/MessageSystem/MessageSystem.h"
+
+//コンポーネント
+#include "Src/Framework/Component/Component.h"
+
+//コンポーネント群
+#include "Src/Framework/Component/Transform/Transform.h"
+#include "Src/Framework/Component/Collider/Collider2D.h"
+#include "Src/Framework/Component/Physics/Physics2D.h"
+#include "Src/Framework/Component/Renderer/MeshRenderer.h"
+#include "Src/Framework/Component/Renderer/SpriteRenderer.h"
+#include "Src/Framework/Component/Behaviour/Behaviour.h"
+
+//スプライトアニメーション
+#include "Src/Framework/Animation/SpriteAnimation.h"
+
+//アニメーターコンポーネント
+#include "Src/Framework/Component/Animator/Animator.h"
+
+//ゲームオブジェクト
+#include "Src/Framework/Object/GameObject.h"
+
+//オブジェクト、コンポーネント管理クラス
+#include "Src//Framework/Object/GameObjectManager.h"
+
+
+
+
+
+//タイマー
+#include "Src//Framework/Timer/Timer.h"
+
+//フォント
+#include "Src/Framework/Font/Font.h"
+
+//インプット
+#include "Src/Framework/Input/DirectInput.h"
+#include "Src//Framework//Input/Keyboard.h"
+#include "Src//Framework//Input/Mouse.h"
+#include "Src//Framework//Input/Joystick.h"
+#include "Src//Framework//Input/Input.h"
+
+//サウンド
+#include "Src/Framework/Sound/Sound.h"
+#include "Src/Framework/Sound/SoundManager.h"
+
+//シェーダー設定
+#include "Src/Framework/Shader/Shader.h"
+
+//Direct3D
+#include "Src/Framework/Direct3D/Direct3D.h"
+
+//全体処理クラス
 #include "Src/Framework/Main.h"
 
 
-//アニメーション
-#include "Src/Framework/Animation/SpriteAnimation.h"
+
+//シーン全体で扱うスプライトプール
+#include "Src/Public/SpritePool.h"
 
 //シーン関係のヘッダ
-#include "Src/Public/Scene/sceneTable.h"
+#include "Src/Public/Scene/SceneManager.h"
 
 
