@@ -36,7 +36,7 @@ void SceneManager::SwitchScene() {
 	currentScene = reservedScene;
 
 	//新たに作成したシーンのオブジェクトマネージャーにシーンの種類を渡す
-	pScene->sceneType = (int)currentScene;
+	pScene->SetSceneType((int)currentScene);
 
 
 	//シーンの初期化

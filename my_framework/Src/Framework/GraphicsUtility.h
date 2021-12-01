@@ -3,57 +3,61 @@
 //float型を３つもつ構造体
 struct stVector3 {
 public:
-	const stVector3 operator -(stVector3& vec) {
+	const stVector3 operator -(stVector3 vec) {
 		stVector3 temp;
 		temp.x = x - vec.x;
 		temp.y = y - vec.y;
 		temp.z = z - vec.z;
 		return temp;
 	}
-	const stVector3 operator +(stVector3& vec) {
+	const stVector3 operator +(stVector3 vec) {
 		stVector3 temp;
 		temp.x = x + vec.x;
 		temp.y = y + vec.y;
 		temp.z = z + vec.z;
 		return temp;
 	}
-	const stVector3 operator *(stVector3& vec) {
+	const stVector3 operator *(stVector3 vec) {
 		stVector3 temp;
 		temp.x = x * vec.x;
 		temp.y = y * vec.y;
 		temp.z = z * vec.z;
 		return temp;
 	}
-	const stVector3 operator /(stVector3& vec) {
+	const stVector3 operator /(stVector3 vec) {
 		stVector3 temp;
 		temp.x = x / vec.x;
 		temp.y = y / vec.y;
 		temp.z = z / vec.z;
 		return temp;
 	}
-	const stVector3 operator +=(stVector3& vec) {
+	const stVector3& operator +=(stVector3 vec) {
 		x += vec.x;
 		y += vec.y;
 		z += vec.z;
 		return *this;
 	}
-	const stVector3 operator -=(stVector3& vec) {
+	const stVector3& operator -=(stVector3 vec) {
 		x -= vec.x;
 		y -= vec.y;
 		z -= vec.z;
 		return *this;
 	}
-	const stVector3 operator *=(stVector3& vec) {
+	const stVector3& operator *=(stVector3 vec) {
 		x *= vec.x;
 		y *= vec.y;
 		z *= vec.z;
 		return *this;
 	}
-	const stVector3 operator /=(stVector3& vec) {
+	const stVector3& operator /=(stVector3 vec) {
 		x /= vec.x;
 		y /= vec.y;
 		z /= vec.z;
 		return *this;
+	}
+	const bool operator !=(stVector3 vec) {
+		if (x != vec.x || y != vec.y || z != vec.z) return true;
+		return false;
 	}
 
 	const bool operator !=(int num) {
@@ -71,7 +75,6 @@ struct stColor4 {
 	float r, g, b, a;
 };
 
-
 //3Dオブジェクト頂点構造体
 struct stVertex3D {
 	XMFLOAT3 pos; //座標
@@ -81,8 +84,16 @@ struct stVertex3D {
 
 
 //2Dオブジェクト頂点構造体
-struct stVertex
+struct stVertex2D
 {
+	const stVertex2D& operator =(stVertex2D vtx) {
+		x = vtx.x; y = vtx.y;
+		r = vtx.r; g = vtx.g;
+		b = vtx.b; a = vtx.a;
+		u = vtx.u; v = vtx.v;
+		return *this;
+	}
+
 	float x, y;
 	float r, g, b, a;
 	float u, v;

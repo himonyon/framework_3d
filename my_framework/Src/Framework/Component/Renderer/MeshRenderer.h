@@ -1,6 +1,12 @@
 #pragma once
+/*-----------------------------------------------------------
 
-class GameObject3D : public GameObject {
+	MeshRendererクラス
+		メッシュを描画するクラス
+
+-------------------------------------------------------------*/
+
+class MeshRenderer : public Component {
 public:
 	//描画対象メッシュ
 	noDel_ptr<Mesh> pRenderMesh = NULL;
@@ -18,12 +24,15 @@ public:
 	static bool Initialize();
 	static void Destroy();
 
-	GameObject3D(float x, float y, float z, noDel_ptr<Mesh> mesh, bool isRender = true, noDel_ptr<GameObject> parent = nullptr);
-	~GameObject3D(void);
+	MeshRenderer(noDel_ptr<Mesh> mesh);
+	~MeshRenderer(void);
 
-	void Render(void) override;
+	//コンポーネント処理
+	void Execute() override;
 
 private:
+	void Render(void);
+
 	XMMATRIX GetPosMatrix();
 	XMMATRIX GetRotMatrix();
 	XMMATRIX GetScaleMatrix();

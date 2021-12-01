@@ -1,7 +1,9 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
-Sprite::Sprite(const WCHAR* texture_file,float left_u, float right_u, float top_v, float bottom_v) {
+Sprite::Sprite(const WCHAR* texture_file, const char* name, float left_u, float right_u, float top_v, float bottom_v) {
 	HRESULT hr;
+
+	this->name = (char*)name;
 
 	//頂点カラーを設定
 	for (int i = 0; i < VertexNum; i++)
@@ -29,7 +31,7 @@ Sprite::Sprite(const WCHAR* texture_file,float left_u, float right_u, float top_
 	//頂点バッファの設定
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(stVertex) * 4;
+	bd.ByteWidth = sizeof(stVertex2D) * 4;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;

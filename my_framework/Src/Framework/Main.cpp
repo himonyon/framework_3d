@@ -18,12 +18,13 @@ bool Main::Init(void* hWnd) {
 	Direct3D::InitD3D(hWnd);
 	Font::Initialize(hWnd);
 	Shader::InitShader();
-	GameObject2D::Initialize();
-	GameObject3D::Initialize();
+	SpriteRenderer::Initialize();
+	MeshRenderer::Initialize();
 	Sound::InitSound();
 	DirectInput::InitInput(hWnd);
 	InputConfig::SetUpConfig();
 
+	SpritePool::Initialize();
 	//ÉVÅ[ÉìçÏê¨
 	SceneManager::SwitchScene();
 
@@ -35,10 +36,11 @@ bool Main::Init(void* hWnd) {
 void Main::Destroy() {
 	SceneManager::DeleteScene();
 
+	SpriteManager::Destroy();
 	DirectInput::DestroyInput();
 	Sound::DestroySound();
-	GameObject2D::Destroy();
-	GameObject3D::Destroy();
+	SpriteRenderer::Destroy();
+	MeshRenderer::Destroy();
 	Shader::DestroyShader();
 	Font::Destroy();
 	Direct3D::DestroyD3D();

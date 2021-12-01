@@ -1,5 +1,5 @@
-#include "../../../framework.h"
-#include "../../../environment.h"
+#include "../../../../framework.h"
+#include "../../../../environment.h"
 
 //頂点要素
 D3D11_INPUT_ELEMENT_DESC hInElementDesc_Sprite[] =
@@ -10,16 +10,16 @@ D3D11_INPUT_ELEMENT_DESC hInElementDesc_Sprite[] =
 };
 
 
-ID3D11Buffer* GameObject2D::pConstantBuffer = NULL;
-ID3D11RasterizerState* GameObject2D::pRasterizerState = 0;
-ID3D11SamplerState* GameObject2D::pSamplerState = 0;
-ID3D11BlendState* GameObject2D::pBlendState = 0;
-ID3D11DepthStencilState* GameObject2D::pDepthStencilState = 0;
-ID3D11InputLayout* GameObject2D::pInputLayout = 0;
-UINT GameObject2D::VertexStrides = sizeof(stVertex);
-UINT GameObject2D::VertexOffsets = 0;
+ID3D11Buffer* SpriteRenderer::pConstantBuffer = NULL;
+ID3D11RasterizerState* SpriteRenderer::pRasterizerState = 0;
+ID3D11SamplerState* SpriteRenderer::pSamplerState = 0;
+ID3D11BlendState* SpriteRenderer::pBlendState = 0;
+ID3D11DepthStencilState* SpriteRenderer::pDepthStencilState = 0;
+ID3D11InputLayout* SpriteRenderer::pInputLayout = 0;
+UINT SpriteRenderer::VertexStrides = sizeof(stVertex2D);
+UINT SpriteRenderer::VertexOffsets = 0;
 
-bool GameObject2D::Initialize() {
+bool SpriteRenderer::Initialize() {
 	//ラスタライザの設定
 	D3D11_RASTERIZER_DESC hRasterizerDesc = {
 		D3D11_FILL_SOLID,	//フィルモード
@@ -111,7 +111,7 @@ bool GameObject2D::Initialize() {
 	return TRUE;
 }
 
-void GameObject2D::Destroy() {
+void SpriteRenderer::Destroy() {
 	SAFE_RELEASE(pRasterizerState);
 	SAFE_RELEASE(pBlendState);
 	SAFE_RELEASE(pSamplerState);
@@ -120,79 +120,87 @@ void GameObject2D::Destroy() {
 	SAFE_RELEASE(pConstantBuffer);
 }
 
-GameObject2D::GameObject2D(float x, float y, float width, float height, noDel_ptr<Sprite> sprite, bool isRender, noDel_ptr<GameObject> parent)
-	: GameObject(x,y,0,isRender,parent)
+SpriteRenderer::SpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite) : Component(eComponentType::SpriteRenderer)
 {
 	renderPriority = 0;
-	sortEnable = true;
+	sortSwitch = true;
 
-	sizeX = width;
-	sizeY = height;
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
 
 	for (int i = 0; i < Sprite::VertexNum; i++) {
-		color[i].r = 1; color[i].g = 1; color[i].b = 1; color[i].a = 1;
+		vtx[i].r = 1; vtx[i].g = 1; vtx[i].b = 1; vtx[i].a = 1;
 	}
 
 	if (sprite == NULL) return; //スプライトがない場合return
 	pRenderSprite = sprite;
-
-	//頂点の設定
-	SetVertexState();
+	for (int i = 0; i < Sprite::VertexNum; i++) {
+		vtx[i] = sprite->GetVertexState(i);
+	}
 }
 
-GameObject2D::~GameObject2D() {
+SpriteRenderer::~SpriteRenderer() {
 }
 
-void GameObject2D::SetVertexState() {
+void SpriteRenderer::Execute() {
+	Render();
+}
+
+void SpriteRenderer::SetVertexState() {
 	float PI = 3.14f;
 
 	//座標
 	float vtx_x = 0;
 	float vtx_y = 0;
 
+	stVector3* pos = &transform->position;
+	stVector3* scale = &transform->scale;
+	stVector3* rot = &transform->rotation;
+
+
 	//各頂点の座標を設定
-	vtx_x = position.x + (-sizeX * 0.5f) * scale.x;
-	vtx_y = position.y + (-sizeY * 0.5f) * scale.y;
-	pRenderSprite->vtx[0].x = (vtx_x - position.x) * cosf(rot.z) - (vtx_y - position.y) * sinf(rot.z) + position.x;
-	pRenderSprite->vtx[0].y = (vtx_x - position.x) * sinf(rot.z) + (vtx_y - position.y) * cosf(rot.z) + position.y;
+	vtx_x = pos->x + (-sizeX * 0.5f) * scale->x;
+	vtx_y = pos->y + (-sizeY * 0.5f) * scale->y;
+	vtx[0].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
+	vtx[0].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
 
-	vtx_x = position.x + (+sizeX * 0.5f) * scale.x;
-	vtx_y = position.y + (-sizeY * 0.5f) * scale.y;
-	pRenderSprite->vtx[1].x = (vtx_x - position.x) * cosf(rot.z) - (vtx_y - position.y) * sinf(rot.z) + position.x;
-	pRenderSprite->vtx[1].y = (vtx_x - position.x) * sinf(rot.z) + (vtx_y - position.y) * cosf(rot.z) + position.y;
+	vtx_x = pos->x + (+sizeX * 0.5f) * scale->x;
+	vtx_y = pos->y + (-sizeY * 0.5f) * scale->y;
+	vtx[1].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
+	vtx[1].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
 
-	vtx_x = position.x + (-sizeX * 0.5f) * scale.x;
-	vtx_y = position.y + (+sizeY * 0.5f) * scale.y;
-	pRenderSprite->vtx[2].x = (vtx_x - position.x) * cosf(rot.z) - (vtx_y - position.y) * sinf(rot.z) + position.x;
-	pRenderSprite->vtx[2].y = (vtx_x - position.x) * sinf(rot.z) + (vtx_y - position.y) * cosf(rot.z) + position.y;
+	vtx_x = pos->x + (-sizeX * 0.5f) * scale->x;
+	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
+	vtx[2].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
+	vtx[2].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
 
-	vtx_x = position.x + (+sizeX * 0.5f) * scale.x;
-	vtx_y = position.y + (+sizeY * 0.5f) * scale.y;
-	pRenderSprite->vtx[3].x = (vtx_x - position.x) * cosf(rot.z) - (vtx_y - position.y) * sinf(rot.z) + position.x;
-	pRenderSprite->vtx[3].y = (vtx_x - position.x) * sinf(rot.z) + (vtx_y - position.y) * cosf(rot.z) + position.y;
+	vtx_x = pos->x + (+sizeX * 0.5f) * scale->x;
+	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
+	vtx[3].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
+	vtx[3].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
 
 	//カラー
-	pRenderSprite->vtx[0].r = color[0].r; pRenderSprite->vtx[0].g = color[0].g;
-	pRenderSprite->vtx[0].b = color[0].b; pRenderSprite->vtx[0].a = color[0].a;
+	vtx[0].r = vtx[0].r; vtx[0].g = vtx[0].g;
+	vtx[0].b = vtx[0].b; vtx[0].a = vtx[0].a;
 
-	pRenderSprite->vtx[1].r = color[1].r; pRenderSprite->vtx[1].g = color[1].g;
-	pRenderSprite->vtx[1].b = color[1].b; pRenderSprite->vtx[1].a = color[1].a;
+	vtx[1].r = vtx[1].r; vtx[1].g = vtx[1].g;
+	vtx[1].b = vtx[1].b; vtx[1].a = vtx[1].a;
 
-	pRenderSprite->vtx[2].r = color[2].r; pRenderSprite->vtx[2].g = color[2].g;
-	pRenderSprite->vtx[2].b = color[2].b; pRenderSprite->vtx[2].a = color[2].a;
+	vtx[2].r = vtx[2].r; vtx[2].g = vtx[2].g;
+	vtx[2].b = vtx[2].b; vtx[2].a = vtx[2].a;
 
-	pRenderSprite->vtx[3].r = color[3].r; pRenderSprite->vtx[3].g = color[3].g;
-	pRenderSprite->vtx[3].b = color[3].b; pRenderSprite->vtx[3].a = color[3].a;
+	vtx[3].r = vtx[3].r; vtx[3].g = vtx[3].g;
+	vtx[3].b = vtx[3].b; vtx[3].a = vtx[3].a;
 }
 
-void GameObject2D::Render() {
+void SpriteRenderer::Render() {
 	if (pRenderSprite == NULL) return;
 
 	//頂点座標の設定
 	SetVertexState();
 
 	//頂点バッファの更新
-	Direct3D::getDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, pRenderSprite->vtx, 0, 0);
+	Direct3D::getDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, vtx, 0, 0);
 
 	//ブレンドステートをコンテキストに設定
 	Direct3D::getDeviceContext()->OMSetBlendState(pBlendState, NULL, 0xffffffff);
@@ -222,39 +230,42 @@ void GameObject2D::Render() {
 }
 
 //setter/getter
-void GameObject2D::SetSize(float width, float height) {
+void SpriteRenderer::SetSize(float width, float height) {
 	sizeX = width;
 	sizeY = height;
 }
-void GameObject2D::SetColor(float r, float g, float b, float a) {
+void SpriteRenderer::SetColor(float r, float g, float b, float a) {
 	for (int i = 0; i < Sprite::VertexNum; i++) {
-		color[i].r = r;
-		color[i].g = g;
-		color[i].b = b;
-		color[i].a = a;
+		vtx[i].r = r;
+		vtx[i].g = g;
+		vtx[i].b = b;
+		vtx[i].a = a;
 	}
 }
-void GameObject2D::SetColor(stColor4 color) {
+void SpriteRenderer::SetColor(stColor4 color) {
 	for (int i = 0; i < Sprite::VertexNum; i++) {
-		this->color[i].r = color.r;
-		this->color[i].g = color.g;
-		this->color[i].b = color.b;
-		this->color[i].a = color.a;
+		this->vtx[i].r = color.r;
+		this->vtx[i].g = color.g;
+		this->vtx[i].b = color.b;
+		this->vtx[i].a = color.a;
 	}
 }
-void GameObject2D::SetRotation(float rot) {
-	this->rot.z = rot;
+void SpriteRenderer::SetDefaultState() {
+	if (pRenderSprite == NULL) return; //スプライトがない場合return
+	for (int i = 0; i < Sprite::VertexNum; i++) {
+		vtx[i] = pRenderSprite->GetVertexState(i);
+	}
 }
-void GameObject2D::SetRenderPriority(int value) {
-	if (renderPriority != value) sortEnable = true;
+void SpriteRenderer::SetRenderPriority(int value) {
+	if (renderPriority != value) sortSwitch = true;
 	renderPriority = value;
 }
-int GameObject2D::GetRenderPriority() {
+int SpriteRenderer::GetRenderPriority() {
 	return renderPriority;
 }
-void GameObject2D::SetSortEnable(bool flag) {
-	sortEnable = flag;
+void SpriteRenderer::SetSortSwitch(bool flag) {
+	sortSwitch = flag;
 }
-bool GameObject2D::isSortEnable() {
-	return sortEnable;
+bool SpriteRenderer::isSortSwitch() {
+	return sortSwitch;
 }

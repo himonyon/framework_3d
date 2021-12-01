@@ -10,3 +10,10 @@ unsigned int ColorConvert16(stColor4 color) {
 	return s;
  }
 
+stVector3 RoundDec3forVector(stVector3 vec) {
+	vec.x = round(vec.x * 1000) / 1000;
+	vec.y = round(vec.y * 1000) / 1000;
+	vec.z = round(vec.z * 1000) / 1000;
+	return vec;
+}
+

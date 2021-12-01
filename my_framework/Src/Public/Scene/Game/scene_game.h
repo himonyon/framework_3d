@@ -2,7 +2,7 @@
 
 class SceneGame : public Scene{
 private:
-	noDel_ptr<GameObject2D> pSample0;
+	noDel_ptr<GameObject> pSample0;
 	noDel_ptr<Sound> pSound0;
 private:
 	//‰Šú‰»

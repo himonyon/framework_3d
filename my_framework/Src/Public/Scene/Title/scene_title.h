@@ -1,16 +1,20 @@
 #pragma once
 
+#include "move.h"
+#include "scale.h"
+
+using spl = SpritePool;
+
 class SceneTitle : public Scene {
 private:
-	noDel_ptr<Sprite> pSp0;
-	noDel_ptr<GameObject2D> pObj1;
-	noDel_ptr<Sound> pSound0;
-	noDel_ptr<GameObject2D> pObj2;
-	noDel_ptr<SpriteAnimation> pAnim;
-
-	noDel_ptr<GameObject3D> pChips;
-	noDel_ptr<GameObject3D> pTest;
 	noDel_ptr<Mesh> pTest_mesh;
+	noDel_ptr<GameObject> pObj1;
+	noDel_ptr<GameObject> pObj2;
+	noDel_ptr<GameObject> pObj3;
+	noDel_ptr<GameObject> pObj4;
+	noDel_ptr<GameObject> pObj5;
+
+	noDel_ptr<Sound> pSound0;
 
 private:
 	//èâä˙âª

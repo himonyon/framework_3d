@@ -34,9 +34,6 @@
     <Filter Include="ソース ファイル\Src\Framework\Font">
       <UniqueIdentifier>{62c95d0b-215f-4997-b52b-3a2aa5fb9bab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Src\Framework\GameObject">
-      <UniqueIdentifier>{5282a66c-4451-49b9-87d0-89f34cdf3d40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Src\Framework\Sound">
       <UniqueIdentifier>{e84b4953-a320-479a-a78a-44932dfb5063}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,33 @@
     </Filter>
     <Filter Include="ソース ファイル\Src\Framework\Mesh">
       <UniqueIdentifier>{5d693f46-8e6d-4f7d-a919-27b4b7762272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component">
+      <UniqueIdentifier>{f725e6f2-713f-4c78-87c7-c0562dc1a447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Renderer">
+      <UniqueIdentifier>{bdb8ffe9-6940-4711-927d-a70b2150ded7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Behaviour">
+      <UniqueIdentifier>{5f92258a-7be4-45f4-9f72-b3aeb087d722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Collider">
+      <UniqueIdentifier>{da8e3568-8366-4fe0-8f91-152a6b6942ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Object">
+      <UniqueIdentifier>{5282a66c-4451-49b9-87d0-89f34cdf3d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Transform">
+      <UniqueIdentifier>{711bffcb-d46b-4c5c-beb5-422cc8d0c4bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Physics2D">
+      <UniqueIdentifier>{32d65622-3b4a-418f-94cc-a4b1e9cf285d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\MessageSystem">
+      <UniqueIdentifier>{14e4f4c8-3376-4714-9bb1-e2bedfed958c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Animator">
+      <UniqueIdentifier>{bd965b4e-8460-4505-8853-7f16f7667971}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -101,15 +125,6 @@
     </ClInclude>
     <ClInclude Include="Src\Framework\Font\Font.h">
       <Filter>ソース ファイル\Src\Framework\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Framework\GameObject\GameObject.h">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Framework\GameObject\GameObject2D.h">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Framework\GameObject\GameObjectManager.h">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Src\Framework\Direct3D\Direct3D.h">
       <Filter>ソース ファイル\Src\Framework\Direct3D</Filter>
@@ -165,20 +180,59 @@
     <ClInclude Include="Src\Framework\Mesh\MeshManager.h">
       <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\GameObject\GameObject3D.h">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Public\Scene\SceneManager.h">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Framework\GameObject\Behavior.h">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utility\UtilFunc.h">
       <Filter>ソース ファイル\Src\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Src\Public\InputConfig.h">
       <Filter>ソース ファイル\Src\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Component.h">
+      <Filter>ソース ファイル\Src\Framework\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\MeshRenderer.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\SpriteRenderer.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Collider\Collider2D.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Behaviour\Behaviour.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Object\Object.h">
+      <Filter>ソース ファイル\Src\Framework\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Object\GameObject.h">
+      <Filter>ソース ファイル\Src\Framework\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Object\GameObjectManager.h">
+      <Filter>ソース ファイル\Src\Framework\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Transform\Transform.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\Title\move.h">
+      <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\Scene\Title\scale.h">
+      <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Physics\Physics2D.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Physics2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\MessageSystem\MessageSystem.h">
+      <Filter>ソース ファイル\Src\Framework\MessageSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Public\SpritePool.h">
+      <Filter>ソース ファイル\Src\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Animator\Animator.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Animator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -199,15 +253,6 @@
     </ClCompile>
     <ClCompile Include="Src\Framework\Font\Font.cpp">
       <Filter>ソース ファイル\Src\Framework\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\GameObject\GameObject.cpp">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\GameObject\GameObject2D.cpp">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\GameObject\GameObjectManager.cpp">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Src\Framework\Direct3D\Direct3D.cpp">
       <Filter>ソース ファイル\Src\Framework\Direct3D</Filter>
@@ -251,20 +296,59 @@
     <ClCompile Include="Src\Framework\Mesh\Mesh.cpp">
       <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Framework\GameObject\GameObject3D.cpp">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Public\Scene\SceneManager.cpp">
       <Filter>ソース ファイル\Src\Public\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\GameObject\Behavior.cpp">
-      <Filter>ソース ファイル\Src\Framework\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utility\UtilFunc.cpp">
       <Filter>ソース ファイル\Src\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Src\Public\InputConfig.cpp">
       <Filter>ソース ファイル\Src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Component.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\MeshRenderer.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\SpriteRenderer.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Collider\Collider2D.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Behaviour\Behaviour.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Object\Object.cpp">
+      <Filter>ソース ファイル\Src\Framework\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Object\GameObject.cpp">
+      <Filter>ソース ファイル\Src\Framework\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Object\GameObjectManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Transform\Transform.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\Title\move.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\Scene\Title\scale.cpp">
+      <Filter>ソース ファイル\Src\Public\Scene\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Physics\Physics2D.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Physics2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\MessageSystem\MessageSystem.cpp">
+      <Filter>ソース ファイル\Src\Framework\MessageSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Public\SpritePool.cpp">
+      <Filter>ソース ファイル\Src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Animator\Animaor.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Animator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

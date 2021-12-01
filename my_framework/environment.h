@@ -50,42 +50,79 @@ using namespace DirectX;
 #include "Src//Utility/noDel_ptr.h"
 #include "Src//Utility/UtilFunc.h"
 
+
 //フレームワークのヘッダー
+//スプライト
 #include "Src/Framework/Sprite/Sprite.h"
 #include "Src/Framework/Sprite/SpriteManager.h"
 
+//メッシュ
 #include "Src//Framework//Mesh/Mesh.h"
 #include "Src//Framework//Mesh/MeshManager.h"
 
-#include "Src/Framework/GameObject/Behavior.h"
+//Objectクラス
+#include "Src/Framework/Object/Object.h"
 
-#include "Src/Framework/GameObject/GameObject.h"
-#include "Src/Framework/GameObject/GameObject2D.h"
-#include "Src/Framework/GameObject/GameObject3D.h"
-#include "Src//Framework/GameObject/GameObjectManager.h"
+//メッセージシステム
+#include "Src//Framework/MessageSystem/MessageSystem.h"
 
+//コンポーネント
+#include "Src/Framework/Component/Component.h"
+
+//コンポーネント群
+#include "Src/Framework/Component/Transform/Transform.h"
+#include "Src/Framework/Component/Collider/Collider2D.h"
+#include "Src/Framework/Component/Physics/Physics2D.h"
+#include "Src/Framework/Component/Renderer/MeshRenderer.h"
+#include "Src/Framework/Component/Renderer/SpriteRenderer.h"
+#include "Src/Framework/Component/Behaviour/Behaviour.h"
+
+//スプライトアニメーション
+#include "Src/Framework/Animation/SpriteAnimation.h"
+
+//アニメーターコンポーネント
+#include "Src/Framework/Component/Animator/Animator.h"
+
+//ゲームオブジェクト
+#include "Src/Framework/Object/GameObject.h"
+
+//オブジェクト、コンポーネント管理クラス
+#include "Src//Framework/Object/GameObjectManager.h"
+
+
+
+
+
+//タイマー
 #include "Src//Framework/Timer/Timer.h"
 
+//フォント
 #include "Src/Framework/Font/Font.h"
 
+//インプット
 #include "Src/Framework/Input/DirectInput.h"
 #include "Src//Framework//Input/Keyboard.h"
 #include "Src//Framework//Input/Mouse.h"
 #include "Src//Framework//Input/Joystick.h"
 #include "Src//Framework//Input/Input.h"
 
+//サウンド
 #include "Src/Framework/Sound/Sound.h"
 #include "Src/Framework/Sound/SoundManager.h"
 
+//シェーダー設定
 #include "Src/Framework/Shader/Shader.h"
 
+//Direct3D
 #include "Src/Framework/Direct3D/Direct3D.h"
 
+//全体処理クラス
 #include "Src/Framework/Main.h"
 
-//アニメーション
-#include "Src/Framework/Animation/SpriteAnimation.h"
-#include "Src/Framework/Animation/AnimationManager.h"
+
+
+//シーン全体で扱うスプライトプール
+#include "Src/Public/SpritePool.h"
 
 //シーン関係のヘッダ
 #include "Src/Public/Scene/SceneManager.h"

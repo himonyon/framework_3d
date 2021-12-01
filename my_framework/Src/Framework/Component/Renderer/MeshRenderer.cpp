@@ -1,5 +1,5 @@
-#include "../../../framework.h"
-#include "../../../environment.h"
+#include "../../../../framework.h"
+#include "../../../../environment.h"
 
 _NODISCARD static inline auto ToXMVECTOR(const DirectX::XMFLOAT3& vec)
 {
@@ -14,15 +14,15 @@ D3D11_INPUT_ELEMENT_DESC hInElementDesc_Model[] =
 	{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-ID3D11InputLayout* GameObject3D::pVertexLayout = NULL;
-ID3D11RasterizerState* GameObject3D::pRasterizerState = NULL;
-ID3D11BlendState* GameObject3D::pBlendState = NULL;
-ID3D11DepthStencilState* GameObject3D::pDepthStencilState = NULL;
-ID3D11Buffer* GameObject3D::pConstantBuffer0 = NULL;
-ID3D11Buffer* GameObject3D::pConstantBuffer1 = NULL;
-ID3D11SamplerState* GameObject3D::pSampleLinear = NULL;
+ID3D11InputLayout* MeshRenderer::pVertexLayout = NULL;
+ID3D11RasterizerState* MeshRenderer::pRasterizerState = NULL;
+ID3D11BlendState* MeshRenderer::pBlendState = NULL;
+ID3D11DepthStencilState* MeshRenderer::pDepthStencilState = NULL;
+ID3D11Buffer* MeshRenderer::pConstantBuffer0 = NULL;
+ID3D11Buffer* MeshRenderer::pConstantBuffer1 = NULL;
+ID3D11SamplerState* MeshRenderer::pSampleLinear = NULL;
 
-bool GameObject3D::Initialize() {
+bool MeshRenderer::Initialize() {
 	//ラスタライザの設定
 	D3D11_RASTERIZER_DESC hRasterizerDesc = {
 		D3D11_FILL_SOLID,	//フィルモード
@@ -109,7 +109,7 @@ bool GameObject3D::Initialize() {
 	return true;
 }
 
-void GameObject3D::Destroy() {
+void MeshRenderer::Destroy() {
 	SAFE_RELEASE(pSampleLinear);
 	SAFE_RELEASE(pConstantBuffer0);
 	SAFE_RELEASE(pConstantBuffer1);
@@ -119,16 +119,19 @@ void GameObject3D::Destroy() {
 	SAFE_RELEASE(pRasterizerState);
 }
 
-GameObject3D::GameObject3D(float x, float y, float z, noDel_ptr<Mesh> mesh, bool isRender, noDel_ptr<GameObject> parent)
-	: GameObject(x, y, z, isRender, parent)
+MeshRenderer::MeshRenderer(noDel_ptr<Mesh> mesh) : Component(eComponentType::MeshRenderer)
 {
 	if (mesh == nullptr) return;
 	pRenderMesh = mesh;
 }
 
-GameObject3D::~GameObject3D(){}
+MeshRenderer::~MeshRenderer() {}
 
-void GameObject3D::Render() {
+void MeshRenderer::Execute() {
+	Render();
+}
+
+void MeshRenderer::Render() {
 	XMMATRIX mWorld;
 	XMMATRIX mView;
 	XMMATRIX mProj;
@@ -237,17 +240,17 @@ void GameObject3D::Render() {
 	}
 }
 
-XMMATRIX GameObject3D::GetPosMatrix() {
+XMMATRIX MeshRenderer::GetPosMatrix() {
 	//現在の座標を頂点座標にセット
-	return XMMatrixTranslation(position.x, -position.y, position.z);
+	return XMMatrixTranslation(transform->position.x, -transform->position.y, transform->position.z);
 }
-XMMATRIX GameObject3D::GetRotMatrix() {
+XMMATRIX MeshRenderer::GetRotMatrix() {\
 	XMMATRIX mPitch, mHeading, mBank;//回転行列用
-	mPitch = XMMatrixRotationX(rot.x);
-	mHeading = XMMatrixRotationY(rot.y);
-	mBank = XMMatrixRotationZ(rot.z);
+	mPitch = XMMatrixRotationX(transform->rotation.x);
+	mHeading = XMMatrixRotationY(transform->rotation.y);
+	mBank = XMMatrixRotationZ(transform->rotation.z);
 	return mPitch * mHeading * mBank;
 }
-XMMATRIX GameObject3D::GetScaleMatrix() {
-	return XMMatrixScaling(scale.x, scale.y, scale.z);
+XMMATRIX MeshRenderer::GetScaleMatrix() {
+	return XMMatrixScaling(transform->scale.x, transform->scale.y, transform->scale.z);
 }

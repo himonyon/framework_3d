@@ -9,7 +9,11 @@
 class Sprite {
 public:
 	const static int VertexNum = 4;
-	stVertex vtx[4];
+
+	char* name;
+
+private:
+	stVertex2D vtx[4];
 
 private:
 	//頂点バッファ
@@ -20,8 +24,10 @@ private:
 	ID3D11ShaderResourceView* pTextureView;
 
 public:
-	Sprite(const WCHAR* texture_file, float left_u = 0.0f, float right_u = 1.0f, float top_v = 0.0f, float bottom_v = 1.0f);
+	Sprite(const WCHAR* texture_file, const char* name, float left_u = 0.0f, float right_u = 1.0f, float top_v = 0.0f, float bottom_v = 1.0f);
 	~Sprite(void);
+
+	stVertex2D GetVertexState(int index) { return vtx[index]; }
 
 	ID3D11Resource* GetTexture() { return pTexture; }
 	ID3D11ShaderResourceView* GetTextureView() { return pTextureView; }
