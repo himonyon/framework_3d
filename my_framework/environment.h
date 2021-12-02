@@ -33,7 +33,6 @@
 #include <DirectXMath.h>
 #include "WICTextureLoader11.h"
 
-
 //ライブラリとネームスペース
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxguid.lib")
@@ -119,10 +118,6 @@ using namespace DirectX;
 //全体処理クラス
 #include "Src/Framework/Main.h"
 
-
-
-//シーン全体で扱うスプライトプール
-#include "Src/Public/SpritePool.h"
 
 //シーン関係のヘッダ
 #include "Src/Public/Scene/SceneManager.h"

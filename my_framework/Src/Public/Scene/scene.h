@@ -9,7 +9,7 @@
 
 
 
-class Scene : public GameObjectManager, public MeshManager, public SoundManager {
+class Scene : public GameObjectManager,public SpriteManager, public MeshManager, public SoundManager {
 public:
 
 public:

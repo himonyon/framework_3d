@@ -111,9 +111,6 @@
     <ClInclude Include="environment.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Animation\AnimationManager.h">
-      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h">
       <Filter>ソース ファイル\Src\Framework\Animation</Filter>
     </ClInclude>
@@ -228,9 +225,6 @@
     <ClInclude Include="Src\Framework\MessageSystem\MessageSystem.h">
       <Filter>ソース ファイル\Src\Framework\MessageSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Public\SpritePool.h">
-      <Filter>ソース ファイル\Src\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Framework\Component\Animator\Animator.h">
       <Filter>ソース ファイル\Src\Framework\Component\Animator</Filter>
     </ClInclude>
@@ -241,9 +235,6 @@
     </ClCompile>
     <ClCompile Include="WICTextureLoader11.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Framework\Animation\AnimationManager.cpp">
-      <Filter>ソース ファイル\Src\Framework\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Src\Framework\Animation\SpriteAnimation.cpp">
       <Filter>ソース ファイル\Src\Framework\Animation</Filter>
@@ -343,9 +334,6 @@
     </ClCompile>
     <ClCompile Include="Src\Framework\MessageSystem\MessageSystem.cpp">
       <Filter>ソース ファイル\Src\Framework\MessageSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Public\SpritePool.cpp">
-      <Filter>ソース ファイル\Src\Public</Filter>
     </ClCompile>
     <ClCompile Include="Src\Framework\Component\Animator\Animaor.cpp">
       <Filter>ソース ファイル\Src\Framework\Component\Animator</Filter>

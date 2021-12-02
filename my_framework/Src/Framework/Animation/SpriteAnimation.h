@@ -22,19 +22,23 @@ public:
 	//アニメーションのキーフレーム
 	class KeyFrame {
 	public:
-		noDel_ptr<Sprite> pSprite = 0;
+		Sprite* pSprite = 0;
 		float frame = 0;
 		float x = 0, y = 0;
 		stColor4 color = {};
 		float scaleX = 0, scaleY = 0;
 		float rot = 0;
+
+	public:
+		KeyFrame() {};
+		~KeyFrame();
 	};
 
 private:
 	std::vector<KeyFrame*> keyFrames;
 
 public:
-	SpriteAnimation(const WCHAR* texture_file, bool loop);
+	SpriteAnimation(const WCHAR* animation_file, bool loop);
 	~SpriteAnimation();
 
 	void AnimOn(); //アニメーション実行

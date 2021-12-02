@@ -5,12 +5,13 @@
 bool SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pTest_mesh = CreateMesh(L"Data/Object/test.obj");
+	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg"));
 
-	pObj1 = CreateObject(480, 480, 100, 100, spl::pSp0);
-	pObj2 = CreateObject(480, 480, 100, 100, spl::pSp1);
-	pObj3 = CreateObject(100, 500, 60, 60, spl::pSp1);
-	pObj4 = CreateObject(100, 200, 50, 50, spl::pSp0);
-	pObj5 = CreateObject(700, 500, 50, 50, spl::pSp0);
+	pObj1 = CreateObject(480, 480, 100, 100, pTest_sp);
+	pObj2 = CreateObject(480, 480, 100, 100, pTest_sp);
+	pObj3 = CreateObject(100, 500, 60, 60, pTest_sp);
+	pObj4 = CreateObject(100, 200, 50, 50, pTest_sp);
+	pObj5 = CreateObject(700, 500, 50, 50, pTest_sp);
 
 	//コライダーテスト
 	pObj2->AddComponent<Collider2D>(new Collider2D(true));

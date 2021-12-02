@@ -145,7 +145,6 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="my_framework.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Src\Framework\Animation\AnimationManager.h" />
     <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h" />
     <ClInclude Include="Src\Framework\Component\Animator\Animator.h" />
     <ClInclude Include="Src\Framework\Component\Behaviour\Behaviour.h" />
@@ -183,7 +182,6 @@
     <ClInclude Include="Src\Public\Scene\Title\move.h" />
     <ClInclude Include="Src\Public\Scene\Title\scale.h" />
     <ClInclude Include="Src\Public\Scene\Title\scene_title.h" />
-    <ClInclude Include="Src\Public\SpritePool.h" />
     <ClInclude Include="Src\Utility\noDel_ptr.h" />
     <ClInclude Include="Src\Utility\UtilFunc.h" />
     <ClInclude Include="targetver.h" />
@@ -191,7 +189,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp" />
-    <ClCompile Include="Src\Framework\Animation\AnimationManager.cpp" />
     <ClCompile Include="Src\Framework\Animation\SpriteAnimation.cpp" />
     <ClCompile Include="Src\Framework\Component\Animator\Animaor.cpp" />
     <ClCompile Include="Src\Framework\Component\Behaviour\Behaviour.cpp" />
@@ -225,7 +222,6 @@
     <ClCompile Include="Src\Public\Scene\Title\move.cpp" />
     <ClCompile Include="Src\Public\Scene\Title\scale.cpp" />
     <ClCompile Include="Src\Public\Scene\Title\scene_title.cpp" />
-    <ClCompile Include="Src\Public\SpritePool.cpp" />
     <ClCompile Include="Src\Utility\UtilFunc.cpp" />
     <ClCompile Include="WICTextureLoader11.cpp" />
   </ItemGroup>

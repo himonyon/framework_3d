@@ -1,10 +1,40 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
-Sprite::Sprite(const WCHAR* texture_file, const char* name, float left_u, float right_u, float top_v, float bottom_v) {
+Sprite::Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name) {
 	HRESULT hr;
 
-	this->name = (char*)name;
+	WCHAR _texture_file[256] = L"";
+	float _left_u = 0, _right_u = 0, _top_v = 0, _bottom_v = 0;
+	FILE* fp = NULL;
+	WCHAR _key[256] = { 0 };
+	bool flag = false;
 
+	_wfopen_s(&fp, sprite_file, L"rt");
+	if (fp == NULL) {
+		return;
+	}
+
+	while (!feof(fp))
+	{
+		//キーワード読み込み
+		fwscanf_s(fp, L"%s", _key, 256);
+
+		if (wcscmp(_key, L"texture") == 0) {
+			fwscanf_s(fp, L"%s", _key, 256);
+			wcscpy_s(_texture_file, _key);
+		}
+		if (wcscmp(_key, L"name") == 0) {
+			fwscanf_s(fp, L"%s", _key, 256);
+			if (wcscmp(_key, sprite_name) == 0) flag = true;
+		}
+		if (wcscmp(_key, L"uv") == 0) {
+			fwscanf_s(fp, L"%f %f %f %f", &_left_u, &_right_u, &_top_v, &_bottom_v);
+			if(flag) break;
+		}
+	}
+	fclose(fp);
+
+	///スプライトの情報を設定ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	//頂点カラーを設定
 	for (int i = 0; i < VertexNum; i++)
 	{
@@ -15,17 +45,19 @@ Sprite::Sprite(const WCHAR* texture_file, const char* name, float left_u, float 
 	}
 
 	//uvを設定
-	vtx[0].u = left_u;	vtx[0].v = top_v;
-	vtx[1].u = right_u;	vtx[1].v = top_v;
-	vtx[2].u = left_u;	vtx[2].v = bottom_v;
-	vtx[3].u = right_u;	vtx[3].v = bottom_v;
-	
+	vtx[0].u = _left_u;	vtx[0].v = _top_v;
+	vtx[1].u = _right_u;	vtx[1].v = _top_v;
+	vtx[2].u = _left_u;	vtx[2].v = _bottom_v;
+	vtx[3].u = _right_u;	vtx[3].v = _bottom_v;
+
 	//テクスチャの読み込み
-	hr = DirectX::CreateWICTextureFromFile(Direct3D::getDevice(), texture_file, &pTexture, &pTextureView);
-	if (hr != S_OK)
-	{
-		pTexture = NULL;
-		pTextureView = NULL;
+	if (_texture_file != 0) {
+		hr = DirectX::CreateWICTextureFromFile(Direct3D::getDevice(), _texture_file, &pTexture, &pTextureView);
+		if (hr != S_OK)
+		{
+			pTexture = NULL;
+			pTextureView = NULL;
+		}
 	}
 
 	//頂点バッファの設定
@@ -54,3 +86,5 @@ Sprite::~Sprite() {
 	SAFE_RELEASE(pTexture);
 	SAFE_RELEASE(pTextureView);
 }
+
+

@@ -1,13 +1,14 @@
-#include "../../framework.h"
-#include "../../environment.h"
+#include "../../../framework.h"
+#include "../../../environment.h"
 
 //一度すべての配列の情報を初期化
-SpriteAnimation::SpriteAnimation(const WCHAR* texture_file, bool loop) {
+SpriteAnimation::SpriteAnimation(const WCHAR* animation_file, bool loop) {
 	isLoop = loop;
 
 	FILE* fp = NULL;
-	char _key[256] = { 0 };
-	_wfopen_s(&fp, texture_file, L"rt");
+	WCHAR _key[256] = { 0 };
+
+	_wfopen_s(&fp, animation_file, L"rt");
 	if (fp == NULL) {
 		return;
 	}
@@ -17,31 +18,33 @@ SpriteAnimation::SpriteAnimation(const WCHAR* texture_file, bool loop) {
 	while (!feof(fp))
 	{
 		//キーワード読み込み
-		fscanf_s(fp, "%s", _key, (int)sizeof(_key));
+		fwscanf_s(fp, L"%s", _key, 256);
 		
-		if (strcmp(_key, "newkey") == 0) {
+		if (wcscmp(_key, L"newkey") == 0) {
 			KeyFrame* temp = new KeyFrame();
 			setKey = temp;
 		}
-		else if (strcmp(_key, "fr") == 0) {
-			if(setKey != nullptr) fscanf_s(fp, "%f", &setKey->frame);
+		else if (wcscmp(_key, L"fr") == 0) {
+			if(setKey != nullptr) fwscanf_s(fp, L"%f", &setKey->frame);
 		}
-		else if (strcmp(_key, "sprite") == 0) {
-			fscanf_s(fp, "%s", _key, (int)sizeof(_key));
-			if (strcmp(_key, "0") == 0) continue;
-			if (setKey != nullptr) setKey->pSprite = SpriteManager::Find(_key);
+		else if (wcscmp(_key, L"sprite") == 0) {
+			WCHAR _name[256] = { 0 };
+			fwscanf_s(fp, L"%s", _key, 256);
+			fwscanf_s(fp, L"%s", _name, 256);
+			if (wcscmp(_key, L"0") == 0) continue;
+			setKey->pSprite = new Sprite(_key,_name);
 		}
-		else if (strcmp(_key, "pos") == 0) {
-			if (setKey != nullptr) fscanf_s(fp, "%f %f", &setKey->x, &setKey->y);
+		else if (wcscmp(_key, L"pos") == 0) {
+			if (setKey != nullptr) fwscanf_s(fp, L"%f %f", &setKey->x, &setKey->y);
 		}
-		else if (strcmp(_key, "color") == 0) {
-			if (setKey != nullptr) fscanf_s(fp, "%f %f %f %f", &setKey->color.r, &setKey->color.g, &setKey->color.b, &setKey->color.a);
+		else if (wcscmp(_key, L"color") == 0) {
+			if (setKey != nullptr) fwscanf_s(fp, L"%f %f %f %f", &setKey->color.r, &setKey->color.g, &setKey->color.b, &setKey->color.a);
 		}
-		else if (strcmp(_key, "scale") == 0) {
-			if (setKey != nullptr) fscanf_s(fp, "%f %f", &setKey->scaleX, &setKey->scaleY);
+		else if (wcscmp(_key, L"scale") == 0) {
+			if (setKey != nullptr) fwscanf_s(fp, L"%f %f", &setKey->scaleX, &setKey->scaleY);
 		}
-		else if (strcmp(_key, "rot") == 0) {
-			if (setKey != nullptr) fscanf_s(fp, "%f", &setKey->rot);
+		else if (wcscmp(_key, L"rot") == 0) {
+			if (setKey != nullptr) fwscanf_s(fp, L"%f", &setKey->rot);
 			keyFrames.emplace_back(setKey);
 			setKey = nullptr;
 		}
@@ -64,8 +67,8 @@ void SpriteAnimation::AnimOn() {
 			currentKeyFrameIndex = i; //到達キーフレーム更新
 
 			/*スプライト状態変更*/
-			if (keyFrames[i]->pSprite != pAnimRenderer->pRenderSprite && keyFrames[i]->pSprite != nullptr) {
-				pAnimRenderer->pRenderSprite = keyFrames[i]->pSprite;
+			if (keyFrames[i]->pSprite != pAnimRenderer->pRenderSprite.get() && keyFrames[i]->pSprite != nullptr) {
+				pAnimRenderer->pRenderSprite = noDel_ptr<Sprite>(keyFrames[i]->pSprite);
 			}
 
 			pAnimRenderer->SetColor(keyFrames[i]->color.r, keyFrames[i]->color.g, keyFrames[i]->color.b, keyFrames[i]->color.a);
@@ -121,4 +124,8 @@ void SpriteAnimation::AnimOn() {
 void SpriteAnimation::AnimOff() {
 	frameCount = 0;
 	currentKeyFrameIndex = -1;
+}
+
+SpriteAnimation::KeyFrame::~KeyFrame() {
+	delete pSprite;
 }

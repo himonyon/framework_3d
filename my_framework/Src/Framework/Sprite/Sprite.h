@@ -10,21 +10,19 @@ class Sprite {
 public:
 	const static int VertexNum = 4;
 
-	char* name;
-
 private:
-	stVertex2D vtx[4];
+	stVertex2D vtx[4] = {};
 
 private:
 	//頂点バッファ
 	ID3D11Buffer* pVertexBuffer = 0;
 
 	//テクスチャ
-	ID3D11Resource* pTexture;
-	ID3D11ShaderResourceView* pTextureView;
+	ID3D11Resource* pTexture  =0;
+	ID3D11ShaderResourceView* pTextureView = 0;
 
 public:
-	Sprite(const WCHAR* texture_file, const char* name, float left_u = 0.0f, float right_u = 1.0f, float top_v = 0.0f, float bottom_v = 1.0f);
+	Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name = L"default");
 	~Sprite(void);
 
 	stVertex2D GetVertexState(int index) { return vtx[index]; }
@@ -34,3 +32,4 @@ public:
 	ID3D11Buffer* GetPVertexBuffer() { return pVertexBuffer; }
 	ID3D11Buffer** GetPPVertexBuffer() { return &pVertexBuffer; } //ポインタのアドレス取得
 };
+
