@@ -8,7 +8,7 @@ bool SceneTitle::Initialize() {
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg"));
 
 	pObj1 = CreateObject(480, 480, 100, 100, pTest_sp);
-	pObj2 = CreateObject(480, 480, 100, 100, pTest_sp);
+	pObj2 = CreateObject(480, 480, 300, 300, pTest_sp);
 	pObj3 = CreateObject(100, 500, 60, 60, pTest_sp);
 	pObj4 = CreateObject(100, 200, 50, 50, pTest_sp);
 	pObj5 = CreateObject(700, 500, 50, 50, pTest_sp);

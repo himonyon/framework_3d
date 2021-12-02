@@ -3,6 +3,7 @@
 unsigned int ColorConvert16(stColor4);
 
 stVector3 RoundDec3forVector(stVector3);
+float RoundDec3forFloat(float);
 
 template <typename U, typename T>
 noDel_ptr<U> dynamic_noDel_cast(noDel_ptr<T> ptr) {

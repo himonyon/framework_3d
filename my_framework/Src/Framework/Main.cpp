@@ -15,16 +15,6 @@ bool Main::Init(void* hWnd) {
 	performanceCounter = QueryPerformanceFrequency(&freq);
 
 	//-------------------------
-
-	CreateSpriteFile(L"Data/Image/bg.jpg");
-	CreateSpriteFile(L"Data/Image/camera-lens-icon.png");
-	CreateSpriteFile(L"Data/Image/Chips_Cover.jpg");
-	CreateSpriteFile(L"Data/Image/eb_basic_material_setup.png");
-	CreateSpriteFile(L"Data/Image/eb_house_plant_01_ren_01.jpg");
-	CreateSpriteFile(L"Data/Image/grid.bmp");
-	CreateSpriteFile(L"Data/Image/iphone-x-screens-status-bar.jpg");
-	CreateSpriteFile(L"Data/Image/sample.png");
-
 	//------------------------
 
 	Direct3D::InitD3D(hWnd);
