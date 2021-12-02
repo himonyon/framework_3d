@@ -14,6 +14,18 @@ bool Main::Init(void* hWnd) {
 
 	performanceCounter = QueryPerformanceFrequency(&freq);
 
+	//-------------------------
+
+	CreateSpriteFile(L"Data/Image/bg.jpg");
+	CreateSpriteFile(L"Data/Image/camera-lens-icon.png");
+	CreateSpriteFile(L"Data/Image/Chips_Cover.jpg");
+	CreateSpriteFile(L"Data/Image/eb_basic_material_setup.png");
+	CreateSpriteFile(L"Data/Image/eb_house_plant_01_ren_01.jpg");
+	CreateSpriteFile(L"Data/Image/grid.bmp");
+	CreateSpriteFile(L"Data/Image/iphone-x-screens-status-bar.jpg");
+	CreateSpriteFile(L"Data/Image/sample.png");
+
+	//------------------------
 
 	Direct3D::InitD3D(hWnd);
 	Font::Initialize(hWnd);
@@ -24,7 +36,6 @@ bool Main::Init(void* hWnd) {
 	DirectInput::InitInput(hWnd);
 	InputConfig::SetUpConfig();
 
-	SpritePool::Initialize();
 	//シーン作成
 	SceneManager::SwitchScene();
 
@@ -36,7 +47,6 @@ bool Main::Init(void* hWnd) {
 void Main::Destroy() {
 	SceneManager::DeleteScene();
 
-	SpriteManager::Destroy();
 	DirectInput::DestroyInput();
 	Sound::DestroySound();
 	SpriteRenderer::Destroy();
@@ -106,4 +116,54 @@ void Main::Execute() {
 void Main::Render() {
 	SceneManager::GetMainScene()->Render();
 	Font::Render();
+}
+
+
+/// <summary>-------------------------------------------------
+///　			スプライトファイル作成用 
+/// </summary>----------------------------------------------
+void CreateSpriteFile(const WCHAR* texture_file, float left, float right, float top, float bottom) {
+	
+	WCHAR _filename[256] = L"";
+	int _size = (int)wcslen(texture_file);
+	int _nameSize = 0;
+	for (int i = 0; i < _size; i++) {
+		if (texture_file[i] == L'.') break;
+		_nameSize++;
+	}
+	for (int i = 0; i < _nameSize; i++) {
+		_filename[i] = texture_file[i];
+	}
+
+	FILE* fp = NULL;
+	_wfopen_s(&fp, _filename, L"w");
+	if (fp == NULL) {
+		return;
+	}
+	fwprintf_s(fp, L"texture %s\n", texture_file);
+	fwprintf_s(fp, L"name default uv %f %f %f %f", left, right, top, bottom);
+
+	fclose(fp);
+}
+void AddSpriteFile(const WCHAR* texture_file, const WCHAR* sprite_name, float left, float right, float top, float bottom) {
+	
+	WCHAR _filename[256] = L"";
+	int _size = (int)wcslen(texture_file);
+	int _nameSize = 0;
+	for (int i = 0; i < _size; i++) {
+		if (texture_file[i] == L'.') break;
+		_nameSize++;
+	}
+	for (int i = 0; i < _nameSize; i++) {
+		_filename[i] = texture_file[i];
+	}
+
+	FILE* fp = NULL;
+	_wfopen_s(&fp, _filename, L"a");
+	if (fp == NULL) {
+		return;
+	}
+	fwprintf_s(fp, L"\nname %s uv %f %f %f %f", sprite_name, left, right, top, bottom);
+
+	fclose(fp);
 }
