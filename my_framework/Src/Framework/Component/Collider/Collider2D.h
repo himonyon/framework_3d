@@ -16,17 +16,20 @@ public:
 	std::vector<noDel_ptr<Collider2D>> hitCollisions;
 	std::vector<noDel_ptr<Collider2D>> hitTriggers;
 
+	//前フレームで衝突したコライダー
+	std::vector<noDel_ptr<Collider2D>> b_hitCollisions; 
+	std::vector<noDel_ptr<Collider2D>> b_hitTriggers;
+
 public:
 	Collider2D(bool collision = true);
 	Collider2D(float width, float height, bool collision = true);
-	~Collider2D() {};
+	~Collider2D();
 
 	//コンポーネント処理
 	void Execute(noDel_ptr<Collider2D> hitCollider) override;
+	void AddHitCollisions(noDel_ptr<Collider2D> hitColider);
+	void AddHitTriggers(noDel_ptr<Collider2D> hitColider);
 
 private:
 	void IsCollide(noDel_ptr<Collider2D> hitColider);
-
-	void AddHitCollisions(noDel_ptr<Collider2D> hitColider);
-	void AddHitTriggers(noDel_ptr<Collider2D> hitColider);
 };

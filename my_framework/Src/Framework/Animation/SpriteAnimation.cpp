@@ -122,6 +122,7 @@ void SpriteAnimation::AnimOn() {
 }
 
 void SpriteAnimation::AnimOff() {
+	isEnd = true;
 	frameCount = 0;
 	currentKeyFrameIndex = -1;
 }

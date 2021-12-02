@@ -10,7 +10,6 @@
 class GameObjectManager {
 private:
 	int sceneType = 0;
-	int instanceCount = 0;
 
 	bool isAddComponent = false; //新たにコンポーネントを追加したか
 	bool isStartFucnEnable = false; //スタート関数を実行するか

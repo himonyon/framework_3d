@@ -26,7 +26,7 @@ private:
 
 public:
 	GameObject();
-	~GameObject(void);
+	~GameObject(void); 
 
 	//オブジェクトの破棄
 	void Destroy(noDel_ptr<GameObject> obj = nullptr);

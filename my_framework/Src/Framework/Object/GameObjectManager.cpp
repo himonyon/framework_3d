@@ -121,8 +121,6 @@ void GameObjectManager::Render() {
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent) {
 	GameObject* instance = new GameObject();
 	instance->SetSceneType(sceneType);
-	instance->SetObjectID(instanceCount);
-	instanceCount++;
 	//Transform�̍쐬
 	instance->AddComponent<Transform>(new Transform(x, y, z, parent));
 	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
@@ -132,8 +130,6 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent) {
 	GameObject* instance = new GameObject();
 	instance->SetSceneType(sceneType);
-	instance->SetObjectID(instanceCount);
-	instanceCount++;
 	//Transform�̍쐬
 	instance->AddComponent<Transform>(new Transform(x, y, 0, parent));
 	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
@@ -145,8 +141,6 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float wi
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent) {
 	GameObject* instance = new GameObject();
 	instance->SetSceneType(sceneType);
-	instance->SetObjectID(instanceCount);
-	instanceCount++;
 	//Transform�̍쐬
 	instance->AddComponent<Transform>(new Transform(x, y, z, parent));
 	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());

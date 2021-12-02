@@ -1,7 +1,7 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
-GameObject::GameObject() {
+GameObject::GameObject() : Object(0) {
 	objEnable = true;
 }
 

@@ -13,5 +13,11 @@ void Move::Update() {
 }
 
 void Move::OnTrigger2D(noDel_ptr<Collider2D> hitCollider) {
+	transform->rotation.z += 0.1f;
+}
+void Move::OnTriggerEnter2D(noDel_ptr<Collider2D> hitCollider) {
+	transform->scale.x = 0.5f;
+}
+void Move::OnTriggerExit2D(noDel_ptr<Collider2D> hitCollider) {
 	gameObject->Destroy(hitCollider->gameObject);
 }
