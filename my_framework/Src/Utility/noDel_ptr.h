@@ -50,7 +50,7 @@ public:
     //コンストラクタ
     noDel_ptr() {};
     template<class U>
-    noDel_ptr(const noDel_ptr<U>& src) {
+    explicit noDel_ptr(const noDel_ptr<U>& src) {
         ptr = src.ptr;
     }
     noDel_ptr(std::nullptr_t) { ptr = nullptr; }

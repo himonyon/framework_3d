@@ -1,3 +1,0 @@
-newkey fr 0 sprite Data/Image/bg default pos 0 0 color 1 1 1 1 scale 1 1 rot 0
-newkey fr 60 sprite Data/Image/Chips_Cover default pos 100 0 color 1 1 1 1 scale 1 1 rot 0
-newkey fr 120 sprite Data/Image/bg default pos -100 0 color 1 1 1 1 scale 1 1 rot 0

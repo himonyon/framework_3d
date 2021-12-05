@@ -120,7 +120,8 @@ void SpriteRenderer::Destroy() {
 	SAFE_RELEASE(pConstantBuffer);
 }
 
-SpriteRenderer::SpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite) : Component(eComponentType::SpriteRenderer)
+SpriteRenderer::SpriteRenderer() 
+	: Component(eComponentType::SpriteRenderer)
 {
 	renderPriority = 0;
 	sortSwitch = true;
@@ -131,15 +132,20 @@ SpriteRenderer::SpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprit
 	for (int i = 0; i < Sprite::VertexNum; i++) {
 		vtx[i].r = 1; vtx[i].g = 1; vtx[i].b = 1; vtx[i].a = 1;
 	}
-
-	if (sprite == NULL) return; //スプライトがない場合return
-	pRenderSprite = sprite;
-	for (int i = 0; i < Sprite::VertexNum; i++) {
-		vtx[i] = sprite->GetVertexState(i);
-	}
 }
 
 SpriteRenderer::~SpriteRenderer() {
+}
+
+//コンポーネントの初期化
+void SpriteRenderer::SetUpSpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite) {
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
+
+	if (sprite != nullptr) {
+		pRenderSprite = sprite;
+		SetDefaultState();
+	}
 }
 
 void SpriteRenderer::Execute() {
@@ -257,7 +263,7 @@ void SpriteRenderer::SetDefaultState() {
 	}
 }
 void SpriteRenderer::SetRenderPriority(int value) {
-	if (renderPriority != value) sortSwitch = true;
+	if (renderPriority != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSpriteSortEnable();
 	renderPriority = value;
 }
 int SpriteRenderer::GetRenderPriority() {

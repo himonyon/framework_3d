@@ -24,8 +24,12 @@ public:
 	static bool Initialize();
 	static void Destroy();
 
-	MeshRenderer(noDel_ptr<Mesh> mesh);
+	MeshRenderer();
 	~MeshRenderer(void);
+
+	//コンポーネントの初期化
+	void SetUpMeshRenderer(noDel_ptr<Mesh> mesh);
+
 
 	//コンポーネント処理
 	void Execute() override;

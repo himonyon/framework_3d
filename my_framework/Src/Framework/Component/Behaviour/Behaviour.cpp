@@ -22,7 +22,6 @@ void Behaviour::Execute() {
 		}
 
 		//コライダーの処理(メッセージにあるコライダーの種類数行う)
-
 		//コライダーが無効なら終了
 		if (c2d == nullptr) c2d = gameObject->GetComponent<Collider2D>();
 		if (c2d == nullptr) break;
@@ -32,7 +31,7 @@ void Behaviour::Execute() {
 		if (m == L"Collision") {
 			for (auto& hit : c2d->hitCollisions) {
 				hit->AddHitCollisions(noDel_ptr<Collider2D>(c2d)); //相手にもヒット情報を持たせ、破棄されたとき検知可能にする
-				MessageSystem::SendMessageToCom(hit, L"Clear");
+				MessageSystem::SendMessageToCom(static_noDel_cast<Component>(hit), L"Clear");
 				bool _trigger = false;
 				for (auto& b_hit : c2d->b_hitCollisions) {
 					if (hit == b_hit) _trigger = true;
@@ -40,12 +39,12 @@ void Behaviour::Execute() {
 				if (_trigger) OnCollision2D(hit);
 				else OnCollisionEnter2D(hit);
 			}
-			MessageSystem::SendMessageToCom(c2d, L"Clear");
+			MessageSystem::SendMessageToCom(static_noDel_cast<Component>(c2d), L"Clear");
 		}
 		if (m == L"Trigger") {
 			for (auto& hit : c2d->hitTriggers) {
 				hit->AddHitTriggers(noDel_ptr<Collider2D>(c2d));
-				MessageSystem::SendMessageToCom(hit, L"Clear");
+				MessageSystem::SendMessageToCom(static_noDel_cast<Component>(hit), L"Clear");
 				bool _trigger = false;
 				for (auto& b_hit : c2d->b_hitTriggers) {
 					if (hit == b_hit) _trigger = true;
@@ -53,7 +52,7 @@ void Behaviour::Execute() {
 				if (_trigger) OnTrigger2D(hit);
 				else OnTriggerEnter2D(hit);
 			}
-			MessageSystem::SendMessageToCom(c2d, L"Clear");
+			MessageSystem::SendMessageToCom(static_noDel_cast<Component>(c2d), L"Clear");
 		}
 
 		//当たりを抜けた時の処理
@@ -65,7 +64,7 @@ void Behaviour::Execute() {
 				}
 				//該当するものがない場合、離れているので処理
 				if (!_trigger) OnCollisionExit2D(b_hit);
-				MessageSystem::SendMessageToCom(c2d, L"Clear");
+				MessageSystem::SendMessageToCom(static_noDel_cast<Component>(c2d), L"Clear");
 			}
 		}
 		if (m == L"TriggerExit") {
@@ -78,7 +77,7 @@ void Behaviour::Execute() {
 				if (!_trigger) {
 					OnTriggerExit2D(b_hit);
 				}
-				MessageSystem::SendMessageToCom(c2d, L"Clear");
+				MessageSystem::SendMessageToCom(static_noDel_cast<Component>(c2d), L"Clear");
 			}
 		}
 	}

@@ -12,7 +12,7 @@ private:
 	noDel_ptr<GameObject> pObj2;
 	noDel_ptr<GameObject> pObj3;
 	noDel_ptr<GameObject> pObj4;
-	noDel_ptr<GameObject> pObj5;
+	noDel_ptr<GameObject> pObj5[500];
 
 	noDel_ptr<Sound> pSound0;
 

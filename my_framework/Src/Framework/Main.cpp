@@ -125,6 +125,8 @@ void CreateSpriteFile(const WCHAR* texture_file, float left, float right, float 
 		_filename[i] = texture_file[i];
 	}
 
+	wcscat_s(_filename, L".spr");
+
 	FILE* fp = NULL;
 	_wfopen_s(&fp, _filename, L"w");
 	if (fp == NULL) {

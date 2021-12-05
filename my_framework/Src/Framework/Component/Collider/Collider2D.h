@@ -9,8 +9,8 @@
 class Collider2D : public Component {
 public:
 	bool isCollision = true;
-	float sizeX;
-	float sizeY;
+	float sizeX = 0;
+	float sizeY = 0;
 
 	//衝突しているコライダー
 	std::vector<noDel_ptr<Collider2D>> hitCollisions;
@@ -21,9 +21,12 @@ public:
 	std::vector<noDel_ptr<Collider2D>> b_hitTriggers;
 
 public:
-	Collider2D(bool collision = true);
-	Collider2D(float width, float height, bool collision = true);
+	Collider2D();
 	~Collider2D();
+
+	//コンポーネントの初期化
+	void SetUpCollider2D(bool collision);
+	void SetUpCollider2D(float sizeX, float sizeY, bool collision);
 
 	//コンポーネント処理
 	void Execute(noDel_ptr<Collider2D> hitCollider) override;

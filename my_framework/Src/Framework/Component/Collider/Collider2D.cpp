@@ -2,15 +2,10 @@
 #include "../../../../environment.h"
 
 
-Collider2D::Collider2D(bool collision) : Component(eComponentType::Collider) {
+Collider2D::Collider2D() : Component(eComponentType::Collider) {
 	sizeX = 0;
 	sizeY = 0;
-	isCollision = collision;
-}
-Collider2D::Collider2D(float width, float height,  bool collision) : Component(eComponentType::Collider) {
-	sizeX = width;
-	sizeY = height;
-	isCollision = collision;
+	isCollision = true;
 }
 
 Collider2D::~Collider2D() {
@@ -32,6 +27,24 @@ Collider2D::~Collider2D() {
 			}
 		}
 	}
+}
+
+void Collider2D::SetUpCollider2D(bool collision) {
+	noDel_ptr<SpriteRenderer> sr = gameObject->GetComponent<SpriteRenderer>();
+	if (sr != nullptr) {
+		sizeX = sr->sizeX;
+		sizeY = sr->sizeY;
+	}
+	else {
+		sizeX = 0;
+		sizeY = 0;
+	}
+	this->isCollision = collision;
+}
+void Collider2D::SetUpCollider2D(float sizeX, float sizeY, bool collision) {
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
+	this->isCollision = collision;
 }
 
 void Collider2D::Execute(noDel_ptr<Collider2D> hitCollider) {
