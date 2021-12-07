@@ -12,8 +12,8 @@ public:
 	noDel_ptr<Sprite> pRenderSprite = NULL;
 
 	//画像の幅
-	float sizeX;
-	float sizeY;
+	float sizeX = 0;
+	float sizeY = 0;
 
 	//頂点情報
 	stVertex2D vtx[Sprite::VertexNum];
@@ -36,8 +36,11 @@ public:
 	static bool Initialize();
 	static void Destroy();
 
-	SpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite);
+	SpriteRenderer();
 	~SpriteRenderer(void);
+
+	//コンポーネントの初期化
+	void SetUpSpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite);
 
 	//コンポーネント処理
 	void Execute() override;

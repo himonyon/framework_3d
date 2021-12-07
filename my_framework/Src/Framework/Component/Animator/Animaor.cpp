@@ -35,6 +35,15 @@ void Animator::PlayAnim(std::string name) {
 		}
 	}
 }
+bool Animator::IsPlayAnim(std::string name) {
+	for (auto& box : animBoxes) {
+		if (box->name == name) {
+			if(box->trigger) return true;
+			break;
+		}
+	}
+	return false;
+}
 void Animator::StopAnim() {
 	for (auto& box : animBoxes) {
 		box->trigger = false;

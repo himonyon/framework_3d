@@ -12,8 +12,8 @@ GameObject::GameObject() {
 }
 
 void GameObject::Destroy(noDel_ptr<GameObject> obj) {
-	if (obj != nullptr) SceneManager::GetScene(belongSceneType)->ReserveDestroyObject(obj->GetObjectID());
-	else SceneManager::GetScene(belongSceneType)->ReserveDestroyObject(GetObjectID());
+	if (obj != nullptr) SceneManager::GetScene(belongSceneType)->ReserveDestroyObject(obj->GetInstanceID());
+	else SceneManager::GetScene(belongSceneType)->ReserveDestroyObject(GetInstanceID());
 }
 
 void GameObject::SetObjEnable(bool flag) {

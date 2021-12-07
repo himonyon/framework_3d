@@ -1,26 +1,18 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
-Transform::Transform(float x, float y, float z, noDel_ptr<Transform> parent) : Component(eComponentType::Transform) {
-	position = { x,y,z };
-	b_position = { x,y,z };
+Transform::Transform() : Component(eComponentType::Transform) {
+	position = { 0,0,0 };
+	b_position = position;
 
 	rotation = {0,0,0};
-	b_rotation = {0,0,0};
+	b_rotation = rotation;
 	scale = {1,1,1};
-	b_scale = {1,1,1};
+	b_scale = scale;
 
-	SetParent(parent);
-	if (parent == nullptr) {
-		localPosition = { 0,0,0 };
-		localRotation = { 0,0,0 };
-		localScale = { 1,1,1 };
-	}
-	else {
-		localPosition = position - parent->position;
-		localRotation = rotation - parent->rotation;;
-		localScale = scale / parent->scale;
-	}
+	localPosition = { 0,0,0 };
+	localRotation = { 0,0,0 };
+	localScale = { 1,1,1 };
 
 	b_localPosition = localPosition;
 	b_localRotation = localRotation;
@@ -28,6 +20,7 @@ Transform::Transform(float x, float y, float z, noDel_ptr<Transform> parent) : C
 
 	transform = noDel_ptr<Transform>(this);
 }
+
 Transform::~Transform() {
 	//親と子供の親子関係から外す
 	if (pParent != nullptr) {
@@ -47,14 +40,36 @@ Transform::~Transform() {
 	}
 }
 
-void Transform::Execute() {
-	for (auto& m : messages) {
-		if (m == L"ConvertLG") {
-			ConvertLocalAndGlobal();
-		}
-		else if (m == L"UpdateTrans") {
-			UpdateState();
-		}
+void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> parent) {
+	position = { x,y,z };
+	b_position = position;
+
+	rotation = { 0,0,0 };
+	b_rotation = rotation;
+	scale = { 1,1,1 };
+	b_scale = scale;
+
+	if (parent != nullptr) {
+		localPosition = position - parent->position;
+	}
+	else {
+		localPosition = {0,0,0};
+	}
+	localRotation = { 0,0,0 };
+	localScale = { 1,1,1 };
+
+	b_localPosition = localPosition;
+	b_localRotation = localRotation;
+	b_localScale = localScale;
+}
+
+
+void Transform::Execute(int state) {
+	if (state == (int)eTransformState::ConvertLocalToGlobal) {
+		ConvertLocalAndGlobal();
+	}
+	else {
+		UpdateState();
 	}
 
 	messages.clear();

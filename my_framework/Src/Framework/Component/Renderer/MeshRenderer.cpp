@@ -119,13 +119,16 @@ void MeshRenderer::Destroy() {
 	SAFE_RELEASE(pRasterizerState);
 }
 
-MeshRenderer::MeshRenderer(noDel_ptr<Mesh> mesh) : Component(eComponentType::MeshRenderer)
+MeshRenderer::MeshRenderer() : Component(eComponentType::MeshRenderer)
 {
-	if (mesh == nullptr) return;
-	pRenderMesh = mesh;
 }
 
 MeshRenderer::~MeshRenderer() {}
+
+//コンポーネントの初期化
+void MeshRenderer::SetUpMeshRenderer(noDel_ptr<Mesh> mesh) {
+	if (mesh != nullptr) pRenderMesh = mesh;
+}
 
 void MeshRenderer::Execute() {
 	Render();

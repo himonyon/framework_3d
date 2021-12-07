@@ -11,7 +11,7 @@ class SceneManager;
 class GameObject : public Object {
 public:
 	//座標、回転、スケール変換構造体
-	noDel_ptr<Transform> transform;
+	noDel_ptr<Transform> transform = 0;
 
 	//コンポーネントが新たに追加されたか
 	bool isAddNewComponent = false;
@@ -26,7 +26,7 @@ private:
 
 public:
 	GameObject();
-	~GameObject(void);
+	~GameObject(void); 
 
 	//オブジェクトの破棄
 	void Destroy(noDel_ptr<GameObject> obj = nullptr);
@@ -37,12 +37,11 @@ public:
 
 	//コンポーネントの追加
 	template<class T>
-	void AddComponent(Component* instance) {
-		instance->SetObjectID(GetObjectID());
+	void AddComponent() {
+		T* instance = new T();
 		instance->gameObject = noDel_ptr<GameObject>(this);
-		if (instance->gameObject->transform != nullptr) instance->transform = instance->gameObject->transform;
-		T* newInstance = dynamic_cast<T*>(instance);
-		components.emplace_back(newInstance);
+		if(transform != nullptr) instance->transform = transform;
+		components.emplace_back(instance);
 		isAddNewComponent = true;
 		SceneManager::GetScene(belongSceneType)->SetAddComponentTrigger();
 	}

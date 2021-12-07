@@ -6,6 +6,11 @@
 
 -------------------------------------------------------------*/
 
+enum class eTransformState {
+	ConvertLocalToGlobal,
+	UpdateRelativeState,
+};
+
 class Transform : public Component {
 public:
 	stVector3 position; //座標
@@ -19,7 +24,7 @@ public:
 
 	bool isChanged = false; //Transformに変更があったか
 private:
-	noDel_ptr<Transform> pParent; //親のオブジェクト
+	noDel_ptr<Transform> pParent = 0; //親のオブジェクト
 	std::vector<noDel_ptr<Transform>> pChildren; //子オブジェクト
 
 	stVector3 b_position;
@@ -30,11 +35,14 @@ private:
 	stVector3 b_localRotation;
 	stVector3 b_localScale;
 public:
-	Transform(float x, float y, float z, noDel_ptr<Transform> parent);
+	Transform();
 	~Transform();
 
+	//コンポーネントの初期設定
+	void SetUpTransform(float x, float y, float z, noDel_ptr<Transform> parent);
+
 	//コンポーネント処理
-	void Execute() override;
+	void Execute(int state) override;
 
 	//親のオブジェクトが有効状態かどうか
 	bool IsParentObjEnable();

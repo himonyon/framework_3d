@@ -15,16 +15,6 @@ bool Main::Init(void* hWnd) {
 	performanceCounter = QueryPerformanceFrequency(&freq);
 
 	//-------------------------
-
-	CreateSpriteFile(L"Data/Image/bg.jpg");
-	CreateSpriteFile(L"Data/Image/camera-lens-icon.png");
-	CreateSpriteFile(L"Data/Image/Chips_Cover.jpg");
-	CreateSpriteFile(L"Data/Image/eb_basic_material_setup.png");
-	CreateSpriteFile(L"Data/Image/eb_house_plant_01_ren_01.jpg");
-	CreateSpriteFile(L"Data/Image/grid.bmp");
-	CreateSpriteFile(L"Data/Image/iphone-x-screens-status-bar.jpg");
-	CreateSpriteFile(L"Data/Image/sample.png");
-
 	//------------------------
 
 	Direct3D::InitD3D(hWnd);
@@ -80,7 +70,6 @@ void Main::App() {
 	Viewport.MaxDepth = 1.0f;
 	Direct3D::getDeviceContext()->RSSetViewports(1, &Viewport);
 
-
 	Render();
 
 	SceneManager::SwitchScene();
@@ -135,6 +124,8 @@ void CreateSpriteFile(const WCHAR* texture_file, float left, float right, float 
 		_filename[i] = texture_file[i];
 	}
 
+	wcscat_s(_filename, L".spr");
+
 	FILE* fp = NULL;
 	_wfopen_s(&fp, _filename, L"w");
 	if (fp == NULL) {
@@ -157,6 +148,8 @@ void AddSpriteFile(const WCHAR* texture_file, const WCHAR* sprite_name, float le
 	for (int i = 0; i < _nameSize; i++) {
 		_filename[i] = texture_file[i];
 	}
+
+	wcscat_s(_filename, L".spr");
 
 	FILE* fp = NULL;
 	_wfopen_s(&fp, _filename, L"a");

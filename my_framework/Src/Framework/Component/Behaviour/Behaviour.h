@@ -6,6 +6,10 @@
 
 -------------------------------------------------------------*/
 
+enum class eBehaviourState {
+	Update,
+};
+
 class Behaviour : public Component {
 private:
 	bool startCalled = false;
@@ -18,6 +22,7 @@ public:
 
 	//コンポーネント処理
 	void Execute() override;
+	void Execute(int state) override;
 
 private:
 	//オブジェクトが作られたときに呼び出される関数
@@ -28,5 +33,9 @@ private:
 
 	//オブジェクトの衝突処理
 	virtual void OnCollision2D(noDel_ptr<Collider2D> hitCollider) {};
+	virtual void OnCollisionEnter2D(noDel_ptr<Collider2D> hitCollider) {};
+	virtual void OnCollisionExit2D(noDel_ptr<Collider2D> exitCollider) {};
 	virtual void OnTrigger2D(noDel_ptr<Collider2D> hitCollider) {};
+	virtual void OnTriggerEnter2D(noDel_ptr<Collider2D> hitCollider) {};
+	virtual void OnTriggerExit2D(noDel_ptr<Collider2D> exitCollider) {};
 };

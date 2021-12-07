@@ -9,12 +9,13 @@
 
 class Object {
 private:
-	int objectID = 0;
+	static int max_instance;
+	int instanceID = 0;
 
 public:
+	Object();
 	virtual ~Object() {};
 
-	void SetObjectID(int id) { objectID = id; }
+	int GetInstanceID() const { return instanceID; }
 
-	int GetObjectID() { return objectID; }
 };

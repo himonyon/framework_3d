@@ -10,10 +10,10 @@
 class GameObjectManager {
 private:
 	int sceneType = 0;
-	int instanceCount = 0;
 
 	bool isAddComponent = false; //新たにコンポーネントを追加したか
 	bool isStartFucnEnable = false; //スタート関数を実行するか
+	bool isSpriteSortEnable = false; //スプライトのソートを実行するか
 
 public:
 	GameObjectManager() {};
@@ -25,21 +25,20 @@ public:
 	//オブジェクトの削除予約
 	void ReserveDestroyObject(int objID);
 
-	//オブジェクトクリエイター
-	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Transform> parent = nullptr);
-	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent = nullptr);
-	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent = nullptr);
+	//オブジェクトクリエイタ
+	//空オブジェクト作成
+	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
+		noDel_ptr<Transform> parent = nullptr, bool local = false);
+	//スプライトオブジェクト作成
+	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+		noDel_ptr<Transform> parent = nullptr, bool local = false);
+	//メッシュオブジェクト作成
+	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh, 
+		noDel_ptr<Transform> parent = nullptr, bool local = false);
 
 private:
 	//配列から特定のIDのコンポーネントを抜く
 	void PullOutComponent(noDel_ptr<GameObject> obj);
-	void PullOutTransform(noDel_ptr<Component> com);
-	void PullOutCollider2D(noDel_ptr<Component> com);
-	void PullOutPhysics2D(noDel_ptr<Component> com);
-	void PullOutSpriteRenderer(noDel_ptr<Component> com);
-	void PullOutMeshRenderer(noDel_ptr<Component> com);
-	void PullOutBehaviour(noDel_ptr<Component> com);
-	void PullOutAnimator(noDel_ptr<Component> com);
 
 	//コンポーネント処理の有効無効を確認する
 	bool CheckComponentEnable(noDel_ptr<Component> com);
@@ -50,42 +49,25 @@ private:
 	//オブジェクトに追加されたコンポーネントをこのクラスの配列に格納
 	void RegistComponent(noDel_ptr<GameObject> obj);
 
-	//コンポーネントをダウンキャストした結果を返す
-	template <class T>
-	noDel_ptr<T> DownCastComponent(noDel_ptr<Component> com) {
-		noDel_ptr<T> component = dynamic_noDel_cast<T>(com);
-		if (component != nullptr) {
-			return component;
-		}
-		return nullptr;
-	}
-
-	//コンポーネントを新たに配列に加える
-	bool AddTransform(noDel_ptr<Component> com);
-	bool AddCollider2D(noDel_ptr<Component> com);
-	bool AddSpriteRenderer(noDel_ptr<Component> com);
-	bool AddMeshRenderer(noDel_ptr<Component> com);
-	bool AddPhysics2D(noDel_ptr<Component> com);
-	bool AddBehaviour(noDel_ptr<Component> com);
-	bool AddAnimator(noDel_ptr<Component> com);
 
 public:
 	//getter,setter
 	void SetSceneType(int val) { sceneType = val; }
 	void SetAddComponentTrigger() { isAddComponent = true; }
 	void SetStartFuncEnable() { isStartFucnEnable = true; }
+	void SetSpriteSortEnable() { isSpriteSortEnable = true; }
 
 private:
-	std::vector<GameObject*> objects;
+	std::unordered_map<int, GameObject*> umObjects;
 
 	//コンポーネントの配列
-	std::vector<noDel_ptr<Transform>> vTransform;
-	std::vector<noDel_ptr<Collider2D>> vCollider2D;
-	std::vector<noDel_ptr<Physics2D>> vPhysics2D;
-	std::vector<noDel_ptr<SpriteRenderer>> vSpriteRenderer;
-	std::vector<noDel_ptr<MeshRenderer>> vMeshRenderer;
-	std::vector<noDel_ptr<Behaviour>> vBehaviour;
-	std::vector<noDel_ptr<Animator>> vAnimator;
+	std::unordered_map<int,noDel_ptr<Component>> umTransform;
+	std::unordered_map<int,noDel_ptr<Component>> umCollider2D;
+	std::unordered_map<int,noDel_ptr<Component>> umPhysics2D;
+	std::vector<noDel_ptr<Component>> vSpriteRenderer;
+	std::unordered_map<int,noDel_ptr<Component>> umMeshRenderer;
+	std::unordered_map<int,noDel_ptr<Component>> umBehaviour;
+	std::unordered_map<int,noDel_ptr<Component>> umAnimator;
 
 public:
 	std::vector<int> vDestroyID; //削除するオブジェクトID

@@ -6,7 +6,6 @@
 /// </summary>
 template <class T>
 class noDel_ptr {
-    template<class> friend class noDel_ptr;
 public:
     //演算子オーバーロード
     noDel_ptr<T>& operator =(const noDel_ptr<T>& src)
@@ -50,7 +49,7 @@ public:
     //コンストラクタ
     noDel_ptr() {};
     template<class U>
-    noDel_ptr(const noDel_ptr<U>& src) {
+    explicit noDel_ptr(const noDel_ptr<U>& src) {
         ptr = src.ptr;
     }
     noDel_ptr(std::nullptr_t) { ptr = nullptr; }

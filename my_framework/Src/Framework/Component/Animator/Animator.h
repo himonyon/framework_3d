@@ -29,6 +29,7 @@ public:
 	void AddAnimation(std::string name, SpriteAnimation* anim);
 
 	void PlayAnim(std::string name);
+	bool IsPlayAnim(std::string name);
 	void StopAnim();
 	void StopAnim(std::string name);
 

@@ -10,6 +10,9 @@
 
 class Physics2D : public Component {
 public:
+	noDel_ptr<Collider2D> col;
+
+public:
 	Physics2D();
 	~Physics2D() {};
 

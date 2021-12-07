@@ -19,9 +19,9 @@ private:
 
 	//テクスチャ
 	ID3D11Resource* pTexture  =0;
-	ID3D11ShaderResourceView* pTextureView = 0;
 
 public:
+	ID3D11ShaderResourceView* pTextureView = 0;
 	Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name = L"default");
 	~Sprite(void);
 

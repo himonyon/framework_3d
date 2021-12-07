@@ -20,16 +20,16 @@ bool Direct3D::InitD3D(void* hdl)
 
 	UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;//DirectX11上でDirect2Dを使用するために必要
 
-	D3D11CreateDevice(NULL,	//IDXGIAdapter *pAdapter : デバイスの作成時に使用するビデオ アダプターへのポインター(既定のアダプターを使用するにはNULL)
+	D3D11CreateDevice(NULL,			//IDXGIAdapter *pAdapter : デバイスの作成時に使用するビデオ アダプターへのポインター(既定のアダプターを使用するにはNULL)
 		D3D_DRIVER_TYPE_HARDWARE,	//D3D_DRIVER_TYPE DriverType : 作成するデバイスの種類を表す D3D_DRIVER_TYPE
 		NULL,						//HMODULE Software : ソフトウェア ラスタライザーを実装する DLL のハンドル
 		createDeviceFlags,			//UINT Flags : 有効にするランタイム レイヤー
 		NULL,						//CONST D3D_FEATURE_LEVEL *pFeatureLevels : 作成を試みる機能レベルの順序を指定する D3D_FEATURE_LEVEL の配列へのポインター
 		0,							//UINT FeatureLevels : pFeatureLevels の要素数
 		D3D11_SDK_VERSION,			//UINT SDKVersion : SDK のバージョン
-		&pDevice,					//ID3D11Device **ppDevice : 作成されたデバイスを表す ID3D11Device オブジェクトへのポインターのアドレスを返します。
-		NULL,						//D3D_FEATURE_LEVEL *pFeatureLevel : 成功した場合は、成功した pFeatureLevels 配列の最初の D3D_FEATURE_LEVEL を返します。失敗した場合は 0 を返します。
-		&pDeviceContext				//ID3D11DeviceContext **ppImmediateContext : デバイス コンテキストを表す ID3D11DeviceContext オブジェクトへのポインターのアドレスを返します。
+		&pDevice,					//ID3D11Device **ppDevice : 作成されたデバイスを表す ID3D11Device オブジェクトへのポインターのアドレスを返す。
+		NULL,						//D3D_FEATURE_LEVEL *pFeatureLevel : 成功した場合は、成功した pFeatureLevels 配列の最初の D3D_FEATURE_LEVEL を返す。失敗した場合は 0 を返す。
+		&pDeviceContext				//ID3D11DeviceContext **ppImmediateContext : デバイス コンテキストを表す ID3D11DeviceContext オブジェクトへのポインターのアドレスを返す。
 	);
 
 	//インターフェイス取得

@@ -14,6 +14,4 @@ void Scale::Update() {
 }
 
 void Scale::OnTrigger2D(noDel_ptr<Collider2D> hitCollider) {
-	transform->scale.x *= 2.0f;
-	transform->scale.y *= 2.0f;
 }

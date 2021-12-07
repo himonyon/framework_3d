@@ -16,4 +16,8 @@ stVector3 RoundDec3forVector(stVector3 vec) {
 	vec.z = round(vec.z * 1000) / 1000;
 	return vec;
 }
+float RoundDec3forFloat(float val) {
+	val = round(val * 1000) / 1000;
+	return val;
+}
 
