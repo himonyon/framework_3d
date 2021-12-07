@@ -6,6 +6,11 @@
 
 -------------------------------------------------------------*/
 
+enum class eTransformState {
+	ConvertLocalToGlobal,
+	UpdateRelativeState,
+};
+
 class Transform : public Component {
 public:
 	stVector3 position; //座標
@@ -37,7 +42,7 @@ public:
 	void SetUpTransform(float x, float y, float z, noDel_ptr<Transform> parent);
 
 	//コンポーネント処理
-	void Execute() override;
+	void Execute(int state) override;
 
 	//親のオブジェクトが有効状態かどうか
 	bool IsParentObjEnable();

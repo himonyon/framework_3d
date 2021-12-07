@@ -184,19 +184,6 @@ void SpriteRenderer::SetVertexState() {
 	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
 	vtx[3].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
 	vtx[3].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
-
-	//カラー
-	vtx[0].r = vtx[0].r; vtx[0].g = vtx[0].g;
-	vtx[0].b = vtx[0].b; vtx[0].a = vtx[0].a;
-
-	vtx[1].r = vtx[1].r; vtx[1].g = vtx[1].g;
-	vtx[1].b = vtx[1].b; vtx[1].a = vtx[1].a;
-
-	vtx[2].r = vtx[2].r; vtx[2].g = vtx[2].g;
-	vtx[2].b = vtx[2].b; vtx[2].a = vtx[2].a;
-
-	vtx[3].r = vtx[3].r; vtx[3].g = vtx[3].g;
-	vtx[3].b = vtx[3].b; vtx[3].a = vtx[3].a;
 }
 
 void SpriteRenderer::Render() {
@@ -204,6 +191,8 @@ void SpriteRenderer::Render() {
 
 	//頂点座標の設定
 	SetVertexState();
+
+	if(vtx[1].x < 0 || vtx[0].x > WINDOW_WIDTH || vtx[0].y > WINDOW_HEIGHT || vtx[2].y < 0) return;
 
 	//頂点バッファの更新
 	Direct3D::getDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, vtx, 0, 0);
@@ -225,8 +214,7 @@ void SpriteRenderer::Render() {
 	//サンプラーステートをコンテキストに設定
 	Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &pSamplerState);
 	//テクスチャーをコンテキストに設定
-	Direct3D::setShaderResource(pRenderSprite->GetTextureView());
-
+	Direct3D::setShaderResource(pRenderSprite->pTextureView);
 	//使用するシェーダーの登録	
 	Direct3D::getDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_2D)->getShader(), NULL, 0);
 	Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_2D)->getShader(), NULL, 0);

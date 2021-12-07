@@ -6,6 +6,10 @@
 
 -------------------------------------------------------------*/
 
+enum class eBehaviourState {
+	Update,
+};
+
 class Behaviour : public Component {
 private:
 	bool startCalled = false;
@@ -18,6 +22,7 @@ public:
 
 	//コンポーネント処理
 	void Execute() override;
+	void Execute(int state) override;
 
 private:
 	//オブジェクトが作られたときに呼び出される関数

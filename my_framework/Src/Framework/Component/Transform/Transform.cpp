@@ -64,14 +64,12 @@ void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> p
 }
 
 
-void Transform::Execute() {
-	for (auto& m : messages) {
-		if (m == L"ConvertLG") {
-			ConvertLocalAndGlobal();
-		}
-		else if (m == L"UpdateTrans") {
-			UpdateState();
-		}
+void Transform::Execute(int state) {
+	if (state == (int)eTransformState::ConvertLocalToGlobal) {
+		ConvertLocalAndGlobal();
+	}
+	else {
+		UpdateState();
 	}
 
 	messages.clear();

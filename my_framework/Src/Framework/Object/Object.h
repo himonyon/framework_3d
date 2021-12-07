@@ -10,15 +10,12 @@
 class Object {
 private:
 	static int max_instance;
-	int objectID = 0;
+	int instanceID = 0;
 
 public:
-	Object();//コンポーネント用
-	Object(int id); //ゲームオブジェクト用
+	Object();
 	virtual ~Object() {};
 
-	int GetObjectID() { return objectID; }
-
-	void SetObjectID(int id) { objectID = id; }
+	int GetInstanceID() const { return instanceID; }
 
 };

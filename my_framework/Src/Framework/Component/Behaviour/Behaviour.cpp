@@ -15,12 +15,6 @@ void Behaviour::Execute() {
 			}
 		}
 
-		//アップデート
-		if (m == L"Update") {
-			Update();
-			break;
-		}
-
 		//コライダーの処理(メッセージにあるコライダーの種類数行う)
 		//コライダーが無効なら終了
 		if (c2d == nullptr) c2d = gameObject->GetComponent<Collider2D>();
@@ -33,6 +27,7 @@ void Behaviour::Execute() {
 				hit->AddHitCollisions(noDel_ptr<Collider2D>(c2d)); //相手にもヒット情報を持たせ、破棄されたとき検知可能にする
 				MessageSystem::SendMessageToCom(static_noDel_cast<Component>(hit), L"Clear");
 				bool _trigger = false;
+				//前フレームの当たり判定を見て処理を分ける
 				for (auto& b_hit : c2d->b_hitCollisions) {
 					if (hit == b_hit) _trigger = true;
 				}
@@ -83,4 +78,10 @@ void Behaviour::Execute() {
 	}
 
 	messages.clear();
+}
+
+void Behaviour::Execute(int state) {
+	if (state == (int)eBehaviourState::Update) {
+		Update();
+	}
 }

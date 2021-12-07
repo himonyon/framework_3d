@@ -58,16 +58,16 @@ public:
 	void SetSpriteSortEnable() { isSpriteSortEnable = true; }
 
 private:
-	std::vector<GameObject*> objects;
+	std::unordered_map<int, GameObject*> umObjects;
 
 	//コンポーネントの配列
-	std::vector<noDel_ptr<Component>> vTransform;
-	std::vector<noDel_ptr<Component>> vCollider2D;
-	std::vector<noDel_ptr<Component>> vPhysics2D;
+	std::unordered_map<int,noDel_ptr<Component>> umTransform;
+	std::unordered_map<int,noDel_ptr<Component>> umCollider2D;
+	std::unordered_map<int,noDel_ptr<Component>> umPhysics2D;
 	std::vector<noDel_ptr<Component>> vSpriteRenderer;
-	std::vector<noDel_ptr<Component>> vMeshRenderer;
-	std::vector<noDel_ptr<Component>> vBehaviour;
-	std::vector<noDel_ptr<Component>> vAnimator;
+	std::unordered_map<int,noDel_ptr<Component>> umMeshRenderer;
+	std::unordered_map<int,noDel_ptr<Component>> umBehaviour;
+	std::unordered_map<int,noDel_ptr<Component>> umAnimator;
 
 public:
 	std::vector<int> vDestroyID; //削除するオブジェクトID

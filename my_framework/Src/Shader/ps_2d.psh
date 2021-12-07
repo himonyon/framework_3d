@@ -1,7 +1,7 @@
 // ピクセルシェーダ入力パラメータ
 struct PS_INPUT {
 	float4 position : SV_POSITION;
-	float4 color: COLOR;
+	float4 color: COLOR0;
 	float2 tx0 : TEXCOORD0;
 };
 

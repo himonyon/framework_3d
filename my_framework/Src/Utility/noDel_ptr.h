@@ -6,7 +6,6 @@
 /// </summary>
 template <class T>
 class noDel_ptr {
-    template<class> friend class noDel_ptr;
 public:
     //演算子オーバーロード
     noDel_ptr<T>& operator =(const noDel_ptr<T>& src)

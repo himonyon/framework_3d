@@ -60,11 +60,11 @@ SpriteAnimation::~SpriteAnimation() {
 void SpriteAnimation::AnimOn() {
 	//各キーフレームを照合する
 	for (int i = 0; i < keyFrames.size(); i++) {
-		if (currentKeyFrameIndex >= i) continue; //到達しているキーフレームより小さい場合はとばす
+		if (curKeyIndex >= i) continue; //到達しているキーフレームより小さい場合はとばす
 
 		/*フレーム数が同じ場合、全ての状態を変更*/
 		if (frameCount == keyFrames[i]->frame) {
-			currentKeyFrameIndex = i; //到達キーフレーム更新
+			curKeyIndex = i; //到達キーフレーム更新
 
 			/*スプライト状態変更*/
 			if (keyFrames[i]->pSprite != pAnimRenderer->pRenderSprite.get() && keyFrames[i]->pSprite != nullptr) {
@@ -76,7 +76,7 @@ void SpriteAnimation::AnimOn() {
 			pAnimRenderer->transform->rotation.z = keyFrames[i]->rot;
 
 			/*キーフレームの最後に到達した場合*/
-			if (currentKeyFrameIndex == keyFrames.size() - 1) {
+			if (curKeyIndex == keyFrames.size() - 1) {
 				AnimOff();
  				return;
 			}
@@ -84,36 +84,36 @@ void SpriteAnimation::AnimOn() {
 			break;
 		}
 
-		if (currentKeyFrameIndex < 0) break; //初期値の場合終了
+		if (curKeyIndex < 0) break; //初期値の場合終了
 
 		//次のキーフレームに向けて徐々に状態を遷移
 		//次のキーフレームまでの進捗割合(現在のフレーム数-到達しているキーフレーム数) / (次のキーフレーム数-到達しているキーフレーム数)
-		float rate = (frameCount - keyFrames[currentKeyFrameIndex]->frame) / 
-			(keyFrames[i]->frame - keyFrames[currentKeyFrameIndex]->frame);
+		float rate = (frameCount - keyFrames[curKeyIndex]->frame) / 
+			(keyFrames[i]->frame - keyFrames[curKeyIndex]->frame);
 
 		//pos(キーフレームのx,yの長さを次のキーまでのフレーム数で割った値(1フレームでの移動量)をPositionに足す)
-		float move_x = keyFrames[i]->x / (keyFrames[i]->frame - keyFrames[currentKeyFrameIndex]->frame);
+		float move_x = keyFrames[i]->x / (keyFrames[i]->frame - keyFrames[curKeyIndex]->frame);
 		pAnimRenderer->transform->position.x += move_x;
-		float move_y = keyFrames[i]->y / (keyFrames[i]->frame - keyFrames[currentKeyFrameIndex]->frame);
+		float move_y = keyFrames[i]->y / (keyFrames[i]->frame - keyFrames[curKeyIndex]->frame);
 		pAnimRenderer->transform->position.y += move_y;
 
 		//col
-		float r_diff = (keyFrames[i]->color.r - keyFrames[currentKeyFrameIndex]->color.r) * rate;
-		float g_diff = (keyFrames[i]->color.g - keyFrames[currentKeyFrameIndex]->color.g) * rate;
-		float b_diff = (keyFrames[i]->color.b - keyFrames[currentKeyFrameIndex]->color.b) * rate;
-		float a_diff = (keyFrames[i]->color.a - keyFrames[currentKeyFrameIndex]->color.a) * rate;
-		pAnimRenderer->SetColor(keyFrames[currentKeyFrameIndex]->color.r + r_diff, keyFrames[currentKeyFrameIndex]->color.g + g_diff,
-			keyFrames[currentKeyFrameIndex]->color.b + b_diff, keyFrames[currentKeyFrameIndex]->color.a + a_diff);
+		float r_diff = (keyFrames[i]->color.r - keyFrames[curKeyIndex]->color.r) * rate;
+		float g_diff = (keyFrames[i]->color.g - keyFrames[curKeyIndex]->color.g) * rate;
+		float b_diff = (keyFrames[i]->color.b - keyFrames[curKeyIndex]->color.b) * rate;
+		float a_diff = (keyFrames[i]->color.a - keyFrames[curKeyIndex]->color.a) * rate;
+		pAnimRenderer->SetColor(keyFrames[curKeyIndex]->color.r + r_diff, keyFrames[curKeyIndex]->color.g + g_diff,
+			keyFrames[curKeyIndex]->color.b + b_diff, keyFrames[curKeyIndex]->color.a + a_diff);
 
 		//scale
-		float scaleX_diff = (keyFrames[i]->scaleX - keyFrames[currentKeyFrameIndex]->scaleX) * rate;
-		float scaleY_diff = (keyFrames[i]->scaleY - keyFrames[currentKeyFrameIndex]->scaleY) * rate;
-		pAnimRenderer->transform->SetScale(keyFrames[currentKeyFrameIndex]->scaleX + scaleX_diff,
-			keyFrames[currentKeyFrameIndex]->scaleY + scaleY_diff);
+		float scaleX_diff = (keyFrames[i]->scaleX - keyFrames[curKeyIndex]->scaleX) * rate;
+		float scaleY_diff = (keyFrames[i]->scaleY - keyFrames[curKeyIndex]->scaleY) * rate;
+		pAnimRenderer->transform->SetScale(keyFrames[curKeyIndex]->scaleX + scaleX_diff,
+			keyFrames[curKeyIndex]->scaleY + scaleY_diff);
 
 		//rot
-		float rot_diff = (keyFrames[i]->rot - keyFrames[currentKeyFrameIndex]->rot) * rate;
-		pAnimRenderer->transform->rotation.z = keyFrames[currentKeyFrameIndex]->rot + rot_diff;
+		float rot_diff = (keyFrames[i]->rot - keyFrames[curKeyIndex]->rot) * rate;
+		pAnimRenderer->transform->rotation.z = keyFrames[curKeyIndex]->rot + rot_diff;
 
 		break;
 	}
@@ -124,7 +124,7 @@ void SpriteAnimation::AnimOn() {
 void SpriteAnimation::AnimOff() {
 	isEnd = true;
 	frameCount = 0;
-	currentKeyFrameIndex = -1;
+	curKeyIndex = -1;
 }
 
 SpriteAnimation::KeyFrame::~KeyFrame() {

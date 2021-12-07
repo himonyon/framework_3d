@@ -15,7 +15,7 @@ private:
 
 	float frameCount = 0; //進んだフレーム数
 
-	int currentKeyFrameIndex = -1; //現在到達しているキーフレーム配列番号
+	int curKeyIndex = -1; //現在到達しているキーフレーム配列番号
 
 public:
 	noDel_ptr<SpriteRenderer> pAnimRenderer = NULL; //表示するスプライトレンダラー
@@ -38,7 +38,7 @@ private:
 	std::vector<KeyFrame*> keyFrames;
 
 public:
-	SpriteAnimation(const WCHAR* animation_file, bool loop);
+	SpriteAnimation(const WCHAR* animation_file, bool loop = false);
 	~SpriteAnimation();
 
 	void AnimOn(); //アニメーション実行

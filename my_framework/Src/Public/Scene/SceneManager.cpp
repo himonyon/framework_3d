@@ -48,12 +48,14 @@ void SceneManager::DeleteScene() {
 	if (pScene != NULL)
 	{
 		//シーンの終了
+		pScene->Terminate();
 		delete pScene;
 		pScene = NULL;
 	}
 	if (pReservedScene != NULL)
 	{
 		//シーンの終了
+		pReservedScene->Terminate();
 		delete pReservedScene;
 		pReservedScene = NULL;
 	}
@@ -63,6 +65,7 @@ void SceneManager::DeleteMainScene() {
 	if (pScene != NULL)
 	{
 		//シーンの終了
+		pScene->Terminate();
 		delete pScene;
 		pScene = NULL;
 	}
@@ -72,6 +75,7 @@ void SceneManager::DeleteReserveScene() {
 	if (pReservedScene != NULL)
 	{
 		//シーンの終了
+		pReservedScene->Terminate();
 		delete pReservedScene;
 		pReservedScene = NULL;
 	}

@@ -13,12 +13,12 @@ void Move::Update() {
 	transform->position.y = (float)Mouse::GetY();
 }
 
-void Move::OnTriggerEnter2D(noDel_ptr<Collider2D> hitCollider) {
-	gameObject->Destroy(hitCollider->gameObject);
+void Move::OnTrigger2D(noDel_ptr<Collider2D> hitCollider) {
+	transform->rotation.z += 0.1f;
 }
-void Move::OnCollisionEnter2D(noDel_ptr<Collider2D> hitCollider) {
+void Move::OnTriggerEnter2D(noDel_ptr<Collider2D> hitCollider) {
 	transform->scale.x = 0.5f;
 }
-void Move::OnCollisionExit2D(noDel_ptr<Collider2D> hitCollider) {
+void Move::OnTriggerExit2D(noDel_ptr<Collider2D> hitCollider) {
 	gameObject->Destroy(hitCollider->gameObject);
 }

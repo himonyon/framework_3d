@@ -40,7 +40,6 @@ public:
 	void AddComponent() {
 		T* instance = new T();
 		instance->gameObject = noDel_ptr<GameObject>(this);
-		instance->SetObjectID(GetObjectID());
 		if(transform != nullptr) instance->transform = transform;
 		components.emplace_back(instance);
 		isAddNewComponent = true;

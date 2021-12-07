@@ -27,6 +27,7 @@
 #include <string>
 #include <time.h>
 #include <vector>
+#include <unordered_map>
 #include <locale.h>
 #include <mmsystem.h>
 
