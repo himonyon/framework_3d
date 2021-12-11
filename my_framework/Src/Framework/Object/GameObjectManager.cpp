@@ -175,10 +175,16 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 		else if (com->type == eComponentType::Animator) umap = &umAnimator;
 		else continue;
 		
-		for (auto& m : *umap) {
-			if (com->GetInstanceID() == m.first) {
-				umap->erase(m.first);
+		auto itr = umap->begin();
+		while (itr != umap->end()) {
+			if (com->GetInstanceID() == itr->first) {
+				auto nextItr = std::next(itr, 1);
+				umap->erase(itr->first);
+				itr = nextItr;
 				if (isOnce) break;
+			}
+			else {
+				++itr;
 			}
 		}
 	}
