@@ -34,7 +34,6 @@ bool SceneTitle::Initialize() {
 	pText = CreateObject(500, 50, 0);;
 	pText->AddComponent<Font>();
 
-
 	//ƒTƒEƒ“ƒh
 	pSound0 = CreateSound(L"Data/Sound/title_bgm.wav");
 	pSound0->Play();
@@ -49,7 +48,7 @@ void SceneTitle::Terminate() {
 void SceneTitle::Execute() {
 	int aa = 99;
 
-	pText->GetComponent<Font>()->Print(500, 50, L"aloke %d", aa);
+	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 
 	if (Keyboard::Trg(DIK_SPACE)) {

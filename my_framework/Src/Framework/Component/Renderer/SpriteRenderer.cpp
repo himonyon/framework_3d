@@ -141,7 +141,7 @@ void SpriteRenderer::SetUpSpriteRenderer(float sizeX, float sizeY, noDel_ptr<Spr
 
 	if (sprite != nullptr) {
 		pRenderSprite = sprite;
-		SetDefaultState();
+		SetDefaultUV();
 	}
 }
 
@@ -239,10 +239,11 @@ void SpriteRenderer::SetColor(stColor4 color) {
 		this->vtx[i].a = color.a;
 	}
 }
-void SpriteRenderer::SetDefaultState() {
+void SpriteRenderer::SetDefaultUV() {
 	if (pRenderSprite == NULL) return; //スプライトがない場合return
 	for (int i = 0; i < Sprite::VertexNum; i++) {
-		vtx[i] = pRenderSprite->GetVertexState(i);
+		vtx[i].u = pRenderSprite->GetVertexState(i).u;
+		vtx[i].v = pRenderSprite->GetVertexState(i).v;
 	}
 }
 void SpriteRenderer::SetRenderPriority(float value) {

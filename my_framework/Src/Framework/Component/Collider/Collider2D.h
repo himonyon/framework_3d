@@ -17,7 +17,7 @@ public:
 	std::vector<noDel_ptr<Collider2D>> hitTriggers;
 
 	//前フレームで衝突したコライダー
-	std::vector<noDel_ptr<Collider2D>> b_hitCollisions; 
+	std::vector<noDel_ptr<Collider2D>> b_hitCollisions;
 	std::vector<noDel_ptr<Collider2D>> b_hitTriggers;
 
 public:
@@ -29,9 +29,13 @@ public:
 	void SetUpCollider2D(float sizeX, float sizeY, bool collision);
 
 	//コンポーネント処理
+	void Execute();
 	void Execute(noDel_ptr<Collider2D> hitCollider) override;
 	void AddHitCollisions(noDel_ptr<Collider2D> hitColider);
 	void AddHitTriggers(noDel_ptr<Collider2D> hitColider);
+
+	//当たり状態のクリア
+	void ClearHitState();
 
 private:
 	void IsCollide(noDel_ptr<Collider2D> hitColider);

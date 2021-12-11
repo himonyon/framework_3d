@@ -13,9 +13,6 @@ public:
 	//座標、回転、スケール変換構造体
 	noDel_ptr<Transform> transform = 0;
 
-	//コンポーネントが新たに追加されたか
-	bool isAddNewComponent = false;
-
 	//登録されたコンポーネント
 	std::vector<Component*> components;
 
@@ -26,7 +23,7 @@ private:
 
 public:
 	GameObject();
-	~GameObject(void); 
+	~GameObject(void);
 
 	//オブジェクトの破棄
 	void Destroy(noDel_ptr<GameObject> obj = nullptr);
@@ -42,16 +39,14 @@ public:
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
 		noDel_ptr<Transform> parent = nullptr, bool local = false);
 
-
 	//コンポーネントの追加
 	template<class T>
 	void AddComponent() {
 		T* instance = new T();
 		instance->gameObject = noDel_ptr<GameObject>(this);
-		if(transform != nullptr) instance->transform = transform;
+		if (transform != nullptr) instance->transform = transform;
 		components.emplace_back(instance);
-		isAddNewComponent = true;
-		SceneManager::GetScene(belongSceneType)->SetAddComponentTrigger();
+		SceneManager::GetScene(belongSceneType)->RegistComponent(noDel_ptr<Component>(instance));
 	}
 
 	//コンポーネントの取得
@@ -71,6 +66,7 @@ public:
 	//getter, setter
 	void SetObjEnable(bool flag); //実行状態の設定
 	bool IsObjEnable(); //実行状態になっているかどうか
+
 	void SetSceneType(int value) { belongSceneType = value; }
 	int GetSceneType() { return belongSceneType; }
 };

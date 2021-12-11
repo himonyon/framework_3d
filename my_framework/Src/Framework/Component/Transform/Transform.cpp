@@ -50,6 +50,7 @@ void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> p
 	b_scale = scale;
 
 	if (parent != nullptr) {
+		SetParent(parent);
 		localPosition = position - parent->position;
 	}
 	else {

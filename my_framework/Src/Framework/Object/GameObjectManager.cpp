@@ -9,15 +9,6 @@ GameObjectManager::~GameObjectManager() {
 }
 
 void GameObjectManager::Execute() {
-	//コンポーネントを追加
-	if (isAddComponent){
-		for (auto& obj : umObjects) {
-			if (obj.second->isAddNewComponent) {
-				RegistComponent(noDel_ptr<GameObject>(obj.second));
-			}
-		}
-	}
-
 	//BehaviourのStart関数実行
 	if (isStartFucnEnable) {
 		for (auto& bh : umBehaviour) {
@@ -47,9 +38,11 @@ void GameObjectManager::Execute() {
 			if (com->type == eComponentType::Collider) {
 				noDel_ptr<Component> col = noDel_ptr<Component>(com);
 				if (col->IsEnable() == false) continue;
+				col->Execute();
 				for (auto& c2d : umCollider2D) {
 					if (!CheckComponentEnable(c2d.second)) continue;
 					if (col == c2d.second) continue;
+					c2d.second->Execute();
 					col->Execute(static_noDel_cast<Collider2D>(c2d.second));
 				}
 			}
@@ -104,18 +97,16 @@ void GameObjectManager::Render() {
 }
 
 //オブジェクトの作成
-//空オブジェクト
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent, bool local) {
 	GameObject* instance = new GameObject();
 	instance->SetSceneType(sceneType);
 	//Transformの作成
 	instance->AddComponent<Transform>();
 	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x,y,z,parent);
+	instance->transform->SetUpTransform(x, y, z, parent);
 	umObjects[instance->GetInstanceID()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
-//スプライトオブジェクト
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float width, float height,
 	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, bool local)
 {
@@ -131,8 +122,7 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float wi
 	umObjects[instance->GetInstanceID()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
-//メッシュオブジェクト
-noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, 
+noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, bool local)
 {
 	GameObject* instance = new GameObject();
@@ -163,6 +153,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 			for (int i = 0; i < v2DRenderer.size(); i++) {
 				if (v2DRenderer[i]->GetInstanceID() == com->GetInstanceID()) {
 					v2DRenderer.erase(v2DRenderer.begin() + i);
+					isSortEnable = true;
 					break;
 				}
 			}
@@ -177,7 +168,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 		}
 		else if (com->type == eComponentType::Animator) umap = &umAnimator;
 		else continue;
-		
+
 		auto itr = umap->begin();
 		while (itr != umap->end()) {
 			if (com->GetInstanceID() == itr->first) {
@@ -194,31 +185,28 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 }
 
 //コンポーネントの登録と各種初期設定(コンストラクタ時には読み取れないgameObjectが使えるためここで設定)
-void GameObjectManager::RegistComponent(noDel_ptr<GameObject> obj) {
+void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 	std::unordered_map<int, noDel_ptr<Component>>* umap = nullptr;
-	for (Component* com : obj->components) {
-		if (com->IsRegisted()) continue;
-		com->SetRegistState(true); //登録状況を変更
-		if (com->type == eComponentType::Transform) umap = &umTransform;
-		else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
-			v2DRenderer.emplace_back(com);
-			isSortEnable = true;
-			continue;
-		}
-		else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;
-		else if (com->type == eComponentType::Collider) umap = &umCollider2D;
-		else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
-		else if (com->type == eComponentType::Behaviour) {
-			umap = &umBehaviour;
-			isStartFucnEnable = true;
-			MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"Start");
-		}
-		else if (com->type == eComponentType::Animator) umap = &umAnimator;
-		else continue;
-
-		(*umap)[com->GetInstanceID()] = noDel_ptr<Component>(com);
+	if (com->IsRegisted()) return;
+	com->SetRegistState(true); //登録状況を変更
+	if (com->type == eComponentType::Transform) umap = &umTransform;
+	else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
+		v2DRenderer.emplace_back(com);
+		isSortEnable = true;
+		return;
 	}
-	obj->isAddNewComponent = false;
+	else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;
+	else if (com->type == eComponentType::Collider) umap = &umCollider2D;
+	else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
+	else if (com->type == eComponentType::Behaviour) {
+		umap = &umBehaviour;
+		isStartFucnEnable = true;
+		MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"Start");
+	}
+	else if (com->type == eComponentType::Animator) umap = &umAnimator;
+	else return;
+
+	(*umap)[com->GetInstanceID()] = com;
 }
 
 //コンポーネント有効無効判定
@@ -257,6 +245,6 @@ void GameObjectManager::RenderOrderSort(int start, int end) {
 
 	// 左側再帰
 	RenderOrderSort(start, left - 1);
-	
+
 	RenderOrderSort(right + 1, end);
 }

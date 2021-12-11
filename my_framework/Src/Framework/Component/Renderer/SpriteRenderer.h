@@ -45,7 +45,7 @@ public:
 	void SetColor(float r, float g, float b, float a);
 	void SetColor(stColor4 color);
 
-	void SetDefaultState(); //スプライトの状態を初期状態に戻す(ColorとUV)
+	void SetDefaultUV(); //スプライトの状態を初期状態に戻す(ColorとUV)
 
 	void SetRenderPriority(float value); //描画順位の設定
 	float GetRenderPriority(); //描画順位の所得

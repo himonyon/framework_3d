@@ -47,38 +47,10 @@ void Collider2D::SetUpCollider2D(float sizeX, float sizeY, bool collision) {
 	this->isCollision = collision;
 }
 
+void Collider2D::Execute() {
+	ClearHitState();
+}
 void Collider2D::Execute(noDel_ptr<Collider2D> hitCollider) {
-	//前フレームでの衝突をリセット&beforeCollsionの更新
-	for (auto& m : messages) {
-		if (m == L"Clear") {
-			b_hitCollisions.clear();
-			b_hitTriggers.clear();
-
-			b_hitCollisions.resize(hitCollisions.size());
-			b_hitTriggers.resize(hitTriggers.size());
-
-			std::copy(hitCollisions.begin(), hitCollisions.end(), b_hitCollisions.begin());
-			std::copy(hitTriggers.begin(), hitTriggers.end(), b_hitTriggers.begin());
-
-			if (b_hitCollisions.size() != 0) {
-				for (auto& com : gameObject->components) {
-					if (com->type == eComponentType::Behaviour) 
-						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"CollisionExit");
-				}
-			}
-			if (b_hitTriggers.size() != 0) {
-				for (auto& com : gameObject->components) {
-					if (com->type == eComponentType::Behaviour)
-						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"TriggerExit");
-				}
-			}
-
-			hitCollisions.clear();
-			hitTriggers.clear();
-			messages.clear();
-		}
-	}
-
 	//当たり判定チェック
 	IsCollide(hitCollider);
 }
@@ -176,7 +148,7 @@ void Collider2D::IsCollide(noDel_ptr<Collider2D> hitCollider)
 	//オブジェクトにメッセージ送信
 	for (auto& com : gameObject->components) {
 		if (com->type == eComponentType::Behaviour && com->IsEnable()) {
-			if(_collision) AddHitCollisions(hitCollider);
+			if (_collision) AddHitCollisions(hitCollider);
 			else AddHitTriggers(hitCollider);
 			MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), mes);
 		}
@@ -201,4 +173,37 @@ void Collider2D::AddHitTriggers(noDel_ptr<Collider2D> hitColider) {
 		if (v == hitColider) return;
 	}
 	hitTriggers.emplace_back(hitColider);
+}
+
+void Collider2D::ClearHitState() {
+	//前フレームでの衝突をリセット&beforeCollsionの更新
+	for (auto& m : messages) {
+		if (m == L"Clear") {
+			b_hitCollisions.clear();
+			b_hitTriggers.clear();
+
+			b_hitCollisions.resize(hitCollisions.size());
+			b_hitTriggers.resize(hitTriggers.size());
+
+			std::copy(hitCollisions.begin(), hitCollisions.end(), b_hitCollisions.begin());
+			std::copy(hitTriggers.begin(), hitTriggers.end(), b_hitTriggers.begin());
+
+			if (b_hitCollisions.size() != 0) {
+				for (auto& com : gameObject->components) {
+					if (com->type == eComponentType::Behaviour)
+						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"CollisionExit");
+				}
+			}
+			if (b_hitTriggers.size() != 0) {
+				for (auto& com : gameObject->components) {
+					if (com->type == eComponentType::Behaviour)
+						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"TriggerExit");
+				}
+			}
+
+			hitCollisions.clear();
+			hitTriggers.clear();
+			messages.clear();
+		}
+	}
 }
