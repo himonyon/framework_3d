@@ -83,9 +83,9 @@ void GameObjectManager::Execute() {
 	}
 
 	//スプライトの描画順の変更
-	if (isSpriteSortEnable) {
+	if (isSortEnable) {
 		RenderOrderSort(0, (int)v2DRenderer.size() - 1);
-		isSpriteSortEnable = false;
+		isSortEnable = false;
 	}
 }
 
@@ -104,6 +104,7 @@ void GameObjectManager::Render() {
 }
 
 //オブジェクトの作成
+//空オブジェクト
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent, bool local) {
 	GameObject* instance = new GameObject();
 	instance->SetSceneType(sceneType);
@@ -114,6 +115,7 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	umObjects[instance->GetInstanceID()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
+//スプライトオブジェクト
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float width, float height,
 	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, bool local)
 {
@@ -129,6 +131,7 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float wi
 	umObjects[instance->GetInstanceID()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
+//メッシュオブジェクト
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, 
 	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, bool local)
 {
@@ -199,6 +202,7 @@ void GameObjectManager::RegistComponent(noDel_ptr<GameObject> obj) {
 		if (com->type == eComponentType::Transform) umap = &umTransform;
 		else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
 			v2DRenderer.emplace_back(com);
+			isSortEnable = true;
 			continue;
 		}
 		else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;

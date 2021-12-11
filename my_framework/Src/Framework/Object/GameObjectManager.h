@@ -13,7 +13,7 @@ private:
 
 	bool isAddComponent = false; //新たにコンポーネントを追加したか
 	bool isStartFucnEnable = false; //スタート関数を実行するか
-	bool isSpriteSortEnable = false; //スプライトのソートを実行するか
+	bool isSortEnable = false; //スプライトのソートを実行するか
 
 public:
 	GameObjectManager() {};
@@ -55,7 +55,7 @@ public:
 	void SetSceneType(int val) { sceneType = val; }
 	void SetAddComponentTrigger() { isAddComponent = true; }
 	void SetStartFuncEnable() { isStartFucnEnable = true; }
-	void SetSpriteSortEnable() { isSpriteSortEnable = true; }
+	void SetSortEnable() { isSortEnable = true; }
 
 private:
 	std::unordered_map<int, GameObject*> umObjects;

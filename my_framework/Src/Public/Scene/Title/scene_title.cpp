@@ -53,11 +53,9 @@ void SceneTitle::Execute() {
 
 
 	if (Keyboard::Trg(DIK_SPACE)) {
-		pObj1->transform->position.z = 10;
 		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(100);
 	}
 	if (Keyboard::Trg(DIK_C)) {
-		pObj1->transform->position.z = -10;
 		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(-100);
 	}
 

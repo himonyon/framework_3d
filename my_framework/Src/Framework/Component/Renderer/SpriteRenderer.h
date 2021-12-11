@@ -28,10 +28,6 @@ private:
 	static UINT	VertexStrides;
 	static UINT	VertexOffsets;
 
-private:
-	int renderPriority = 0; //•`‰æ‡
-	bool sortSwitch = true; //•`‰æ‡‚ª•ÏX‚³‚ê‚½‚©‚Ç‚¤‚©
-
 public:
 	static bool Initialize();
 	static void Destroy();
@@ -51,10 +47,8 @@ public:
 
 	void SetDefaultState(); //ƒXƒvƒ‰ƒCƒg‚Ìó‘Ô‚ğ‰Šúó‘Ô‚É–ß‚·(Color‚ÆUV)
 
-	void SetRenderPriority(int value); //•`‰æ‡ˆÊ‚Ìİ’è
-	int GetRenderPriority(); //•`‰æ‡ˆÊ‚ÌŠ“¾
-	void SetSortSwitch(bool flag);
-	bool isSortSwitch(); //•`‰æ‡‚ª•ÏX‚³‚ç‚½‚©
+	void SetRenderPriority(float value); //•`‰æ‡ˆÊ‚Ìİ’è
+	float GetRenderPriority(); //•`‰æ‡ˆÊ‚ÌŠ“¾
 
 private:
 	void Render(void); //•`‰æ

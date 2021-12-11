@@ -144,6 +144,9 @@ void Font::RenderString() {
 	if (pTextFormat == NULL)return;
 
 	//•`‰æˆÊ’u‚ÌÝ’è
+	posX = transform->position.x;
+	posY = transform->position.y;
+
 	AdjustTextAlignment();
 	rect.left = rectL + posX;
 	rect.top = rectT + posY;
@@ -213,10 +216,22 @@ bool Font::Create(const WCHAR* fontname, float size) {
 	return true;
 }
 
+
+void Font::Print(const WCHAR* string, ...) {
+	if (string == NULL)return;
+	va_list	va;
+	va_start(va, string);
+	WCHAR buf[0x100];
+	vswprintf_s(buf, string, va);
+	va_end(va);
+
+	registerString(buf, (UINT32)wcslen(buf));
+}
+
 void Font::Print(float left, float top, eTextAlignment alignment, const WCHAR* string, ...) {
 	if (string == NULL)return;
-	posX = left;
-	posY = top;
+	transform->position.x = left;
+	transform->position.y = top;
 	alignment = alignment;
 	va_list	va;
 	va_start(va, string);
@@ -229,8 +244,8 @@ void Font::Print(float left, float top, eTextAlignment alignment, const WCHAR* s
 
 void Font::Print(float left, float top, const WCHAR* string, ...) {
 	if (string == NULL)return;
-	posX = left;
-	posY = top;
+	transform->position.x = left;
+	transform->position.y = top;
 	va_list	va;
 	va_start(va, string);
 	WCHAR buf[0x100];

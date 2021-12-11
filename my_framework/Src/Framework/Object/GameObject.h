@@ -31,9 +31,17 @@ public:
 	//オブジェクトの破棄
 	void Destroy(noDel_ptr<GameObject> obj = nullptr);
 
-	//getter, setter
-	void SetObjEnable(bool flag); //実行状態の設定
-	bool IsObjEnable(); //実行状態になっているかどうか
+	//オブジェクトの作成
+	//空オブジェクト作成
+	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
+		noDel_ptr<Transform> parent = nullptr, bool local = false);
+	//スプライトオブジェクト作成
+	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+		noDel_ptr<Transform> parent = nullptr, bool local = false);
+	//メッシュオブジェクト作成
+	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		noDel_ptr<Transform> parent = nullptr, bool local = false);
+
 
 	//コンポーネントの追加
 	template<class T>
@@ -60,6 +68,9 @@ public:
 		return nullptr;
 	}
 
+	//getter, setter
+	void SetObjEnable(bool flag); //実行状態の設定
+	bool IsObjEnable(); //実行状態になっているかどうか
 	void SetSceneType(int value) { belongSceneType = value; }
 	int GetSceneType() { return belongSceneType; }
 };

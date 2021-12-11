@@ -123,9 +123,6 @@ void SpriteRenderer::Destroy() {
 SpriteRenderer::SpriteRenderer() 
 	: Component(eComponentType::SpriteRenderer)
 {
-	renderPriority = 0;
-	sortSwitch = true;
-
 	this->sizeX = sizeX;
 	this->sizeY = sizeY;
 
@@ -248,16 +245,10 @@ void SpriteRenderer::SetDefaultState() {
 		vtx[i] = pRenderSprite->GetVertexState(i);
 	}
 }
-void SpriteRenderer::SetRenderPriority(int value) {
-	if (renderPriority != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSpriteSortEnable();
-	renderPriority = value;
+void SpriteRenderer::SetRenderPriority(float value) {
+	if (transform->position.z != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
+	transform->position.z = value;
 }
-int SpriteRenderer::GetRenderPriority() {
-	return renderPriority;
-}
-void SpriteRenderer::SetSortSwitch(bool flag) {
-	sortSwitch = flag;
-}
-bool SpriteRenderer::isSortSwitch() {
-	return sortSwitch;
+float SpriteRenderer::GetRenderPriority() {
+	return transform->position.z;
 }

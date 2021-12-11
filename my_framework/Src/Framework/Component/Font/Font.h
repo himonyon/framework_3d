@@ -57,6 +57,7 @@ public:
 	void Execute() override;
 
 	void RenderString();
+	void Print(const WCHAR* string, ...);
 	void Print(float left, float top, const WCHAR* string, ...);
 	void Print(float left, float top, eTextAlignment alignment, const WCHAR* string, ...);
 	void SetRect();
