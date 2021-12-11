@@ -14,6 +14,7 @@ private:
 	noDel_ptr<GameObject> pObj4;
 
 	noDel_ptr<GameObject> pObj5;
+	noDel_ptr<GameObject> pText;
 
 	noDel_ptr<Sound> pSound0;
 

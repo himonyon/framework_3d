@@ -19,6 +19,7 @@ enum class eComponentType {
 	Collider,
 	Physics,
 	Animator,
+	Font,
 };
 
 class Component : public Object, public MessageSystem {

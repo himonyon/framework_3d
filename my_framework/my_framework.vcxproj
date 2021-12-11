@@ -150,12 +150,12 @@
     <ClInclude Include="Src\Framework\Component\Behaviour\Behaviour.h" />
     <ClInclude Include="Src\Framework\Component\Collider\Collider2D.h" />
     <ClInclude Include="Src\Framework\Component\Component.h" />
+    <ClInclude Include="Src\Framework\Component\Font\Font.h" />
     <ClInclude Include="Src\Framework\Component\Physics\Physics2D.h" />
     <ClInclude Include="Src\Framework\Component\Renderer\MeshRenderer.h" />
     <ClInclude Include="Src\Framework\Component\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Src\Framework\Component\Transform\Transform.h" />
     <ClInclude Include="Src\Framework\Direct3D\Direct3D.h" />
-    <ClInclude Include="Src\Framework\Font\Font.h" />
     <ClInclude Include="Src\Framework\GraphicsUtility.h" />
     <ClInclude Include="Src\Framework\Input\DirectInput.h" />
     <ClInclude Include="Src\Framework\Input\Input.h" />
@@ -194,12 +194,12 @@
     <ClCompile Include="Src\Framework\Component\Behaviour\Behaviour.cpp" />
     <ClCompile Include="Src\Framework\Component\Collider\Collider2D.cpp" />
     <ClCompile Include="Src\Framework\Component\Component.cpp" />
+    <ClCompile Include="Src\Framework\Component\Font\Font.cpp" />
     <ClCompile Include="Src\Framework\Component\Physics\Physics2D.cpp" />
     <ClCompile Include="Src\Framework\Component\Renderer\MeshRenderer.cpp" />
     <ClCompile Include="Src\Framework\Component\Renderer\SpriteRenderer.cpp" />
     <ClCompile Include="Src\Framework\Component\Transform\Transform.cpp" />
     <ClCompile Include="Src\Framework\Direct3D\Direct3D.cpp" />
-    <ClCompile Include="Src\Framework\Font\Font.cpp" />
     <ClCompile Include="Src\Framework\Input\DirectInput.cpp" />
     <ClCompile Include="Src\Framework\Input\Input.cpp" />
     <ClCompile Include="Src\Framework\Input\Joystick.cpp" />

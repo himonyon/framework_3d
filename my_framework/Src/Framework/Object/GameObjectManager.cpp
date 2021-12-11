@@ -84,7 +84,7 @@ void GameObjectManager::Execute() {
 
 	//スプライトの描画順の変更
 	if (isSpriteSortEnable) {
-		RenderOrderSort(0, (int)vSpriteRenderer.size() - 1);
+		RenderOrderSort(0, (int)v2DRenderer.size() - 1);
 		isSpriteSortEnable = false;
 	}
 }
@@ -97,7 +97,7 @@ void GameObjectManager::Render() {
 	}
 
 	///スプライトの描画
-	for (auto& sprite : vSpriteRenderer) {
+	for (auto& sprite : v2DRenderer) {
 		if (!CheckComponentEnable(sprite)) continue;
 		sprite->Execute();
 	}
@@ -156,10 +156,10 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 	bool isOnce = true;
 	for (Component* com : obj->components) {
 		if (com->type == eComponentType::Transform) umap = &umTransform;
-		else if (com->type == eComponentType::SpriteRenderer) {
-			for (int i = 0; i < vSpriteRenderer.size(); i++) {
-				if (vSpriteRenderer[i]->GetInstanceID() == com->GetInstanceID()) {
-					vSpriteRenderer.erase(vSpriteRenderer.begin() + i);
+		else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
+			for (int i = 0; i < v2DRenderer.size(); i++) {
+				if (v2DRenderer[i]->GetInstanceID() == com->GetInstanceID()) {
+					v2DRenderer.erase(v2DRenderer.begin() + i);
 					break;
 				}
 			}
@@ -197,8 +197,8 @@ void GameObjectManager::RegistComponent(noDel_ptr<GameObject> obj) {
 		if (com->IsRegisted()) continue;
 		com->SetRegistState(true); //登録状況を変更
 		if (com->type == eComponentType::Transform) umap = &umTransform;
-		else if (com->type == eComponentType::SpriteRenderer) {
-			vSpriteRenderer.emplace_back(com);
+		else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
+			v2DRenderer.emplace_back(com);
 			continue;
 		}
 		else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;
@@ -232,16 +232,16 @@ void GameObjectManager::RenderOrderSort(int start, int end) {
 	if (left >= right) return;
 
 	//走査を気にしてStaticCastにしている
-	int pivot = static_noDel_cast<SpriteRenderer>(vSpriteRenderer[left])->GetRenderPriority();
+	float pivot = v2DRenderer[left]->transform->position.z;
 
 	while (true) {
-		while (static_noDel_cast<SpriteRenderer>(vSpriteRenderer[left])->GetRenderPriority() < pivot) left++;
-		while (static_noDel_cast<SpriteRenderer>(vSpriteRenderer[right])->GetRenderPriority() > pivot) right--;
+		while (v2DRenderer[left]->transform->position.z < pivot) left++;
+		while (v2DRenderer[right]->transform->position.z > pivot) right--;
 
 		if (left < right) {
-			noDel_ptr<SpriteRenderer> temp = static_noDel_cast<SpriteRenderer>(vSpriteRenderer[left]);
-			vSpriteRenderer[left] = vSpriteRenderer[right];
-			vSpriteRenderer[right] = static_noDel_cast<Component>(temp);
+			noDel_ptr<Component> temp = v2DRenderer[left];
+			v2DRenderer[left] = v2DRenderer[right];
+			v2DRenderer[right] = temp;
 
 			left++;
 			right--;

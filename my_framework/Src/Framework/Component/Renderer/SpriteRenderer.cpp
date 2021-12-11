@@ -192,8 +192,6 @@ void SpriteRenderer::Render() {
 	//頂点座標の設定
 	SetVertexState();
 
-	if(vtx[1].x < 0 || vtx[0].x > WINDOW_WIDTH || vtx[0].y > WINDOW_HEIGHT || vtx[2].y < 0) return;
-
 	//頂点バッファの更新
 	Direct3D::getDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, vtx, 0, 0);
 

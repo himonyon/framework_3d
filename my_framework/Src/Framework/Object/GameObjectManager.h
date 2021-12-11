@@ -64,7 +64,7 @@ private:
 	std::unordered_map<int,noDel_ptr<Component>> umTransform;
 	std::unordered_map<int,noDel_ptr<Component>> umCollider2D;
 	std::unordered_map<int,noDel_ptr<Component>> umPhysics2D;
-	std::vector<noDel_ptr<Component>> vSpriteRenderer;
+	std::vector<noDel_ptr<Component>> v2DRenderer;
 	std::unordered_map<int,noDel_ptr<Component>> umMeshRenderer;
 	std::unordered_map<int,noDel_ptr<Component>> umBehaviour;
 	std::unordered_map<int,noDel_ptr<Component>> umAnimator;

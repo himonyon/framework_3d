@@ -28,8 +28,12 @@ bool SceneTitle::Initialize() {
 	//ビヘイビア
 	pObj1->AddComponent<Move>();
 	pObj1->AddComponent<Scale>();
+	pObj1->transform->position.z = 10;
 
 	pObj3 = CreateObject(100, 500, 60, 60, pTest_sp);
+	pText = CreateObject(500, 50, 0);;
+	pText->AddComponent<Font>();
+
 
 	//サウンド
 	pSound0 = CreateSound(L"Data/Sound/title_bgm.wav");
@@ -43,12 +47,17 @@ void SceneTitle::Terminate() {
 
 //処理
 void SceneTitle::Execute() {
-	Font::Print(200, 200, L"%d", Mouse::GetX());
+	int aa = 99;
+
+	pText->GetComponent<Font>()->Print(500, 50, L"aloke %d", aa);
+
 
 	if (Keyboard::Trg(DIK_SPACE)) {
+		pObj1->transform->position.z = 10;
 		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(100);
 	}
 	if (Keyboard::Trg(DIK_C)) {
+		pObj1->transform->position.z = -10;
 		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(-100);
 	}
 

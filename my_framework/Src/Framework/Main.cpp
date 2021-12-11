@@ -104,7 +104,6 @@ void Main::Execute() {
 //
 void Main::Render() {
 	SceneManager::GetMainScene()->Render();
-	Font::Render();
 }
 
 

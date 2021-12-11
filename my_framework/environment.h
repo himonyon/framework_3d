@@ -5,8 +5,6 @@
 #define SCREEN_HEIGHT (WINDOW_HEIGHT) //スクリーン高さ
 #define SCREEN_WIDTH_CENTER (SCREEN_WIDTH / 2) //スクリーン幅
 #define SCREEN_HEIGHT_CENTER (SCREEN_HEIGHT / 2) //スクリーン高さ
-#define FONT_STRING_MAX	(0x0400)	//1フレームで実行できるrenderの数
-#define FONT_CHARACTER_MAX	(0x2000)	//1フレームで描画できる文字の数
 
 
 #define DIRECTINPUT_VERSION 0x0800
@@ -76,6 +74,7 @@ using namespace DirectX;
 #include "Src/Framework/Component/Renderer/MeshRenderer.h"
 #include "Src/Framework/Component/Renderer/SpriteRenderer.h"
 #include "Src/Framework/Component/Behaviour/Behaviour.h"
+#include "Src/Framework/Component/Font/Font.h"
 
 //スプライトアニメーション
 #include "Src/Framework/Animation/SpriteAnimation.h"
@@ -95,9 +94,6 @@ using namespace DirectX;
 
 //タイマー
 #include "Src//Framework/Timer/Timer.h"
-
-//フォント
-#include "Src/Framework/Font/Font.h"
 
 //インプット
 #include "Src/Framework/Input/DirectInput.h"
