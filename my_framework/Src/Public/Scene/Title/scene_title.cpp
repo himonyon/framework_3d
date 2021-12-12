@@ -31,8 +31,10 @@ bool SceneTitle::Initialize() {
 	pObj1->transform->position.z = 10;
 
 	pObj3 = CreateObject(100, 500, 60, 60, pTest_sp);
-	pText = CreateObject(500, 50, 0);;
+
+	pText = CreateObject(500, 50, 0, nullptr, "text");;
 	pText->AddComponent<Font>();
+	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 	//ƒTƒEƒ“ƒh
 	pSound0 = CreateSound(L"Data/Sound/title_bgm.wav");
@@ -48,7 +50,6 @@ void SceneTitle::Terminate() {
 void SceneTitle::Execute() {
 	int aa = 99;
 
-	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 
 	if (Keyboard::Trg(DIK_SPACE)) {

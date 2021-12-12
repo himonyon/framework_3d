@@ -31,6 +31,11 @@ void GameObjectManager::Execute() {
 	}
 
 	//Physics&Collider
+	//衝突の解消
+	for (auto& c2d : umCollider2D) {
+		if (!CheckComponentEnable(c2d.second)) continue;
+		c2d.second->Execute();
+	}
 	//PhysicsがあるColliderをコンポーネント一覧から探し他のコライダーとの衝突を判定
 	for (auto& ph : umPhysics2D) {
 		if (!CheckComponentEnable(ph.second)) continue;
@@ -38,11 +43,9 @@ void GameObjectManager::Execute() {
 			if (com->type == eComponentType::Collider) {
 				noDel_ptr<Component> col = noDel_ptr<Component>(com);
 				if (col->IsEnable() == false) continue;
-				col->Execute();
 				for (auto& c2d : umCollider2D) {
 					if (!CheckComponentEnable(c2d.second)) continue;
 					if (col == c2d.second) continue;
-					c2d.second->Execute();
 					col->Execute(static_noDel_cast<Collider2D>(c2d.second));
 				}
 			}
@@ -56,13 +59,13 @@ void GameObjectManager::Execute() {
 	}
 
 	//Destroy
-	if (vDestroyID.size() != 0) {
-		for (int id : vDestroyID) {
-			PullOutComponent(noDel_ptr<GameObject>(umObjects[id]));
-			delete umObjects[id];
-			umObjects.erase(id);
+	if (vDestroyName.size() != 0) {
+		for (std::string name : vDestroyName) {
+			PullOutComponent(noDel_ptr<GameObject>(umObjects[name]));
+			delete umObjects[name];
+			umObjects.erase(name);
 		}
-		vDestroyID.clear();
+		vDestroyName.clear();
 	}
 
 	//オブジェクトのTransformを更新
@@ -97,20 +100,21 @@ void GameObjectManager::Render() {
 }
 
 //オブジェクトの作成
-noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent, bool local) {
-	GameObject* instance = new GameObject();
+noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent, std::string name) {
+	GameObject* instance = new GameObject(name);
 	instance->SetSceneType(sceneType);
 	//Transformの作成
 	instance->AddComponent<Transform>();
 	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
 	instance->transform->SetUpTransform(x, y, z, parent);
-	umObjects[instance->GetInstanceID()] = instance;
+	//オブジェクト登録
+	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float width, float height,
-	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, bool local)
+	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject();
+	GameObject* instance = new GameObject(name);
 	instance->SetSceneType(sceneType);
 	//Transformの作成
 	instance->AddComponent<Transform>();
@@ -119,13 +123,14 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float wi
 	//SpriteRendererの作成
 	instance->AddComponent<SpriteRenderer>();
 	instance->GetComponent<SpriteRenderer>()->SetUpSpriteRenderer(width, height, sprite);
-	umObjects[instance->GetInstanceID()] = instance;
+	//オブジェクト登録
+	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
-	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, bool local)
+	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject();
+	GameObject* instance = new GameObject(name);
 	instance->SetSceneType(sceneType);
 	//Transformの作成
 	instance->AddComponent<Transform>();
@@ -134,13 +139,18 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	//SpriteRendererの作成
 	instance->AddComponent<MeshRenderer>();
 	instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);
-	umObjects[instance->GetInstanceID()] = instance;
+	//オブジェクト登録
+	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
 
 //オブジェクトの破棄準備
-void GameObjectManager::ReserveDestroyObject(int objID) {
-	vDestroyID.emplace_back(objID);
+void GameObjectManager::ReserveDestroyObject(std::string name) {
+	vDestroyName.emplace_back(name);
+}
+
+noDel_ptr<GameObject> GameObjectManager::GetGameObject(std::string name) {
+	return noDel_ptr<GameObject>(umObjects[name]);
 }
 
 //配列から特定の要素を抜き出す

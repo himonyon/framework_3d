@@ -2,6 +2,8 @@
 #include "../../environment.h"
 
 void Scale::Start() {
+	pText = gameObject->FindGameObject("text");
+	pText->GetComponent<Font>()->Print(L"•ÏX‚µ‚½");
 }
 
 void Scale::Update() {

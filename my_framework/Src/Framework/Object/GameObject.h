@@ -17,12 +17,15 @@ public:
 	std::vector<Component*> components;
 
 private:
-	bool objEnable; //実行管理
+	//ゲームオブジェクト名
+	std::string name;
+	//実行管理
+	bool objEnable; 
 	//オブジェクトの所属シーン(eSceneTable)
 	int belongSceneType = 0;
 
 public:
-	GameObject();
+	GameObject(std::string name);
 	~GameObject(void);
 
 	//オブジェクトの破棄
@@ -31,13 +34,16 @@ public:
 	//オブジェクトの作成
 	//空オブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//スプライトオブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//メッシュオブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
+
+	//ゲームオブジェクトの検索
+	noDel_ptr<GameObject> FindGameObject(std::string name);
 
 	//コンポーネントの追加
 	template<class T>
@@ -69,4 +75,6 @@ public:
 
 	void SetSceneType(int value) { belongSceneType = value; }
 	int GetSceneType() { return belongSceneType; }
+
+	std::string GetName() const { return name; }
 };

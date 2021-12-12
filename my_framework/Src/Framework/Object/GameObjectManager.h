@@ -22,18 +22,18 @@ public:
 	void Render();
 
 	//オブジェクトの削除予約
-	void ReserveDestroyObject(int objID);
+	void ReserveDestroyObject(std::string name);
 
 	//オブジェクトクリエイタ
 	//空オブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//スプライトオブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//メッシュオブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 
 private:
 	//配列から特定のIDのコンポーネントを抜く
@@ -50,13 +50,16 @@ public:
 	//オブジェクトに追加されたコンポーネントをこのクラスの配列に格納
 	void RegistComponent(noDel_ptr<Component> com);
 
+	//ゲームオブジェクトを取得する
+	noDel_ptr<GameObject> GetGameObject(std::string name);
+
 	//getter,setter
 	void SetSceneType(int val) { sceneType = val; }
 	void SetStartFuncEnable() { isStartFucnEnable = true; }
 	void SetSortEnable() { isSortEnable = true; }
 
 private:
-	std::unordered_map<int, GameObject*> umObjects;
+	std::unordered_map<std::string, GameObject*> umObjects;
 
 	//コンポーネントの配列
 	std::unordered_map<int, noDel_ptr<Component>> umTransform;
@@ -68,5 +71,5 @@ private:
 	std::unordered_map<int, noDel_ptr<Component>> umAnimator;
 
 public:
-	std::vector<int> vDestroyID; //削除するオブジェクトID
+	std::vector<std::string> vDestroyName; //削除するオブジェクト名
 };
