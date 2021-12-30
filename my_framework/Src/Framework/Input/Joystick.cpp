@@ -46,7 +46,7 @@ float Joystick::GetRY() {
 bool Joystick::PovOn(int pov) {
 	//十字キー上と四角ボタンが０で被り、区別するため十字キーを+10000設定しているため-する
 	pov -= 10000;
-	return DirectInput::GetCurrentJoystick().rgdwPOV[0] == pov - 10000;
+	return DirectInput::GetCurrentJoystick().rgdwPOV[0] == pov;
 }
 bool Joystick::PovTrg(int pov) {
 	pov -= 10000;

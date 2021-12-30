@@ -245,7 +245,17 @@ void MeshRenderer::Render() {
 
 XMMATRIX MeshRenderer::GetPosMatrix() {
 	//現在の座標を頂点座標にセット
-	return XMMatrixTranslation(transform->position.x, -transform->position.y, transform->position.z);
+	stVector3 pos;
+	pos.x = transform->position.x;
+	pos.y = transform->position.y;
+	pos.z = transform->position.z;
+	//カメラ座標を加えてスクリーン座標を設定する
+	if (Camera::main != nullptr && this->gameObject->IsObjStatic() == false) {
+		pos.x -= Camera::main->transform->position.x;
+		pos.y -= Camera::main->transform->position.y;
+		pos.z -= Camera::main->transform->position.z;
+	}
+	return XMMatrixTranslation(pos.x, -pos.y, pos.z);
 }
 XMMATRIX MeshRenderer::GetRotMatrix() {\
 	XMMATRIX mPitch, mHeading, mBank;//回転行列用

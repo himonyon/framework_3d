@@ -17,7 +17,7 @@ public:
 	std::vector<noDel_ptr<Collider2D>> hitTriggers;
 
 	//前フレームで衝突したコライダー
-	std::vector<noDel_ptr<Collider2D>> b_hitCollisions;
+	std::vector<noDel_ptr<Collider2D>> b_hitCollisions; 
 	std::vector<noDel_ptr<Collider2D>> b_hitTriggers;
 
 public:

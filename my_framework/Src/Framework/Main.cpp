@@ -5,6 +5,8 @@ bool performanceCounter;
 LARGE_INTEGER freq, startCount, finishCount;
 float count;
 
+std::mutex mem_mutex_;
+
 bool Main::Init(void* hWnd) {
 	//パフォーマンスカウンタの初期化
 	memset(&freq, 0, sizeof(freq));
@@ -14,9 +16,7 @@ bool Main::Init(void* hWnd) {
 
 	performanceCounter = QueryPerformanceFrequency(&freq);
 
-	//-------------------------
-	//------------------------
-
+	//フレームワーク-------------------------------
 	Direct3D::InitD3D(hWnd);
 	Font::Initialize(hWnd);
 	Shader::InitShader();
@@ -35,8 +35,9 @@ bool Main::Init(void* hWnd) {
 //
 // 
 void Main::Destroy() {
-	SceneManager::DeleteScene();
 
+	//フレームワーク-------------------------------
+	InputConfig::DestroyConfig();
 	DirectInput::DestroyInput();
 	Sound::DestroySound();
 	SpriteRenderer::Destroy();
@@ -97,13 +98,13 @@ void Main::App() {
 void Main::Execute() {
 	DirectInput::KeyManager();
 
-	SceneManager::GetMainScene()->Execute();
+	if(SceneManager::GetMainScene() != nullptr) SceneManager::GetMainScene()->Execute();
 }
 //
 //
 //
 void Main::Render() {
-	SceneManager::GetMainScene()->Render();
+	if (SceneManager::GetMainScene() != nullptr)SceneManager::GetMainScene()->Render();
 }
 
 
@@ -149,7 +150,6 @@ void AddSpriteFile(const WCHAR* texture_file, const WCHAR* sprite_name, float le
 	}
 
 	wcscat_s(_filename, L".spr");
-
 	FILE* fp = NULL;
 	_wfopen_s(&fp, _filename, L"a");
 	if (fp == NULL) {

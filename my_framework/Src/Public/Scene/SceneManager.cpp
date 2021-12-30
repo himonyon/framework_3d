@@ -22,25 +22,48 @@ void SceneManager::SwitchScene() {
 		return;
 	}
 
-	//シーン削除
-	DeleteMainScene();
+	if (pReservedScene == nullptr) {
+		//シーンの作成
+		CreateReserveScene(reservedScene);
+	}
+	else {
+		if (pReservedScene->isInitialized) {
+			//遷移予定のシーンの種類(reservedScene)がすでに作成している予約シーンの種類と違えば処理しない
+			if (pReservedScene->GetSceneType() != (int)reservedScene) return;
+
+			//シーン削除
+			DeleteMainScene();
+
+			//現在のシーンを設定
+			currentScene = reservedScene;
+
+			//メインのシーンに予約シーンを渡す
+			pScene = pReservedScene;
+
+			//予約シーンはNullにする
+			pReservedScene = nullptr;
+		}
+	}
+}
+
+//予約シーンの作成
+void SceneManager::CreateReserveScene(eSceneTable scene) {
+	if (pReservedScene != nullptr)	return;
 
 	//シーンの作成
-	switch (reservedScene)
+	switch (scene)
 	{
-	case eSceneTable::Title: pScene = new SceneTitle(); break;
-	case eSceneTable::Game:	pScene = new SceneGame(); break;
+	case eSceneTable::Title: pReservedScene = new SceneTitle(); break;
+	case eSceneTable::Game:	pReservedScene = new SceneGame(); break;
 	}
 
-	//現在のシーンを設定
-	currentScene = reservedScene;
-
 	//新たに作成したシーンのオブジェクトマネージャーにシーンの種類を渡す
-	pScene->SetSceneType((int)currentScene);
-
+	pReservedScene->SetSceneType((int)scene);
 
 	//シーンの初期化
-	pScene->Initialize();
+	std::thread th(&Scene::Initialize, pReservedScene);
+
+	th.detach();
 }
 
 //シーンの削除
@@ -83,5 +106,7 @@ void SceneManager::DeleteReserveScene() {
 
 //シーンの取得
 Scene*& SceneManager::GetScene(int scene) {
+	if (pScene != NULL && pScene->GetSceneType() == scene) return pScene;
+	else if(pReservedScene != NULL && pReservedScene->GetSceneType() == scene) return pReservedScene;
 	return pScene;
 }

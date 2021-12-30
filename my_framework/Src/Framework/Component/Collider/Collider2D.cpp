@@ -148,7 +148,7 @@ void Collider2D::IsCollide(noDel_ptr<Collider2D> hitCollider)
 	//オブジェクトにメッセージ送信
 	for (auto& com : gameObject->components) {
 		if (com->type == eComponentType::Behaviour && com->IsEnable()) {
-			if (_collision) AddHitCollisions(hitCollider);
+			if(_collision) AddHitCollisions(hitCollider);
 			else AddHitTriggers(hitCollider);
 			MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), mes);
 		}

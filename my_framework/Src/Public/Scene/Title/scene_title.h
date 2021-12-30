@@ -16,11 +16,11 @@ private:
 	noDel_ptr<GameObject> pObj5;
 	noDel_ptr<GameObject> pText;
 
-	noDel_ptr<Sound> pSound0;
+	std::unique_ptr<Sound> pSound0;
 
 private:
 	//‰Šú‰»
-	bool Initialize();
+	void Initialize();
 
 	//íœ
 	void Terminate();

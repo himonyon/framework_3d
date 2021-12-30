@@ -32,7 +32,10 @@ public:
 	SceneManager();
 	~SceneManager();
 
-	//シーンの予約
+	//予約シーンの作成
+	static void CreateReserveScene(eSceneTable scene);
+
+	//シーンの切り替え予約
 	static void SwitchScene(eSceneTable scene);
 	//シーンの切り替え
 	static void SwitchScene();
@@ -43,9 +46,8 @@ public:
 	static void DeleteReserveScene();
 
 	//Getter,Setter
-	
 	/// <summary>
-	/// 引数の列挙のintと一致する値(sceneType)を持つシーンを返す
+	/// 引数の列挙のintと一致する値を持つシーンを返す
 	/// </summary>
 	static Scene*& GetScene(int scene);
 

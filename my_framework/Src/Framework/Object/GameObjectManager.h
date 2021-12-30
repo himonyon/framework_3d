@@ -55,6 +55,7 @@ public:
 
 	//getter,setter
 	void SetSceneType(int val) { sceneType = val; }
+	int GetSceneType() const { return sceneType; }
 	void SetStartFuncEnable() { isStartFucnEnable = true; }
 	void SetSortEnable() { isSortEnable = true; }
 

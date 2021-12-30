@@ -85,3 +85,7 @@ void Behaviour::Execute(int state) {
 		Update();
 	}
 }
+
+noDel_ptr<Sprite> Behaviour::CreateSprite(Sprite* sprite) {
+	return SceneManager::GetScene(gameObject->GetSceneType())->CreateSprite(sprite);
+}

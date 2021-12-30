@@ -7,7 +7,7 @@ GameObject::GameObject(std::string name) {
 	else this->name = name;
 }
 
- GameObject::~GameObject() {
+GameObject::~GameObject() {
 	for (auto& com : components) {
 		delete com;
 	}

@@ -70,11 +70,9 @@ void GameObjectManager::Execute() {
 
 	//オブジェクトのTransformを更新
 	for (auto& tr : umTransform) {
-		if (!CheckComponentEnable(tr.second)) continue;
 		tr.second->Execute((int)eTransformState::ConvertLocalToGlobal);
 	}
 	for (auto& tr : umTransform) {
-		if (!CheckComponentEnable(tr.second)) continue;
 		tr.second->Execute((int)eTransformState::UpdateRelativeState);
 	}
 

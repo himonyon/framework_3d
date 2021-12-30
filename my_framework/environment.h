@@ -26,6 +26,8 @@
 #include <time.h>
 #include <vector>
 #include <unordered_map>
+#include <mutex>
+#include <thread>
 #include <locale.h>
 #include <mmsystem.h>
 
@@ -75,6 +77,7 @@ using namespace DirectX;
 #include "Src/Framework/Component/Renderer/SpriteRenderer.h"
 #include "Src/Framework/Component/Behaviour/Behaviour.h"
 #include "Src/Framework/Component/Font/Font.h"
+#include "Src/Framework/Component/Camera/Camera.h"
 
 //スプライトアニメーション
 #include "Src/Framework/Animation/SpriteAnimation.h"

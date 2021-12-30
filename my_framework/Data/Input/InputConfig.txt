@@ -1,8 +1,9 @@
-decide 57 302
-cancel 14 301
-cursorUp 200 10000 356
-cursorDown 208 28000 357
-cursorRight 205 19000 354
-cursorLeft 203 37000 355
-moveX 358 -30 32
-moveY 358 31 -17
+name decide 57 302 end
+name cancel 14 301 end
+name up 200 10000 356 end
+name down 208 28000 357 end
+name right 205 19000 354 end
+name left 203 37000 355 end
+name moveX 358 -30 32 end
+name moveY 358 31 -17 end
+name changeTab 313 53

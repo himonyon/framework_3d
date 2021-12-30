@@ -91,6 +91,9 @@
     <Filter Include="ソース ファイル\Src\Framework\Component\Font">
       <UniqueIdentifier>{62c95d0b-215f-4997-b52b-3a2aa5fb9bab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\Camera">
+      <UniqueIdentifier>{c926aec0-1316-4e1c-9a65-53c19cecda8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -228,6 +231,9 @@
     <ClInclude Include="Src\Framework\Component\Font\Font.h">
       <Filter>ソース ファイル\Src\Framework\Component\Font</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Camera\Camera.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp">
@@ -337,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="Src\Framework\Component\Font\Font.cpp">
       <Filter>ソース ファイル\Src\Framework\Component\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Camera\Camera.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

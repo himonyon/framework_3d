@@ -52,6 +52,7 @@ void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> p
 	if (parent != nullptr) {
 		SetParent(parent);
 		localPosition = position - parent->position;
+		if (parent->gameObject->IsObjStatic()) gameObject->SetObjStatic(true);
 	}
 	else {
 		localPosition = {0,0,0};
@@ -77,8 +78,16 @@ void Transform::Execute(int state) {
 }
 
 void Transform::SetRelativeState() {
+	
+	if (GetInstanceID() == 234) {
+		int a = 0;
+	}
 
 	for (noDel_ptr<Transform> child : pChildren) {
+
+		if (!child->IsEnable() || !child->gameObject->IsObjEnable()) {
+			continue;
+		}
 		//移動
 		child->position = position + (child->localPosition * scale); 
 		child->rotation = rotation + child->localRotation;
@@ -104,22 +113,20 @@ void Transform::ConvertLocalAndGlobal() {
 	stVector3 diff_localRot = localRotation - b_localRotation;
 	stVector3 diff_localScl = localScale - b_localScale;
 
-	if (pParent != nullptr) {
-		//互いの変更を反映する
-		if (diff_position != 0) localPosition += diff_position;
-		if (diff_rot != 0) localRotation += diff_rot;
-		if (diff_scale != 0) localScale += diff_scale;
-		if (diff_localPos != 0) position += diff_localPos;
-		if (diff_localRot != 0) rotation += diff_localRot;
-		if (diff_localScl != 0) scale += diff_localScl;
-	}
-
-	//変更があれば変更状態をOnにする
-	if (pChildren.size() != 0) {
-		if (diff_position != 0 || diff_rot != 0 || diff_scale != 0 ||
-			diff_localPos != 0 || diff_localRot != 0 || diff_localScl != 0) {
-			isChanged = true;
+	if (diff_position != 0 || diff_rot != 0 || diff_scale != 0 ||
+		diff_localPos != 0 || diff_localRot != 0 || diff_localScl != 0) {
+		if (pParent != nullptr) {
+			//互いの変更を反映する
+			if (diff_position != 0) localPosition += diff_position;
+			if (diff_rot != 0) localRotation += diff_rot;
+			if (diff_scale != 0) localScale += diff_scale;
+			if (diff_localPos != 0) position = pParent->position + localPosition;
+			if (diff_localRot != 0) rotation = pParent->rotation + localRotation;
+			if (diff_localScl != 0) scale = pParent->scale * localScale;
 		}
+
+		//変更があれば変更状態をOnにする
+		if (pChildren.size() != 0) isChanged = true;
 	}
 }
 
@@ -167,6 +174,20 @@ void Transform::SetParent(noDel_ptr<Transform> obj) {
 void Transform::SetPosition(float x, float y) {
 	position.x = x;
 	position.y = y;
+}
+void Transform::SetPosition(float x, float y, float z) {
+	position.x = x;
+	position.y = y;
+	position.z = z;
+}
+void Transform::SetLocalPosition(float x, float y) {
+	localPosition.x = x;
+	localPosition.y = y;
+}
+void Transform::SetLocalPosition(float x, float y, float z) {
+	localPosition.x = x;
+	localPosition.y = y;
+	localPosition.y = z;
 }
 void Transform::SetScale(float x, float y) {
 	scale.x = x;

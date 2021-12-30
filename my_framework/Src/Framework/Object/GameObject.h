@@ -20,9 +20,12 @@ private:
 	//ゲームオブジェクト名
 	std::string name;
 	//実行管理
-	bool objEnable; 
+	bool objEnable;
 	//オブジェクトの所属シーン(eSceneTable)
 	int belongSceneType = 0;
+
+	//静的なオブジェクトかどうか
+	bool isStaticObj = false;
 
 public:
 	GameObject(std::string name);
@@ -75,6 +78,9 @@ public:
 
 	void SetSceneType(int value) { belongSceneType = value; }
 	int GetSceneType() { return belongSceneType; }
+
+	void SetObjStatic(bool flag) { isStaticObj = flag; }
+	bool IsObjStatic() { return isStaticObj; }
 
 	std::string GetName() const { return name; }
 };

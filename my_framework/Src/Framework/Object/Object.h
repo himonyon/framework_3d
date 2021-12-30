@@ -17,4 +17,5 @@ public:
 	virtual ~Object() {};
 
 	int GetInstanceID() const { return instanceID; }
+
 };

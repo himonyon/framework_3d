@@ -44,6 +44,7 @@ public:
 	void SetSize(float width, float height);
 	void SetColor(float r, float g, float b, float a);
 	void SetColor(stColor4 color);
+	stColor4 GetColor();
 
 	void SetDefaultUV(); //スプライトの状態を初期状態に戻す(ColorとUV)
 

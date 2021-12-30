@@ -148,6 +148,7 @@
     <ClInclude Include="Src\Framework\Animation\SpriteAnimation.h" />
     <ClInclude Include="Src\Framework\Component\Animator\Animator.h" />
     <ClInclude Include="Src\Framework\Component\Behaviour\Behaviour.h" />
+    <ClInclude Include="Src\Framework\Component\Camera\Camera.h" />
     <ClInclude Include="Src\Framework\Component\Collider\Collider2D.h" />
     <ClInclude Include="Src\Framework\Component\Component.h" />
     <ClInclude Include="Src\Framework\Component\Font\Font.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Src\Framework\Animation\SpriteAnimation.cpp" />
     <ClCompile Include="Src\Framework\Component\Animator\Animaor.cpp" />
     <ClCompile Include="Src\Framework\Component\Behaviour\Behaviour.cpp" />
+    <ClCompile Include="Src\Framework\Component\Camera\Camera.cpp" />
     <ClCompile Include="Src\Framework\Component\Collider\Collider2D.cpp" />
     <ClCompile Include="Src\Framework\Component\Component.cpp" />
     <ClCompile Include="Src\Framework\Component\Font\Font.cpp" />

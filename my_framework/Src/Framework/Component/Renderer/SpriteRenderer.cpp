@@ -120,7 +120,7 @@ void SpriteRenderer::Destroy() {
 	SAFE_RELEASE(pConstantBuffer);
 }
 
-SpriteRenderer::SpriteRenderer() 
+SpriteRenderer::SpriteRenderer()
 	: Component(eComponentType::SpriteRenderer)
 {
 	this->sizeX = sizeX;
@@ -156,31 +156,37 @@ void SpriteRenderer::SetVertexState() {
 	float vtx_x = 0;
 	float vtx_y = 0;
 
-	stVector3* pos = &transform->position;
-	stVector3* scale = &transform->scale;
-	stVector3* rot = &transform->rotation;
+	stVector3 pos = transform->position;
+	stVector3 scale = transform->scale;
+	stVector3 rot = transform->rotation;
 
+	//カメラ座標を加えてスクリーン座標を設定する
+	if (Camera::main != nullptr && this->gameObject->IsObjStatic() == false) {
+		pos.x -= Camera::main->transform->position.x - SCREEN_WIDTH/2;
+		pos.y -= Camera::main->transform->position.y - SCREEN_HEIGHT / 2;
+		pos.z -= Camera::main->transform->position.z;
+	}
 
 	//各頂点の座標を設定
-	vtx_x = pos->x + (-sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (-sizeY * 0.5f) * scale->y;
-	vtx[0].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[0].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
+	vtx_x = pos.x + (-sizeX * 0.5f) * scale.x;
+	vtx_y = pos.y + (-sizeY * 0.5f) * scale.y;
+	vtx[0].x = (vtx_x - pos.x) * cosf(rot.z) - (vtx_y - pos.y) * sinf(rot.z) + pos.x;
+	vtx[0].y = (vtx_x - pos.x) * sinf(rot.z) + (vtx_y - pos.y) * cosf(rot.z) + pos.y;
 
-	vtx_x = pos->x + (+sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (-sizeY * 0.5f) * scale->y;
-	vtx[1].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[1].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
+	vtx_x = pos.x + (+sizeX * 0.5f) * scale.x;
+	vtx_y = pos.y + (-sizeY * 0.5f) * scale.y;
+	vtx[1].x = (vtx_x - pos.x) * cosf(rot.z) - (vtx_y - pos.y) * sinf(rot.z) + pos.x;
+	vtx[1].y = (vtx_x - pos.x) * sinf(rot.z) + (vtx_y - pos.y) * cosf(rot.z) + pos.y;
 
-	vtx_x = pos->x + (-sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
-	vtx[2].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[2].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
+	vtx_x = pos.x + (-sizeX * 0.5f) * scale.x;
+	vtx_y = pos.y + (+sizeY * 0.5f) * scale.y;
+	vtx[2].x = (vtx_x - pos.x) * cosf(rot.z) - (vtx_y - pos.y) * sinf(rot.z) + pos.x;
+	vtx[2].y = (vtx_x - pos.x) * sinf(rot.z) + (vtx_y - pos.y) * cosf(rot.z) + pos.y;
 
-	vtx_x = pos->x + (+sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
-	vtx[3].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[3].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
+	vtx_x = pos.x + (+sizeX * 0.5f) * scale.x;
+	vtx_y = pos.y + (+sizeY * 0.5f) * scale.y;
+	vtx[3].x = (vtx_x - pos.x) * cosf(rot.z) - (vtx_y - pos.y) * sinf(rot.z) + pos.x;
+	vtx[3].y = (vtx_x - pos.x) * sinf(rot.z) + (vtx_y - pos.y) * cosf(rot.z) + pos.y;
 }
 
 void SpriteRenderer::Render() {
@@ -238,6 +244,9 @@ void SpriteRenderer::SetColor(stColor4 color) {
 		this->vtx[i].b = color.b;
 		this->vtx[i].a = color.a;
 	}
+}
+stColor4 SpriteRenderer::GetColor() {
+	return stColor4{ vtx[0].r,vtx[0].g, vtx[0].b, vtx[0].a };
 }
 void SpriteRenderer::SetDefaultUV() {
 	if (pRenderSprite == NULL) return; //スプライトがない場合return

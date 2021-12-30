@@ -38,14 +38,10 @@ private:
 	WCHAR* ptr;
 	UINT32 count;
 
-	WCHAR* allocPtr = NULL;
-	WCHAR* currentPtr = NULL;
-
 	void registerString(const WCHAR* string, UINT32 count);
 	bool Create(const WCHAR* fontname, float size);
 
 	void AdjustTextAlignment();
-	float GetTextLength();
 
 public:
 	static bool Initialize(void* hdl);
@@ -60,6 +56,9 @@ public:
 	void Print(const WCHAR* string, ...);
 	void Print(float left, float top, const WCHAR* string, ...);
 	void Print(float left, float top, eTextAlignment alignment, const WCHAR* string, ...);
+	void Render();
+
+	//Setter,Getter
 	void SetRect();
 	void SetRect(float left, float top, float right, float bottom);
 	void SetRectWH(float x, float y, float width, float height);
@@ -67,7 +66,8 @@ public:
 	void SetFontStyle(float size, const WCHAR* fontname);
 	void SetFontSize(float size);
 	void SetTextAlignment(eTextAlignment alignment);
-	void Render();
+	void SetRenderPriority(float value);
+	float GetTextLength();
 
 	static ID2D1RenderTarget* GetD2DRenderTarget();
 };

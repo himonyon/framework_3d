@@ -49,7 +49,10 @@ public:
 
 	noDel_ptr<Transform> GetParent() { return pParent; }
 	void SetParent(noDel_ptr<Transform> obj);
+	void SetPosition(float x, float y, float z);
 	void SetPosition(float x, float y);
+	void SetLocalPosition(float x, float y, float z);
+	void SetLocalPosition(float x, float y);
 	void SetScale(float x, float y);
 	void SetRotation(float x, float y, float z);
 

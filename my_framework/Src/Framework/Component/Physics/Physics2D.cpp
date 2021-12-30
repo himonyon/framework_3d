@@ -4,6 +4,3 @@
 Physics2D::Physics2D() : Component(eComponentType::Physics){
 
 }
-
-
-

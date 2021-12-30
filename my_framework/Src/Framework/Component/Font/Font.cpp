@@ -69,7 +69,7 @@ bool Font::Initialize(void* hdl) {
 		return false;
 	}
 
-	
+
 
 	return true;
 }
@@ -94,11 +94,8 @@ Font::Font() : Component(eComponentType::Font) {
 	rectL = 0, rectR = WINDOW_WIDTH, rectT = 0, rectB = WINDOW_HEIGHT;
 	color = 0xffffffff;
 	alignment = eTextAlignment::Left;
-	ptr = NULL;
+	ptr = new WCHAR[FONT_CHARACTER_MAX];
 	count = 0;
-
-	allocPtr = new WCHAR[FONT_CHARACTER_MAX];
-	currentPtr = allocPtr;
 
 	//ブラシの生成
 	pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(1), &pBrush);
@@ -109,7 +106,7 @@ Font::Font() : Component(eComponentType::Font) {
 	col.b = (float)((color & 0x000000ff) >> 0) * reciprocal;
 	col.a = (float)((color & 0xff000000) >> 24) * reciprocal;
 	pBrush->SetColor(&col);
-	
+
 	//フォントの作成
 	if (Create(fontStyle.c_str(), size) == false)
 	{
@@ -118,7 +115,7 @@ Font::Font() : Component(eComponentType::Font) {
 }
 
 Font::~Font() {
-	delete[] allocPtr;
+	delete[] ptr;
 	SAFE_RELEASE(pTextFormat);
 	SAFE_RELEASE(pBrush);
 }
@@ -128,24 +125,23 @@ void Font::Execute() {
 }
 
 void Font::registerString(const WCHAR* string, UINT32 count) {
-#pragma warning(push)
-#pragma warning(disable:4311)
-#pragma warning(disable:4302)
 	if (string == NULL)return;
-	ptr = currentPtr;
-	count = count;
-	wcsncpy_s((WCHAR*)currentPtr, FONT_CHARACTER_MAX - (reinterpret_cast<int>(currentPtr) - reinterpret_cast<int>(allocPtr)), string, count);
-	currentPtr += count;
+	wcsncpy_s((WCHAR*)ptr, FONT_CHARACTER_MAX, string, count);
 	this->count = count;
-#pragma warning(pop)
 }
 
 void Font::RenderString() {
-	if (pTextFormat == NULL)return;
+	if (ptr == NULL)return;
 
 	//描画位置の設定
 	posX = transform->position.x;
 	posY = transform->position.y;
+
+	//カメラ座標を加えてスクリーン座標を設定する
+	if (Camera::main != nullptr && this->gameObject->IsObjStatic() == false) {
+		posX -= Camera::main->transform->position.x - SCREEN_WIDTH / 2;
+		posY -= Camera::main->transform->position.y - SCREEN_HEIGHT / 2;
+	}
 
 	AdjustTextAlignment();
 	rect.left = rectL + posX;
@@ -162,18 +158,20 @@ void Font::RenderString() {
 		pBrush,
 		D2D1_DRAW_TEXT_OPTIONS_NONE
 	);
-	currentPtr = allocPtr;
 }
 
 void Font::AdjustTextAlignment() {
 	if (alignment == eTextAlignment::Center) {
 		posX -= GetTextLength() / 2;
-	}else if (alignment == eTextAlignment::Right) {
+	}
+	else if (alignment == eTextAlignment::Right) {
 		posX -= GetTextLength();
 	}
 }
 
 float Font::GetTextLength() {
+	if (ptr == NULL) return 0;
+	char ch = 0x42;
 	int count = 0;
 	float length = 0;
 	float maxLength = 0; //複数行ある時に一番長い行を対象とする
@@ -184,7 +182,11 @@ float Font::GetTextLength() {
 			count++;
 			continue;
 		}
-		length += ptr[count] < 0xa7 ? 0.5f : 1;
+		float _size = 0;
+		if (ptr[count] < 0x5b && ptr[count] > 0x40) _size = 0.75f;
+		else if (ptr[count] < 0xa7) _size = 0.5f;
+		else _size = 1.0f;
+		length += _size;
 		count++;
 	}
 	if (maxLength == 0) maxLength = length;
@@ -279,10 +281,10 @@ void Font::SetRect(float rectL, float rectT, float rectR, float rectB) {
 	rectB = rectB;
 }
 void Font::SetRectWH(float x, float y, float width, float height) {
-	rectL = x - width/2;
+	rectL = x - width / 2;
 	rectT = y - height / 2;
 	rectR = x + width / 2;
-	rectB = y + height/2;
+	rectB = y + height / 2;
 }
 
 void Font::SetColor(DWORD color) {
@@ -327,6 +329,11 @@ void Font::SetTextAlignment(eTextAlignment textAlignment) {
 		alignment = eTextAlignment::Center;
 		break;
 	}
+}
+
+void Font::SetRenderPriority(float value) {
+	if (transform->position.z != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
+	transform->position.z = value;
 }
 
 ID2D1RenderTarget* Font::GetD2DRenderTarget() {

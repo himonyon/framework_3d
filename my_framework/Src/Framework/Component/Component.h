@@ -20,6 +20,7 @@ enum class eComponentType {
 	Physics,
 	Animator,
 	Font,
+	Camera,
 };
 
 class Component : public Object, public MessageSystem {

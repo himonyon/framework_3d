@@ -2,7 +2,7 @@
 #include "../../../../environment.h"
 
 //初期化
-bool SceneTitle::Initialize() {
+void SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pTest_mesh = CreateMesh(L"Data/Object/test.obj");
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
@@ -37,10 +37,11 @@ bool SceneTitle::Initialize() {
 	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 	//サウンド
-	pSound0 = CreateSound(L"Data/Sound/title_bgm.wav");
+	pSound0 = std::make_unique<Sound>(L"Data/Sound/title_bgm.wav");
+	pSound0->SetVolume(0.2f);
 	pSound0->Play();
 
-	return true;
+	isInitialized = true;
 }
 
 void SceneTitle::Terminate() {
@@ -50,9 +51,14 @@ void SceneTitle::Terminate() {
 void SceneTitle::Execute() {
 	int aa = 99;
 
+	if (Input::Trg(InputConfig::input["decide"])) {
+		SceneManager::SwitchScene(eSceneTable::Game);
+	}
+	if (Input::Trg(InputConfig::input["cancel"])) {
+		SceneManager::CreateReserveScene(eSceneTable::Game);
+	}
 
-
-	if (Keyboard::Trg(DIK_SPACE)) {
+	if (Keyboard::Trg(DIK_A)) {
 		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(100);
 	}
 	if (Keyboard::Trg(DIK_C)) {

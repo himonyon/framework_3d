@@ -38,4 +38,7 @@ private:
 	virtual void OnTrigger2D(noDel_ptr<Collider2D> hitCollider) {};
 	virtual void OnTriggerEnter2D(noDel_ptr<Collider2D> hitCollider) {};
 	virtual void OnTriggerExit2D(noDel_ptr<Collider2D> exitCollider) {};
+
+protected:
+	noDel_ptr<Sprite> CreateSprite(Sprite* sprite);
 };
