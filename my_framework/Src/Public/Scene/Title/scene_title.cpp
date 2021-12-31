@@ -7,8 +7,8 @@ void SceneTitle::Initialize() {
 	pTest_mesh = CreateMesh(L"Data/Object/test.obj");
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
 
+	pObj1 = CreateObject(0, 0, 100, 100, pTest_sp);
 	pObj2 = CreateObject(480, 480, 300, 300, pTest_sp);
-	pObj1 = CreateObject(480, 480, 100, 100, pTest_sp);
 	pObj4 = CreateObject(100, 200, 50, 50, pTest_sp);
 
 	pObj5 = CreateObject(1000, 500, 50, 50, CreateSprite(new Sprite(L"Data/Image/Chips_Cover.spr")));

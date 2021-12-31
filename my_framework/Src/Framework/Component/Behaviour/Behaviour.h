@@ -7,6 +7,7 @@
 -------------------------------------------------------------*/
 
 enum class eBehaviourState {
+	Awake,
 	Update,
 };
 
@@ -25,11 +26,14 @@ public:
 	void Execute(int state) override;
 
 private:
-	//オブジェクトが作られたときに呼び出される関数
-	virtual void Start() = 0;
+	//オブジェクトが作成されたときに呼び出される関数
+	virtual void Awake() {};
+
+	//最初のフレームで呼び出される関数
+	virtual void Start() {};
 
 	//毎フレーム呼び出される処理関数
-	virtual void Update() = 0;
+	virtual void Update() {};
 
 	//オブジェクトの衝突処理
 	virtual void OnCollision2D(noDel_ptr<Collider2D> hitCollider) {};

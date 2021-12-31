@@ -24,6 +24,9 @@ public:
 	//オブジェクトの削除予約
 	void ReserveDestroyObject(std::string name);
 
+	//オブジェクトの有効予約
+	void ReserveEnableObject(std::string name);
+
 	//オブジェクトクリエイタ
 	//空オブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
@@ -71,6 +74,7 @@ private:
 	std::unordered_map<int, noDel_ptr<Component>> umBehaviour;
 	std::unordered_map<int, noDel_ptr<Component>> umAnimator;
 
-public:
+	//予約して一括操作するためのコンテナ
 	std::vector<std::string> vDestroyName; //削除するオブジェクト名
+	std::vector<std::string> vEnableName; //有効・無効するオブジェクト名(Behaviourの即時実行を防ぐ)
 };

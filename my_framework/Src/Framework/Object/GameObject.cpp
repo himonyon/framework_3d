@@ -40,6 +40,9 @@ noDel_ptr<GameObject> GameObject::FindGameObject(std::string name) {
 }
 
 void GameObject::SetObjEnable(bool flag) {
+	//Behaviour::UpdateŠÖ”‚Å‚Ì‘¦ŽžŽÀs‚ð–h‚®‚½‚ßî•ñ‚ðŠÇ—ƒNƒ‰ƒX‚É“n‚·
+	if(flag) SceneManager::GetScene(belongSceneType)->ReserveEnableObject(name);
+
 	objEnable = flag;
 	if (flag) {
 		for (auto& com : components) {

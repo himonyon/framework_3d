@@ -9,16 +9,7 @@ GameObjectManager::~GameObjectManager() {
 }
 
 void GameObjectManager::Execute() {
-	//BehaviourのStart関数実行
-	if (isStartFucnEnable) {
-		for (auto& bh : umBehaviour) {
-			if (!CheckComponentEnable(bh.second)) continue;
-			bh.second->Execute();
-		}
-		isStartFucnEnable = false;
-	}
-
-	//Update
+	//Update & Start
 	for (auto& bh : umBehaviour) {
 		if (!CheckComponentEnable(bh.second)) continue;
 		bh.second->Execute((int)eBehaviourState::Update);
@@ -57,6 +48,9 @@ void GameObjectManager::Execute() {
 		if (!CheckComponentEnable(bh.second)) continue;
 		bh.second->Execute();
 	}
+
+	//オブジェクトの有効コンテナの消去
+	vEnableName.clear();
 
 	//Destroy
 	if (vDestroyName.size() != 0) {
@@ -146,6 +140,10 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 void GameObjectManager::ReserveDestroyObject(std::string name) {
 	vDestroyName.emplace_back(name);
 }
+//オブジェクトの有効準備
+void GameObjectManager::ReserveEnableObject(std::string name) {
+	vEnableName.emplace_back(name);
+}
 
 noDel_ptr<GameObject> GameObjectManager::GetGameObject(std::string name) {
 	return noDel_ptr<GameObject>(umObjects[name]);
@@ -195,7 +193,9 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 //コンポーネントの登録と各種初期設定(コンストラクタ時には読み取れないgameObjectが使えるためここで設定)
 void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 	std::unordered_map<int, noDel_ptr<Component>>* umap = nullptr;
-	if (com->IsRegisted()) return;
+
+	if (com->IsRegisted()) return; //登録済みなら無視
+
 	com->SetRegistState(true); //登録状況を変更
 	if (com->type == eComponentType::Transform) umap = &umTransform;
 	else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
@@ -206,19 +206,25 @@ void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 	else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;
 	else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 	else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
-	else if (com->type == eComponentType::Behaviour) {
-		umap = &umBehaviour;
-		isStartFucnEnable = true;
-		MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"Start");
-	}
+	else if (com->type == eComponentType::Behaviour) umap = &umBehaviour;
 	else if (com->type == eComponentType::Animator) umap = &umAnimator;
 	else return;
 
 	(*umap)[com->GetInstanceID()] = com;
+
+	//Behaviourの場合Awakeを呼び出す
+	if (com->type == eComponentType::Behaviour) {
+		com->Execute((int)eBehaviourState::Awake);
+	}
 }
 
 //コンポーネント有効無効判定
 bool GameObjectManager::CheckComponentEnable(noDel_ptr<Component> com) {
+	//このフレームで有効になっている場合無視
+	bool _flag = false;
+	for (auto& name : vEnableName) {
+		if (com->gameObject->GetName() == name) return false;
+	}
 	if (com->gameObject->IsObjEnable() == false) return false;
 	if (com->transform->IsParentObjEnable() == false) return false;
 	if (com->IsEnable() == false) return false;
