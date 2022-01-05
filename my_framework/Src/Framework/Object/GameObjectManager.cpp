@@ -79,7 +79,7 @@ void GameObjectManager::Execute() {
 
 void GameObjectManager::Render() {
 	//メッシュの描画
-	for (auto& mesh : umMeshRenderer) {
+	for (auto& mesh : um3DRenderer) {
 		if (!CheckComponentEnable(mesh.second)) continue;
 		mesh.second->Execute();
 	}
@@ -103,7 +103,7 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);
 }
-noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float width, float height,
+noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, float width, float height,
 	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
 {
 	GameObject* instance = new GameObject(name);
@@ -111,10 +111,10 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float wi
 	//Transformの作成
 	instance->AddComponent<Transform>();
 	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, 0, parent);
+	instance->transform->SetUpTransform(x, y, z, parent);
 	//SpriteRendererの作成
 	instance->AddComponent<SpriteRenderer>();
-	instance->GetComponent<SpriteRenderer>()->SetUpSpriteRenderer(width, height, sprite);
+	instance->GetComponent<SpriteRenderer>()->SetUpRenderer2D(width, height, sprite);
 	//オブジェクト登録
 	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);
@@ -131,6 +131,22 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	//SpriteRendererの作成
 	instance->AddComponent<MeshRenderer>();
 	instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);
+	//オブジェクト登録
+	umObjects[instance->GetName()] = instance;
+	return noDel_ptr<GameObject>(instance);
+}
+noDel_ptr<GameObject> GameObjectManager::CreateImageObject(float x, float y, float width, float height,
+	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
+{
+	GameObject* instance = new GameObject(name);
+	instance->SetSceneType(sceneType);
+	//Transformの作成
+	instance->AddComponent<Transform>();
+	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
+	instance->transform->SetUpTransform(x, y, 0, parent);
+	//SpriteRendererの作成
+	instance->AddComponent<ImageRenderer>();
+	instance->GetComponent<ImageRenderer>()->SetUpRenderer2D(width, height, sprite);
 	//オブジェクト登録
 	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);
@@ -155,7 +171,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 	bool isOnce = true;
 	for (Component* com : obj->components) {
 		if (com->type == eComponentType::Transform) umap = &umTransform;
-		else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
+		else if (com->type == eComponentType::ScreenRenderer) {
 			for (int i = 0; i < v2DRenderer.size(); i++) {
 				if (v2DRenderer[i]->GetInstanceID() == com->GetInstanceID()) {
 					v2DRenderer.erase(v2DRenderer.begin() + i);
@@ -165,7 +181,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 			}
 			continue;
 		}
-		else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;
+		else if (com->type == eComponentType::WorldRenderer) umap = &um3DRenderer;
 		else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 		else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
 		else if (com->type == eComponentType::Behaviour) {
@@ -198,12 +214,12 @@ void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 
 	com->SetRegistState(true); //登録状況を変更
 	if (com->type == eComponentType::Transform) umap = &umTransform;
-	else if (com->type == eComponentType::SpriteRenderer || com->type == eComponentType::Font) {
+	else if (com->type == eComponentType::ScreenRenderer) {
 		v2DRenderer.emplace_back(com);
 		isSortEnable = true;
 		return;
 	}
-	else if (com->type == eComponentType::MeshRenderer) umap = &umMeshRenderer;
+	else if (com->type == eComponentType::WorldRenderer) umap = &um3DRenderer;
 	else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 	else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
 	else if (com->type == eComponentType::Behaviour) umap = &umBehaviour;

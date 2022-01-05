@@ -23,7 +23,7 @@ void Animator::Execute() {
 
 void Animator::AddAnimation(std::string name, SpriteAnimation* anim) {
 	AnimBox* animBox = new AnimBox(name, anim);
-	animBox->anim->pAnimRenderer = gameObject->GetComponent<SpriteRenderer>();
+	animBox->anim->pAnimRenderer = gameObject->GetComponent<Renderer2D>();
 	animBoxes.emplace_back(animBox);
 }
 

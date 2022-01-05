@@ -25,7 +25,7 @@ private:
 	int belongSceneType = 0;
 
 	//静的なオブジェクトかどうか
-	bool isStaticObj = false;
+	bool isScreenObj = false;
 
 public:
 	GameObject(std::string name);
@@ -39,10 +39,13 @@ public:
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
 		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//スプライトオブジェクト作成
-	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+	noDel_ptr<GameObject> CreateObject(float x, float y, float z, float width, float height, noDel_ptr<Sprite> sprite,
 		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//メッシュオブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
+	//イメージ(UI)オブジェクトの作成
+	noDel_ptr<GameObject> CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
 		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 
 	//ゲームオブジェクトの検索
@@ -79,8 +82,8 @@ public:
 	void SetSceneType(int value) { belongSceneType = value; }
 	int GetSceneType() { return belongSceneType; }
 
-	void SetObjStatic(bool flag) { isStaticObj = flag; }
-	bool IsObjStatic() { return isStaticObj; }
+	void SetScreenObjType() { isScreenObj = true; }
+	bool IsScreenObj() { return isScreenObj; }
 
 	std::string GetName() const { return name; }
 };

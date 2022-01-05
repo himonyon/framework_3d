@@ -234,6 +234,12 @@
     <ClInclude Include="Src\Framework\Component\Camera\Camera.h">
       <Filter>ソース ファイル\Src\Framework\Component\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\ImageRenderer.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\Renderer2D.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp">
@@ -346,6 +352,12 @@
     </ClCompile>
     <ClCompile Include="Src\Framework\Component\Camera\Camera.cpp">
       <Filter>ソース ファイル\Src\Framework\Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\ImageRenderer.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\Renderer2D.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

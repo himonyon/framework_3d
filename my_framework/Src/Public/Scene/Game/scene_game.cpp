@@ -3,7 +3,7 @@
 
 //‰Šú‰»
 void SceneGame::Initialize() {
-	pSample0 = CreateObject(500, 500, 50, 50, CreateSprite(new Sprite(L"Data/Image/Chips_Cover.spr")));
+	pSample0 = CreateImageObject(500, 500, 50, 50, CreateSprite(new Sprite(L"Data/Image/Chips_Cover.spr")));
 
 	pSound0 = std::make_unique<Sound>(L"Data/Sound/title_bgm.wav");
 	pSound0->Play();

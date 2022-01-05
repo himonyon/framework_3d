@@ -1,19 +1,6 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
-_NODISCARD static inline auto ToXMVECTOR(const DirectX::XMFLOAT3& vec)
-{
-	return DirectX::XMLoadFloat3(&vec);
-}
-
-//頂点インプットレイアウトを定義	
-D3D11_INPUT_ELEMENT_DESC hInElementDesc_Model[] =
-{
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-};
-
 ID3D11InputLayout* MeshRenderer::pVertexLayout = NULL;
 ID3D11RasterizerState* MeshRenderer::pRasterizerState = NULL;
 ID3D11BlendState* MeshRenderer::pBlendState = NULL;
@@ -21,6 +8,14 @@ ID3D11DepthStencilState* MeshRenderer::pDepthStencilState = NULL;
 ID3D11Buffer* MeshRenderer::pConstantBuffer0 = NULL;
 ID3D11Buffer* MeshRenderer::pConstantBuffer1 = NULL;
 ID3D11SamplerState* MeshRenderer::pSampleLinear = NULL;
+
+//頂点インプットレイアウトを定義	
+D3D11_INPUT_ELEMENT_DESC MeshRenderer::hInElementDesc_Model[] =
+{
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+};
 
 bool MeshRenderer::Initialize() {
 	//ラスタライザの設定
@@ -119,7 +114,7 @@ void MeshRenderer::Destroy() {
 	SAFE_RELEASE(pRasterizerState);
 }
 
-MeshRenderer::MeshRenderer() : Component(eComponentType::MeshRenderer)
+MeshRenderer::MeshRenderer() : Component(eComponentType::WorldRenderer)
 {
 }
 
@@ -215,8 +210,6 @@ void MeshRenderer::Render() {
 			continue;
 		}
 		//インデックスバッファーをセット
-		stride = sizeof(int);
-		offset = 0;
 		Direct3D::getDeviceContext()->IASetIndexBuffer(pRenderMesh->GetPPIndexBuffer()[i], DXGI_FORMAT_R32_UINT, 0);
 		//マテリアルの各要素をエフェクト（シェーダー）に渡す
 		D3D11_MAPPED_SUBRESOURCE pData;
@@ -250,12 +243,12 @@ XMMATRIX MeshRenderer::GetPosMatrix() {
 	pos.y = transform->position.y;
 	pos.z = transform->position.z;
 	//カメラ座標を加えてスクリーン座標を設定する
-	if (Camera::main != nullptr && this->gameObject->IsObjStatic() == false) {
+	if (Camera::main != nullptr) {
 		pos.x -= Camera::main->transform->position.x;
 		pos.y -= Camera::main->transform->position.y;
 		pos.z -= Camera::main->transform->position.z;
 	}
-	return XMMatrixTranslation(pos.x, -pos.y, pos.z);
+	return XMMatrixTranslation(pos.x, pos.y, pos.z);
 }
 XMMATRIX MeshRenderer::GetRotMatrix() {\
 	XMMATRIX mPitch, mHeading, mBank;//回転行列用

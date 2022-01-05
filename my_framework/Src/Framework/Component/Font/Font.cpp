@@ -79,7 +79,7 @@ void Font::Destroy(void) {
 	SAFE_RELEASE(pD2d1Factory);
 }
 
-Font::Font() : Component(eComponentType::Font) {
+Font::Font() : Component(eComponentType::ScreenRenderer) {
 	size = 18.0f;
 
 	rect.left = 0;
@@ -136,12 +136,6 @@ void Font::RenderString() {
 	//描画位置の設定
 	posX = transform->position.x;
 	posY = transform->position.y;
-
-	//カメラ座標を加えてスクリーン座標を設定する
-	if (Camera::main != nullptr && this->gameObject->IsObjStatic() == false) {
-		posX -= Camera::main->transform->position.x - SCREEN_WIDTH / 2;
-		posY -= Camera::main->transform->position.y - SCREEN_HEIGHT / 2;
-	}
 
 	AdjustTextAlignment();
 	rect.left = rectL + posX;

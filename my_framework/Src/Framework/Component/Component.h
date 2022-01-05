@@ -14,12 +14,11 @@ enum class eComponentType {
 	None,
 	Transform,
 	Behaviour,
-	SpriteRenderer,
-	MeshRenderer,
+	WorldRenderer,
+	ScreenRenderer,
 	Collider,
 	Physics,
 	Animator,
-	Font,
 	Camera,
 };
 

@@ -6,19 +6,13 @@
 
 -------------------------------------------------------------*/
 
-class SpriteRenderer : public Renderer2D {
-private:
-	//頂点バッファ
-	ID3D11Buffer* pVertexBuffer = 0;
-
-	static const int indexNum = 6;
-
+class ImageRenderer : public Renderer2D {
 public:
-	SpriteRenderer();
-	~SpriteRenderer(void);
+	ImageRenderer();
+	~ImageRenderer(void);
 
 	//頂点情報
-	stVertex3D vtx[indexNum];
+	stVertex2D vtx[Sprite::VertexNum];
 
 	//コンポーネント処理
 	void Execute() override;
@@ -35,8 +29,4 @@ private:
 	void Render(void); //描画
 
 	void SetVertexState();
-
-	XMMATRIX GetPosMatrix();
-	XMMATRIX GetRotMatrix();
-	XMMATRIX GetScaleMatrix();
 };

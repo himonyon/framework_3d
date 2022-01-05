@@ -7,6 +7,9 @@
 -------------------------------------------------------------*/
 
 class MeshRenderer : public Component {
+private:
+	static D3D11_INPUT_ELEMENT_DESC hInElementDesc_Model[];
+
 public:
 	//描画対象メッシュ
 	noDel_ptr<Mesh> pRenderMesh = NULL;
@@ -29,7 +32,6 @@ public:
 
 	//コンポーネントの初期化
 	void SetUpMeshRenderer(noDel_ptr<Mesh> mesh);
-
 
 	//コンポーネント処理
 	void Execute() override;

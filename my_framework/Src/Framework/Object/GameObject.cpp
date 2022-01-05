@@ -24,14 +24,19 @@ noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float z,
 	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, z, parent, name);
 }
 //スプライトオブジェクト作成
-noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float z, float width, float height, noDel_ptr<Sprite> sprite,
 	noDel_ptr<Transform> parent, std::string name) {
-	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, width, height, sprite, parent, name);
+	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, z, width, height, sprite, parent, name);
 }
 //メッシュオブジェクト作成
 noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
 	noDel_ptr<Transform> parent, std::string name) {
 	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, z, mesh, parent, name);
+}
+//イメージオブジェクト作成
+noDel_ptr<GameObject> GameObject::CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+	noDel_ptr<Transform> parent, std::string name) {
+	return SceneManager::GetScene(belongSceneType)->CreateImageObject(x, y, width, height, sprite, parent, name);
 }
 
 //オブジェクトの検索

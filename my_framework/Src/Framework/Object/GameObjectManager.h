@@ -32,10 +32,13 @@ public:
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
 		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//スプライトオブジェクト作成
-	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+	noDel_ptr<GameObject> CreateObject(float x, float y, float z, float width, float height, noDel_ptr<Sprite> sprite,
 		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 	//メッシュオブジェクト作成
 	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		noDel_ptr<Transform> parent = nullptr, std::string name = "");
+	//イメージ(UI)オブジェクト作成
+	noDel_ptr<GameObject> CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
 		noDel_ptr<Transform> parent = nullptr, std::string name = "");
 
 private:
@@ -70,7 +73,7 @@ private:
 	std::unordered_map<int, noDel_ptr<Component>> umCollider2D;
 	std::unordered_map<int, noDel_ptr<Component>> umPhysics2D;
 	std::vector<noDel_ptr<Component>> v2DRenderer;
-	std::unordered_map<int, noDel_ptr<Component>> umMeshRenderer;
+	std::unordered_map<int, noDel_ptr<Component>> um3DRenderer;
 	std::unordered_map<int, noDel_ptr<Component>> umBehaviour;
 	std::unordered_map<int, noDel_ptr<Component>> umAnimator;
 

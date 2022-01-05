@@ -16,11 +16,14 @@ bool Main::Init(void* hWnd) {
 
 	performanceCounter = QueryPerformanceFrequency(&freq);
 
+	//マウスカーソルを非表示にする
+	ShowCursor(false);
+
 	//フレームワーク-------------------------------
 	Direct3D::InitD3D(hWnd);
 	Font::Initialize(hWnd);
 	Shader::InitShader();
-	SpriteRenderer::Initialize();
+	Renderer2D::Initialize();
 	MeshRenderer::Initialize();
 	Sound::InitSound();
 	DirectInput::InitInput(hWnd);
@@ -40,7 +43,7 @@ void Main::Destroy() {
 	InputConfig::DestroyConfig();
 	DirectInput::DestroyInput();
 	Sound::DestroySound();
-	SpriteRenderer::Destroy();
+	Renderer2D::Destroy();
 	MeshRenderer::Destroy();
 	Shader::DestroyShader();
 	Font::Destroy();

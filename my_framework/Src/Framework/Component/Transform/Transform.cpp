@@ -52,7 +52,6 @@ void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> p
 	if (parent != nullptr) {
 		SetParent(parent);
 		localPosition = position - parent->position;
-		if (parent->gameObject->IsObjStatic()) gameObject->SetObjStatic(true);
 	}
 	else {
 		localPosition = {0,0,0};

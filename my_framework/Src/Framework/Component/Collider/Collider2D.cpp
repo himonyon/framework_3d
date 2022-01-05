@@ -30,7 +30,8 @@ Collider2D::~Collider2D() {
 }
 
 void Collider2D::SetUpCollider2D(bool collision) {
-	noDel_ptr<SpriteRenderer> sr = gameObject->GetComponent<SpriteRenderer>();
+	noDel_ptr<Renderer2D> sr = gameObject->GetComponent<Renderer2D>();
+
 	if (sr != nullptr) {
 		sizeX = sr->sizeX;
 		sizeY = sr->sizeY;
@@ -51,6 +52,9 @@ void Collider2D::Execute() {
 	ClearHitState();
 }
 void Collider2D::Execute(noDel_ptr<Collider2D> hitCollider) {
+	//Objectの座標系が違えば処理しない
+	if (gameObject->IsScreenObj() != hitCollider->gameObject->IsScreenObj()) return;
+
 	//当たり判定チェック
 	IsCollide(hitCollider);
 }

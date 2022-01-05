@@ -13,7 +13,7 @@ public:
 private:
 	stVertex2D vtx[4] = {};
 
-private:
+public:
 	//頂点バッファ
 	ID3D11Buffer* pVertexBuffer = 0;
 

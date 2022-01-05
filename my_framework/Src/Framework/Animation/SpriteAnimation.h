@@ -18,7 +18,7 @@ private:
 	int curKeyIndex = -1; //現在到達しているキーフレーム配列番号
 
 public:
-	noDel_ptr<SpriteRenderer> pAnimRenderer = NULL; //表示するスプライトレンダラー
+	noDel_ptr<Renderer2D> pAnimRenderer = NULL; //表示するスプライトレンダラー
 	//アニメーションのキーフレーム
 	class KeyFrame {
 	public:
