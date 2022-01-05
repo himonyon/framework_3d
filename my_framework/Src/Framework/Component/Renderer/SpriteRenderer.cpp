@@ -52,22 +52,22 @@ void SpriteRenderer::SetVertexState() {
 
 	//各頂点の座標を設定
 	vtx[0].pos.x = -(sizeX / 2);
-	vtx[0].pos.y = -(sizeY / 2);
+	vtx[0].pos.y = (sizeY / 2);
 
 	vtx[1].pos.x = (sizeX / 2);
-	vtx[1].pos.y = -(sizeY / 2);
+	vtx[1].pos.y = (sizeY / 2);
 
 	vtx[2].pos.x = -(sizeX / 2);
-	vtx[2].pos.y = (sizeY / 2);
+	vtx[2].pos.y = -(sizeY / 2);
 	
 	vtx[3].pos.x = (sizeX / 2);
-	vtx[3].pos.y = -(sizeY / 2);
+	vtx[3].pos.y = (sizeY / 2);
 
 	vtx[4].pos.x = -(sizeX / 2);
-	vtx[4].pos.y = (sizeY / 2);
+	vtx[4].pos.y = -(sizeY / 2);
 
 	vtx[5].pos.x = (sizeX / 2);
-	vtx[5].pos.y = (sizeY / 2);
+	vtx[5].pos.y = -(sizeY / 2);
 }
 
 void SpriteRenderer::Render() {
@@ -186,17 +186,17 @@ void SpriteRenderer::SetDefaultUV() {
 	if (pRenderSprite == NULL) return; //スプライトがない場合return
 	
 	vtx[0].tex.x = pRenderSprite->GetVertexState(0).u;
-	vtx[0].tex.y = -pRenderSprite->GetVertexState(0).v;
+	vtx[0].tex.y = pRenderSprite->GetVertexState(0).v;
 	vtx[1].tex.x = pRenderSprite->GetVertexState(1).u;
-	vtx[1].tex.y = -pRenderSprite->GetVertexState(1).v;
+	vtx[1].tex.y = pRenderSprite->GetVertexState(1).v;
 	vtx[2].tex.x = pRenderSprite->GetVertexState(2).u;
-	vtx[2].tex.y = -pRenderSprite->GetVertexState(2).v;
+	vtx[2].tex.y = pRenderSprite->GetVertexState(2).v;
 	vtx[3].tex.x = pRenderSprite->GetVertexState(1).u;
-	vtx[3].tex.y = -pRenderSprite->GetVertexState(1).v;
+	vtx[3].tex.y = pRenderSprite->GetVertexState(1).v;
 	vtx[4].tex.x = pRenderSprite->GetVertexState(2).u;
-	vtx[4].tex.y = -pRenderSprite->GetVertexState(2).v;
+	vtx[4].tex.y = pRenderSprite->GetVertexState(2).v;
 	vtx[5].tex.x = pRenderSprite->GetVertexState(3).u;
-	vtx[5].tex.y = -pRenderSprite->GetVertexState(3).v;
+	vtx[5].tex.y = pRenderSprite->GetVertexState(3).v;
 }
 
 XMMATRIX SpriteRenderer::GetPosMatrix() {
