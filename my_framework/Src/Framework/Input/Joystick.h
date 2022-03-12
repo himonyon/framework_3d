@@ -5,8 +5,11 @@
 
 -------------------------------------------------------------*/
 #pragma once
-//ジョイスティック
-//キーボードの数字と被らないため大きめに設定
+
+namespace MyFrameWork {
+
+	//ジョイスティック
+	//キーボードの数字と被らないため大きめに設定
 #define JOY_SQUARE (300)
 #define JOY_CROSS (301)
 #define JOY_CIRCLE (302)
@@ -43,24 +46,25 @@
 #define MOVE_SPEED 1 //ジョイスティック幅
 
 
-class Joystick {
-public:
-	static float stickEnableRange; //ジョイスティックのブレの値を除外する範囲
-	static float stickFlagRange; //ジョイスティックのボタンとしての判定範囲
-public:
-	//ジョイスティック(0~)
-	static bool IsValid();
-	static bool On(int button);
-	static bool Trg(int button);
-	static bool Rel(int button);
-	static float GetLX();
-	static float GetLY();
-	static float GetRX();
-	static float GetRY();
-	static bool PovOn(int pov);
-	static bool PovTrg(int pov);
-	static bool PovRel(int pov);
-	static bool StickTrg(int dir);
-	static bool StickOn(int dir);
-	static bool StickRel(int dir);
-};
+	class Joystick {
+	public:
+		static float stickEnableRange; //ジョイスティックのブレの値を除外する範囲
+		static float stickFlagRange; //ジョイスティックのボタンとしての判定範囲
+	public:
+		//ジョイスティック(0~)
+		static bool IsValid();
+		static bool On(int button);
+		static bool Trg(int button);
+		static bool Rel(int button);
+		static float GetLX();
+		static float GetLY();
+		static float GetRX();
+		static float GetRY();
+		static bool PovOn(int pov);
+		static bool PovTrg(int pov);
+		static bool PovRel(int pov);
+		static bool StickTrg(int dir);
+		static bool StickOn(int dir);
+		static bool StickRel(int dir);
+	};
+}

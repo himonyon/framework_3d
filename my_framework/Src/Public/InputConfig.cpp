@@ -34,6 +34,9 @@ bool InputConfig::SetUpConfig() {
 		}
 	}
 
+	//コントローラーがつながっていなければキーボード操作のみに切り替え
+	if (Joystick::IsValid() == false) Input::SetKeyboardDevice();
+
 	return true;
 }
 

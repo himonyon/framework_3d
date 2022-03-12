@@ -1,6 +1,8 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
+
 float Joystick::stickEnableRange = 0.1f; //ジョイスティックのブレの値を除外する範囲
 float Joystick::stickFlagRange = 0.7f; //ジョイスティックのボタンとしての判定範囲
 
@@ -59,6 +61,7 @@ bool Joystick::PovRel(int pov) {
 bool Joystick::StickTrg(int dir) {
 	float cr;
 	float ol;
+	//スティック方向に合わせて処理を分ける
 	if (dir == JOY_LSTICKL) {
 		cr = DirectInput::GetCurrentJoystick().lX * DirectInput::GetJoyAxisRange();
 		ol = DirectInput::GetOldJoystick().lX * DirectInput::GetJoyAxisRange();
@@ -105,6 +108,7 @@ bool Joystick::StickTrg(int dir) {
 bool Joystick::StickOn(int dir) {
 	float cr;
 	float ol;
+	//スティック方向に合わせて処理を分ける
 	if (dir == JOY_LSTICKL) {
 		cr = DirectInput::GetCurrentJoystick().lX * DirectInput::GetJoyAxisRange();
 		ol = DirectInput::GetOldJoystick().lX * DirectInput::GetJoyAxisRange();
@@ -151,6 +155,7 @@ bool Joystick::StickOn(int dir) {
 bool Joystick::StickRel(int dir) {
 	float cr;
 	float ol;
+	//スティック方向に合わせて処理を分ける
 	if (dir == JOY_LSTICKL) {
 		cr = DirectInput::GetCurrentJoystick().lX * DirectInput::GetJoyAxisRange();
 		ol = DirectInput::GetOldJoystick().lX * DirectInput::GetJoyAxisRange();

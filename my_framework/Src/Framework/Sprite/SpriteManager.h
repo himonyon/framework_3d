@@ -7,22 +7,24 @@
 -------------------------------------------------------------*/
 #pragma once
 
+namespace MyFrameWork {
 
-class SpriteManager {
-public:
-	void Destroy() {
-		for (auto& sprite : sprites) {
-			delete sprite;
+	class SpriteManager {
+	public:
+		void Destroy() {
+			for (auto& sprite : sprites) {
+				delete sprite;
+			}
+			sprites.clear();
 		}
-		sprites.clear();
-	}
 
-	noDel_ptr<Sprite> CreateSprite(Sprite* instance) {
-		sprites.emplace_back(instance);
-		noDel_ptr<Sprite> p = noDel_ptr<Sprite>(sprites.back());
-		return p;
-	}
+		noDel_ptr<Sprite> CreateSprite(Sprite* instance) {
+			sprites.emplace_back(instance);
+			noDel_ptr<Sprite> p = noDel_ptr<Sprite>(sprites.back());
+			return p;
+		}
 
-private:
-	std::vector<Sprite*> sprites;
-};
+	private:
+		std::vector<Sprite*> sprites;
+	};
+}

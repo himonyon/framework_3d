@@ -103,27 +103,27 @@ void Sound::Stop() {
 }
 
 void Sound::Play() {
-	XAUDIO2_VOICE_STATE state;
-	pSourceVoice->GetState(&state);
-	if (state.BuffersQueued != 0) {
-		pSourceVoice->Start();
-	}
-	else {
-		PlaySound();
-	}
-}
-
-bool Sound::PlaySound() {
+	//いったん止める
+	pSourceVoice->Stop();
+	//初期化
 	XAUDIO2_BUFFER buffer = { 0 };
 	buffer.pAudioData = pWavBuffer;
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
 	buffer.AudioBytes = s_dwWavSize;
+	pSourceVoice->FlushSourceBuffers();
 	if (FAILED(pSourceVoice->SubmitSourceBuffer(&buffer)))
 	{
 		MessageBox(0, L"ソースボイスにサブミット失敗", 0, MB_OK);
-		return FALSE;
+		return;
 	}
+	//再生
 	pSourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
+}
 
-	return TRUE;
+void Sound::Resume() {
+	pSourceVoice->Start();
+}
+
+bool Sound::PlaySound() {
+	return true;
 }

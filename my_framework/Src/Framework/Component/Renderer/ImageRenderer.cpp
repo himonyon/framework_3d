@@ -1,10 +1,10 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
+
 ImageRenderer::ImageRenderer()
 {
-	type = eComponentType::ScreenRenderer;
-
 	for (int i = 0; i < Sprite::VertexNum; i++) {
 		vtx[i].r = 1; vtx[i].g = 1; vtx[i].b = 1; vtx[i].a = 1;
 	}
@@ -81,7 +81,7 @@ void ImageRenderer::Render() {
 	//ラスタライザーをコンテキストに設定
 	Direct3D::getDeviceContext()->RSSetState(pRasterizerState);
 	//頂点インプットレイアウトをセット
-	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout);
+	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout1);
 	//このコンスタントバッファーを使うシェーダーの登録
 	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 	//バーテックスバッファーをセット
@@ -129,3 +129,8 @@ void ImageRenderer::SetDefaultUV() {
 	}
 }
 
+int ImageRenderer::GetRenderPriority() {
+	int _value = renderPriority;
+	_value += isFrontImg ? 100000 : -100000;
+	return _value;
+}

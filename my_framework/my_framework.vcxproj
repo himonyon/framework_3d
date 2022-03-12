@@ -78,6 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>\Program Files\Autodesk\FBX\FBX SDK\2020.2.1\include;\DirectXTex\Bin\Desktop_2019\x64\Debug;$(IncludePath)</IncludePath>
+    <LibraryPath>\Program Files\Autodesk\FBX\FBX SDK\2020.2.1\lib\vs2019\x64\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -116,12 +118,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>\DirectXTex\Bin\Desktop_2019\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,8 +169,10 @@
     <ClInclude Include="Src\Framework\Input\Keyboard.h" />
     <ClInclude Include="Src\Framework\Input\Mouse.h" />
     <ClInclude Include="Src\Framework\Main.h" />
+    <ClInclude Include="Src\Framework\Mesh\FbxMesh.h" />
     <ClInclude Include="Src\Framework\Mesh\Mesh.h" />
     <ClInclude Include="Src\Framework\Mesh\MeshManager.h" />
+    <ClInclude Include="Src\Framework\Mesh\ObjMesh.h" />
     <ClInclude Include="Src\Framework\MessageSystem\MessageSystem.h" />
     <ClInclude Include="Src\Framework\Object\GameObject.h" />
     <ClInclude Include="Src\Framework\Object\GameObjectManager.h" />
@@ -212,7 +217,10 @@
     <ClCompile Include="Src\Framework\Input\Keyboard.cpp" />
     <ClCompile Include="Src\Framework\Input\Mouse.cpp" />
     <ClCompile Include="Src\Framework\Main.cpp" />
+    <ClCompile Include="Src\Framework\Mesh\FbxMesh.cpp" />
     <ClCompile Include="Src\Framework\Mesh\Mesh.cpp" />
+    <ClCompile Include="Src\Framework\Mesh\MeshManager.cpp" />
+    <ClCompile Include="Src\Framework\Mesh\ObjMesh.cpp" />
     <ClCompile Include="Src\Framework\MessageSystem\MessageSystem.cpp" />
     <ClCompile Include="Src\Framework\Object\GameObject.cpp" />
     <ClCompile Include="Src\Framework\Object\GameObjectManager.cpp" />

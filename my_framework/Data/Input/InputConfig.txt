@@ -1,9 +1,12 @@
-name decide 57 302 end
-name cancel 14 301 end
-name up 200 10000 356 end
-name down 208 28000 357 end
-name right 205 19000 354 end
-name left 203 37000 355 end
-name moveX 358 -30 32 end
-name moveY 358 31 -17 end
-name changeTab 313 53
+name decide 57 302 501 end
+name cancel 16 301 end
+name up 200 10000 356 17 end
+name down 208 28000 357 31 end
+name right 205 19000 354 32 end
+name left 203 37000 355 30 end
+name moveX 358 end
+name moveY 358 end
+name moveCamX 359 -30 32 end
+name moveCamY 359 31 -17 end
+name changeTab 313 53 end
+name option 309 25 end

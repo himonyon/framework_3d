@@ -1,6 +1,8 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
+
 GameObjectManager::~GameObjectManager() {
 	for (auto& obj : umObjects) {
 		delete obj.second;
@@ -171,7 +173,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 	bool isOnce = true;
 	for (Component* com : obj->components) {
 		if (com->type == eComponentType::Transform) umap = &umTransform;
-		else if (com->type == eComponentType::ScreenRenderer) {
+		else if (com->type == eComponentType::Renderer2D) {
 			for (int i = 0; i < v2DRenderer.size(); i++) {
 				if (v2DRenderer[i]->GetInstanceID() == com->GetInstanceID()) {
 					v2DRenderer.erase(v2DRenderer.begin() + i);
@@ -181,7 +183,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 			}
 			continue;
 		}
-		else if (com->type == eComponentType::WorldRenderer) umap = &um3DRenderer;
+		else if (com->type == eComponentType::Renderer3D) umap = &um3DRenderer;
 		else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 		else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
 		else if (com->type == eComponentType::Behaviour) {
@@ -195,7 +197,7 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 		while (itr != umap->end()) {
 			if (com->GetInstanceID() == itr->first) {
 				auto nextItr = std::next(itr, 1);
-				umap->erase(itr->first);
+				umap->erase(itr);
 				itr = nextItr;
 				if (isOnce) break;
 			}
@@ -214,12 +216,12 @@ void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 
 	com->SetRegistState(true); //“o˜^ó‹µ‚ð•ÏX
 	if (com->type == eComponentType::Transform) umap = &umTransform;
-	else if (com->type == eComponentType::ScreenRenderer) {
+	else if (com->type == eComponentType::Renderer2D) {
 		v2DRenderer.emplace_back(com);
 		isSortEnable = true;
 		return;
 	}
-	else if (com->type == eComponentType::WorldRenderer) umap = &um3DRenderer;
+	else if (com->type == eComponentType::Renderer3D) umap = &um3DRenderer;
 	else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 	else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
 	else if (com->type == eComponentType::Behaviour) umap = &umBehaviour;
@@ -254,11 +256,11 @@ void GameObjectManager::RenderOrderSort(int start, int end) {
 	if (left >= right) return;
 
 	//‘–¸‚ð‹C‚É‚µ‚ÄStaticCast‚É‚µ‚Ä‚¢‚é
-	float pivot = v2DRenderer[left]->transform->position.z;
+	int pivot = static_noDel_cast<Renderer2D>(v2DRenderer[left])->GetRenderPriority();
 
 	while (true) {
-		while (v2DRenderer[left]->transform->position.z < pivot) left++;
-		while (v2DRenderer[right]->transform->position.z > pivot) right--;
+		while (static_noDel_cast<Renderer2D>(v2DRenderer[left])->GetRenderPriority() < pivot) left++;
+		while (static_noDel_cast<Renderer2D>(v2DRenderer[right])->GetRenderPriority() > pivot) right--;
 
 		if (left < right) {
 			noDel_ptr<Component> temp = v2DRenderer[left];

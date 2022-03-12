@@ -2,21 +2,26 @@
 /*-----------------------------------------------------------
 
 	MessageSystemクラス(ゲームオブジェクト基底クラス)
-		オブジェクトにメッセージを送信
+		コンポーネントにメッセージを送信
 		メッセージを受信
 
 -------------------------------------------------------------*/
 
-class Component;
+namespace MyFrameWork {
 
-class MessageSystem {
-public:
-	MessageSystem() {};
-	virtual ~MessageSystem() {};
+	class Component;
 
-	static void SendMessageToCom(noDel_ptr<Component> com, std::wstring str);
-	void DeleteMessage(std::wstring str);
+	class MessageSystem {
+	public:
+		MessageSystem() {};
+		virtual ~MessageSystem() {};
 
-public:
-	std::vector<std::wstring> messages;
-};
+		//コンポーネントへメッセージを送る
+		static void SendMessageToCom(noDel_ptr<Component> com, std::wstring str);
+		//メッセージの削除
+		void DeleteMessage(std::wstring str);
+
+	public:
+		std::vector<std::wstring> messages;
+	};
+}

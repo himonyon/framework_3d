@@ -6,30 +6,33 @@
 -------------------------------------------------------------*/
 #pragma once
 
-class Sprite {
-public:
-	const static int VertexNum = 4;
+namespace MyFrameWork {
 
-private:
-	stVertex2D vtx[4] = {};
+	class Sprite {
+	public:
+		const static int VertexNum = 4;
 
-public:
-	//頂点バッファ
-	ID3D11Buffer* pVertexBuffer = 0;
+	private:
+		stVertex2D vtx[4] = {};
 
-	//テクスチャ
-	ID3D11Resource* pTexture  =0;
+	public:
+		//頂点バッファ
+		ID3D11Buffer* pVertexBuffer = 0;
 
-public:
-	ID3D11ShaderResourceView* pTextureView = 0;
-	Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name = L"default");
-	~Sprite(void);
+		//テクスチャ
+		ID3D11Resource* pTexture = 0;
 
-	stVertex2D GetVertexState(int index) { return vtx[index]; }
+	public:
+		ID3D11ShaderResourceView* pTextureView = 0;
+		Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name = L"default");
+		~Sprite(void);
 
-	ID3D11Resource* GetTexture() { return pTexture; }
-	ID3D11ShaderResourceView* GetTextureView() { return pTextureView; }
-	ID3D11Buffer* GetPVertexBuffer() { return pVertexBuffer; }
-	ID3D11Buffer** GetPPVertexBuffer() { return &pVertexBuffer; } //ポインタのアドレス取得
-};
+		//Getter,Setter
+		stVertex2D GetVertexState(int index) { return vtx[index]; }
+		ID3D11Resource* GetTexture() { return pTexture; }
+		ID3D11ShaderResourceView* GetTextureView() { return pTextureView; }
+		ID3D11Buffer* GetPVertexBuffer() { return pVertexBuffer; }
+		ID3D11Buffer** GetPPVertexBuffer() { return &pVertexBuffer; } //ポインタのアドレス取得
+	};
+}
 

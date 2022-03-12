@@ -1,6 +1,8 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
+
 ID2D1Factory* Font::pD2d1Factory = 0;
 IDWriteFactory* Font::pDWFactory = 0;
 ID2D1RenderTarget* Font::pRenderTarget = 0;
@@ -79,7 +81,7 @@ void Font::Destroy(void) {
 	SAFE_RELEASE(pD2d1Factory);
 }
 
-Font::Font() : Component(eComponentType::ScreenRenderer) {
+Font::Font() {
 	size = 18.0f;
 
 	rect.left = 0;
@@ -125,9 +127,13 @@ void Font::Execute() {
 }
 
 void Font::registerString(const WCHAR* string, UINT32 count) {
+#pragma warning(push)
+#pragma warning(disable:4311)
+#pragma warning(disable:4302)
 	if (string == NULL)return;
 	wcsncpy_s((WCHAR*)ptr, FONT_CHARACTER_MAX, string, count);
 	this->count = count;
+#pragma warning(pop)
 }
 
 void Font::RenderString() {
@@ -325,11 +331,8 @@ void Font::SetTextAlignment(eTextAlignment textAlignment) {
 	}
 }
 
-void Font::SetRenderPriority(float value) {
-	if (transform->position.z != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
-	transform->position.z = value;
-}
-
-ID2D1RenderTarget* Font::GetD2DRenderTarget() {
-	return pRenderTarget;
+int Font::GetRenderPriority() {
+	int _value = renderPriority;
+	_value += isFrontFont ? 100000 : -100000;
+	return _value;
 }

@@ -6,62 +6,68 @@
 -------------------------------------------------------------*/
 #pragma once
 
-class Shader {
-public:
-	//シェーダーの種類
-	enum class eVertexShader {
-		VS_2D,
-		VS_3D,
-		VS_MAX,
-	};
+namespace MyFrameWork {
 
-	enum class ePixelShader
-	{
-		PS_2D,
-		PS_3D,
-		PS_MAX,
-	};
-
-	class ShaderBase {
-	protected:
-		const BYTE* code;
-		long length;
+	class Shader {
 	public:
-		ShaderBase(const char* path);
-		~ShaderBase();
+		//シェーダーの種類
+		enum class eVertexShader {
+			VS_2D,
+			VS_3D,
+			VS_MAX,
+		};
+		enum class ePixelShader
+		{
+			PS_2D,
+			PS_3D,
+			PS_MAX,
+		};
 
-		const BYTE* getCode() { return code; }
-		long getLength() { return length; }
-	};
+		//シェーダー基底クラス
+		class ShaderBase {
+		protected:
+			const BYTE* code;
+			long length;
+		public:
+			ShaderBase(const char* path);
+			~ShaderBase();
 
-	class VertexShader : public ShaderBase{
+			const BYTE* getCode() { return code; }
+			long getLength() { return length; }
+		};
+		//頂点シェーダークラス
+		class VertexShader : public ShaderBase {
+		private:
+			ID3D11VertexShader* vs;
+		public:
+			VertexShader(const char* path);
+			~VertexShader();
+
+			ID3D11VertexShader* getShader() { return vs; }
+		};
+		//ピクセルシェーダークラス
+		class PixelShader : public ShaderBase {
+		private:
+			ID3D11PixelShader* ps;
+		public:
+			PixelShader(const char* path);
+			~PixelShader();
+
+			ID3D11PixelShader* getShader() { return ps; }
+		};
+
 	private:
-		ID3D11VertexShader* vs;
+		static VertexShader** vertexShader;
+		static PixelShader** pixelShader;
+
 	public:
-		VertexShader(const char* path);
-		~VertexShader();
+		//初期化
+		static bool InitShader();
+		//破棄
+		static void DestroyShader();
 
-		ID3D11VertexShader* getShader() { return vs; }
+		//Getter,Setter
+		static VertexShader* getVertexShader(eVertexShader vs) { return vertexShader[(unsigned int)vs]; }
+		static PixelShader* getPixelShader(ePixelShader ps) { return pixelShader[(unsigned int)ps]; }
 	};
-
-	class PixelShader : public ShaderBase {
-	private:
-		ID3D11PixelShader* ps;
-	public:
-		PixelShader(const char* path);
-		~PixelShader();
-
-		ID3D11PixelShader* getShader() { return ps; }
-	};
-
-private:
-	static VertexShader** vertexShader;
-	static PixelShader** pixelShader;
-
-public:
-	static bool InitShader();
-	static void DestroyShader();
-
-	static VertexShader* getVertexShader(eVertexShader vs) { return vertexShader[(unsigned int)vs]; }
-	static PixelShader* getPixelShader(ePixelShader ps) { return pixelShader[(unsigned int)ps]; }
-};
+}

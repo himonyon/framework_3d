@@ -1,6 +1,8 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
+
 //頂点要素
 D3D11_INPUT_ELEMENT_DESC Renderer2D::hInElementDesc_Sprite[] =
 {
@@ -9,18 +11,8 @@ D3D11_INPUT_ELEMENT_DESC Renderer2D::hInElementDesc_Sprite[] =
 	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-//頂点インプットレイアウトを定義	
-D3D11_INPUT_ELEMENT_DESC Renderer2D::hInElementDesc_Model[] =
-{
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-};
-
-
 ID3D11Buffer* Renderer2D::pConstantBuffer = NULL;
-ID3D11Buffer* Renderer2D::pConstantBuffer0 = NULL;
-ID3D11Buffer* Renderer2D::pConstantBuffer1 = NULL;
+ID3D11Buffer* Renderer2D::pConstantBuffer_sprite = NULL;
 ID3D11Buffer* Renderer2D::pIndexBuffer = NULL;
 ID3D11RasterizerState* Renderer2D::pRasterizerState = 0;
 ID3D11SamplerState* Renderer2D::pSamplerState = 0;
@@ -102,8 +94,6 @@ bool Renderer2D::Initialize() {
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = sizeof(float) * 4;
 	cb.Usage = D3D11_USAGE_DEFAULT;
-
-
 	if (FAILED(Direct3D::getDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer)))
 	{
 		return FALSE;
@@ -111,30 +101,29 @@ bool Renderer2D::Initialize() {
 
 	//Sprite用ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	//頂点インプットレイアウトを作成
+	//頂点レイアウト作成
+	D3D11_INPUT_ELEMENT_DESC hInVertex_sprite[]{
+		{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXTURE",	0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
 	vs = Shader::getVertexShader(Shader::eVertexShader::VS_3D);
-	UINT numElements = sizeof(hInElementDesc_Model) / sizeof(hInElementDesc_Model[0]);
-	if (FAILED(Direct3D::getDevice()->CreateInputLayout(hInElementDesc_Model, numElements, vs->getCode(), vs->getLength(), &pInputLayout1)))
+	UINT numElements = sizeof(hInVertex_sprite) / sizeof(hInVertex_sprite[0]);
+	if (FAILED(Direct3D::getDevice()->CreateInputLayout(hInVertex_sprite, numElements, vs->getCode(), vs->getLength(), &pInputLayout1)))
 	{
 		return FALSE;
 	}
 
-	//コンスタントバッファー作成(変換行列用)
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(ConstantBuffer0);
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(Direct3D::getDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer0)))
-	{
-		return false;
-	}
-	//コンスタントバッファー作成(マテリアル用)
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(ConstantBuffer1);
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(Direct3D::getDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer1)))
+	//コンスタントバッファー作成
+	D3D11_BUFFER_DESC buffer_desc;
+	buffer_desc.ByteWidth = sizeof(stCBuffer3D);
+	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	buffer_desc.CPUAccessFlags = 0;
+	buffer_desc.MiscFlags = 0;
+	buffer_desc.StructureByteStride = 0;
+	if (FAILED(Direct3D::getDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer_sprite)))
 	{
 		return false;
 	}
@@ -142,10 +131,11 @@ bool Renderer2D::Initialize() {
 	//インデックスバッファーを作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(int) * 2 * 3;
+	bd.ByteWidth = sizeof(int) * 6;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
+	bd.StructureByteStride = 0;
 	int* faceBuffer = new int[6]{0,1,2,3,4,5};
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = faceBuffer;
@@ -178,12 +168,11 @@ void Renderer2D::Destroy() {
 	SAFE_RELEASE(pInputLayout);
 	SAFE_RELEASE(pInputLayout1);
 	SAFE_RELEASE(pConstantBuffer);
-	SAFE_RELEASE(pConstantBuffer0);
-	SAFE_RELEASE(pConstantBuffer1);
+	SAFE_RELEASE(pConstantBuffer_sprite);
 }
 
 Renderer2D::Renderer2D()
-	: Component(eComponentType::WorldRenderer)
+	: Component(eComponentType::Renderer2D)
 {
 }
 
@@ -196,10 +185,10 @@ void Renderer2D::SetSize(float width, float height) {
 	sizeY = height;
 }
 
-void Renderer2D::SetRenderPriority(float value) {
-	if (transform->position.z != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
-	transform->position.z = value;
+void Renderer2D::SetRenderPriority(int value) {
+	if (renderPriority != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
+	renderPriority = value;
 }
-float Renderer2D::GetRenderPriority() {
-	return transform->position.z;
+int Renderer2D::GetRenderPriority() {
+	return renderPriority;
 }

@@ -1,6 +1,7 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
 
 Collider2D::Collider2D() : Component(eComponentType::Collider) {
 	sizeX = 0;
@@ -84,7 +85,7 @@ void Collider2D::IsCollide(noDel_ptr<Collider2D> hitCollider)
 	//スプライトの中心同士の座標の差分(differencial)
 	float dx = fabsf(transform->position.x - hitPos.x);
 	//2つのスプライトの幅(半分)をスケールの合計
-	float sx = sizeX * 0.5f * transform->scale.x + hitCollider->sizeX * 0.5f * hitScl.x;
+	float sx = sizeX * 0.5f * abs(transform->scale.x) + hitCollider->sizeX * 0.5f * abs(hitScl.x);
 
 	if (dx < sx)	//差分が幅より小さければ横(X)方向で当たっている
 	{

@@ -25,6 +25,7 @@
 #include <string>
 #include <time.h>
 #include <vector>
+#include <codecvt> 
 #include <unordered_map>
 #include <mutex>
 #include <thread>
@@ -44,6 +45,8 @@
 #pragma comment(lib,"d3dCompiler.lib")
 
 using namespace DirectX;
+namespace MyFrameWork{}
+using namespace MyFrameWork;
 
 //Utility
 #include "Src/Framework/GraphicsUtility.h"
@@ -51,13 +54,19 @@ using namespace DirectX;
 #include "Src//Utility/UtilFunc.h"
 
 
-//フレームワークのヘッダー
+//フレームワークのヘッダー-----------------------------------
+
+//シェーダー設定
+#include "Src/Framework/Shader/Shader.h"
+
 //スプライト
 #include "Src/Framework/Sprite/Sprite.h"
 #include "Src/Framework/Sprite/SpriteManager.h"
 
 //メッシュ
 #include "Src//Framework//Mesh/Mesh.h"
+#include "Src//Framework//Mesh/FbxMesh.h"
+#include "Src//Framework//Mesh/ObjMesh.h"
 #include "Src//Framework//Mesh/MeshManager.h"
 
 //Objectクラス
@@ -93,10 +102,6 @@ using namespace DirectX;
 //オブジェクト、コンポーネント管理クラス
 #include "Src//Framework/Object/GameObjectManager.h"
 
-
-
-
-
 //タイマー
 #include "Src//Framework/Timer/Timer.h"
 
@@ -110,9 +115,6 @@ using namespace DirectX;
 //サウンド
 #include "Src/Framework/Sound/Sound.h"
 #include "Src/Framework/Sound/SoundManager.h"
-
-//シェーダー設定
-#include "Src/Framework/Shader/Shader.h"
 
 //Direct3D
 #include "Src/Framework/Direct3D/Direct3D.h"

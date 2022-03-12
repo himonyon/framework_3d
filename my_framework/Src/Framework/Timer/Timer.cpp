@@ -18,4 +18,4 @@ void Timer::Stop() { flag = false; }
 
 void Timer::Resume() { flag = true; }
 
-void Timer::Execute() { time += frameTime; }
+void Timer::Execute() { if(flag) time += frameTime; }

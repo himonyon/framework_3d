@@ -1,6 +1,8 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
+
 Transform::Transform() : Component(eComponentType::Transform) {
 	position = { 0,0,0 };
 	b_position = position;
@@ -49,6 +51,7 @@ void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> p
 	scale = { 1,1,1 };
 	b_scale = scale;
 
+	//親がいる場合、ローカル座標の設定
 	if (parent != nullptr) {
 		SetParent(parent);
 		localPosition = position - parent->position;

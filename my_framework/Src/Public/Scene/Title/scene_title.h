@@ -19,6 +19,7 @@ private:
 
 	std::unique_ptr<Sound> pSound0;
 
+
 private:
 	//‰Šú‰»
 	void Initialize();

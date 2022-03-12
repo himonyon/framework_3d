@@ -1,6 +1,7 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
 
 int Keyboard::GetTrgKeyType() {
 	for (int i = 0x01; i < 0xdf; i++) {

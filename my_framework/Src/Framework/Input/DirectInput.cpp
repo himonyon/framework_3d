@@ -1,6 +1,8 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
+
 HDC DirectInput::hdc = 0;
 LPDIRECTINPUT8 DirectInput::pInput = 0;
 LPDIRECTINPUTDEVICE8 DirectInput::pKeyDevice = 0;
@@ -94,6 +96,7 @@ void DirectInput::DestroyInput() {
 }
 
 BOOL CALLBACK DirectInput::EnumObjectsCallback(const DIDEVICEOBJECTINSTANCE* pdidoi, VOID* pContext) {
+	//コントローラーの有効検知
 	if (pdidoi->dwType & DIDFT_AXIS) {
 		DIPROPRANGE diprg;
 		diprg.diph.dwSize = sizeof(DIPROPRANGE);

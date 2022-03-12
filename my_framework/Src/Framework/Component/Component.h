@@ -5,49 +5,55 @@
 		オブジェクトと各種機能クラスを結びつけるクラス
 
 -------------------------------------------------------------*/
+namespace MyFrameWork {
 
-class GameObject;
-class Transform;
-class Collider2D;
+	class GameObject;
+	class Transform;
+	class Collider2D;
 
-enum class eComponentType {
-	None,
-	Transform,
-	Behaviour,
-	WorldRenderer,
-	ScreenRenderer,
-	Collider,
-	Physics,
-	Animator,
-	Camera,
-};
+	enum class eComponentType {
+		None,
+		Transform,
+		Behaviour,
+		Renderer3D,
+		Renderer2D,
+		Collider,
+		Physics,
+		Animator,
+		Camera,
+		Sound,
+	};
 
-class Component : public Object, public MessageSystem {
-private:
-	bool isRegisted = false;
+	class Component : public Object, public MessageSystem {
+	private:
+		bool isRegisted = false;
 
-	bool isEnable = true;
+		bool isEnable = true;
 
-public:
-	noDel_ptr<GameObject> gameObject = 0;
+	public:
+		noDel_ptr<GameObject> gameObject = 0;
 
-	noDel_ptr<Transform> transform = 0;
+		noDel_ptr<Transform> transform = 0;
 
-	eComponentType type = eComponentType::None;
+		eComponentType type = eComponentType::None;
 
-public:
-	Component(eComponentType type);
-	virtual ~Component() {};
+	public:
+		Component(eComponentType type);
+		virtual ~Component() {};
 
-	//コンポーネントの各処理実行関数
-	virtual void Execute() {};
-	virtual void Execute(int state) {};
-	virtual void Execute(noDel_ptr<Collider2D> col) {};
+		//コンポーネントの各処理実行関数
+		virtual void Execute() {};
+		virtual void Execute(int state) {};
+		virtual void Execute(noDel_ptr<Collider2D> col) {};
 
-	bool IsEnable() { return isEnable; }
+		//使用可能か
+		bool IsEnable() { return isEnable; }
 
-	bool IsRegisted() { return isRegisted; }
-	void SetRegistState(bool flag);
+		//オブジェクトマネージャーへ登録済みか
+		bool IsRegisted() { return isRegisted; }
 
-	void SetEnable(bool flag);
-};
+		//Getter,Setter
+		void SetRegistState(bool flag);
+		void SetEnable(bool flag);
+	};
+}

@@ -240,6 +240,12 @@
     <ClInclude Include="Src\Framework\Component\Renderer\Renderer2D.h">
       <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\FbxMesh.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\ObjMesh.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp">
@@ -358,6 +364,15 @@
     </ClCompile>
     <ClCompile Include="Src\Framework\Component\Renderer\Renderer2D.cpp">
       <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\FbxMesh.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\ObjMesh.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\MeshManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

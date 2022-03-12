@@ -12,10 +12,13 @@
 /// キーボードとジョイスティックの各ボタンに共通の役割をもたせる
 /// </summary>
 
-class InputConfig {
-public:
-	static std::unordered_map<std::string, std::vector<int>*> input;
+namespace MyFrameWork {
 
-	static bool SetUpConfig();
-	static void DestroyConfig();
-};
+	class InputConfig {
+	public:
+		static std::unordered_map<std::string, std::vector<int>*> input;
+
+		static bool SetUpConfig();
+		static void DestroyConfig();
+	};
+}
