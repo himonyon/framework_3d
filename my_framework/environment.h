@@ -5,8 +5,6 @@
 #define SCREEN_HEIGHT (WINDOW_HEIGHT) //スクリーン高さ
 #define SCREEN_WIDTH_CENTER (SCREEN_WIDTH / 2) //スクリーン幅
 #define SCREEN_HEIGHT_CENTER (SCREEN_HEIGHT / 2) //スクリーン高さ
-#define FONT_STRING_MAX	(0x0400)	//1フレームで実行できるrenderの数
-#define FONT_CHARACTER_MAX	(0x2000)	//1フレームで描画できる文字の数
 
 
 #define DIRECTINPUT_VERSION 0x0800
@@ -27,7 +25,10 @@
 #include <string>
 #include <time.h>
 #include <vector>
+#include <codecvt> 
 #include <unordered_map>
+#include <mutex>
+#include <thread>
 #include <locale.h>
 #include <mmsystem.h>
 
@@ -44,6 +45,8 @@
 #pragma comment(lib,"d3dCompiler.lib")
 
 using namespace DirectX;
+namespace MyFrameWork{}
+using namespace MyFrameWork;
 
 //Utility
 #include "Src/Framework/GraphicsUtility.h"
@@ -51,13 +54,19 @@ using namespace DirectX;
 #include "Src//Utility/UtilFunc.h"
 
 
-//フレームワークのヘッダー
+//フレームワークのヘッダー-----------------------------------
+
+//シェーダー設定
+#include "Src/Framework/Shader/Shader.h"
+
 //スプライト
 #include "Src/Framework/Sprite/Sprite.h"
 #include "Src/Framework/Sprite/SpriteManager.h"
 
 //メッシュ
 #include "Src//Framework//Mesh/Mesh.h"
+#include "Src//Framework//Mesh/FbxMesh.h"
+#include "Src//Framework//Mesh/ObjMesh.h"
 #include "Src//Framework//Mesh/MeshManager.h"
 
 //Objectクラス
@@ -73,9 +82,14 @@ using namespace DirectX;
 #include "Src/Framework/Component/Transform/Transform.h"
 #include "Src/Framework/Component/Collider/Collider2D.h"
 #include "Src/Framework/Component/Physics/Physics2D.h"
+#include "Src/Framework/Component/Renderer/Renderer2D.h"
+#include "Src/Framework/Component/Renderer/Renderer3D.h"
 #include "Src/Framework/Component/Renderer/MeshRenderer.h"
 #include "Src/Framework/Component/Renderer/SpriteRenderer.h"
+#include "Src/Framework/Component/Renderer/ImageRenderer.h"
 #include "Src/Framework/Component/Behaviour/Behaviour.h"
+#include "Src/Framework/Component/Font/Font.h"
+#include "Src/Framework/Component/Camera/Camera.h"
 
 //スプライトアニメーション
 #include "Src/Framework/Animation/SpriteAnimation.h"
@@ -89,15 +103,8 @@ using namespace DirectX;
 //オブジェクト、コンポーネント管理クラス
 #include "Src//Framework/Object/GameObjectManager.h"
 
-
-
-
-
 //タイマー
 #include "Src//Framework/Timer/Timer.h"
-
-//フォント
-#include "Src/Framework/Font/Font.h"
 
 //インプット
 #include "Src/Framework/Input/DirectInput.h"
@@ -109,9 +116,6 @@ using namespace DirectX;
 //サウンド
 #include "Src/Framework/Sound/Sound.h"
 #include "Src/Framework/Sound/SoundManager.h"
-
-//シェーダー設定
-#include "Src/Framework/Shader/Shader.h"
 
 //Direct3D
 #include "Src/Framework/Direct3D/Direct3D.h"

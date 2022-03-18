@@ -1,20 +1,13 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
+
 Behaviour::Behaviour() : Component(eComponentType::Behaviour) {
 }
 
 void Behaviour::Execute() {
 	for (auto& m : messages) {
-		//スタート
-		if (startCalled == false) {
-			if (m == L"Start") {
-				Start();
-				startCalled = true;
-				break;
-			}
-		}
-
 		//コライダーの処理(メッセージにあるコライダーの種類数行う)
 		//コライダーが無効なら終了
 		if (c2d == nullptr) c2d = gameObject->GetComponent<Collider2D>();
@@ -82,6 +75,20 @@ void Behaviour::Execute() {
 
 void Behaviour::Execute(int state) {
 	if (state == (int)eBehaviourState::Update) {
-		Update();
+		//スタート
+		if (startCalled == false) {
+			Start();
+			startCalled = true;
+		}
+		else {
+			Update();
+		}
 	}
+	else if(state == (int)eBehaviourState::Awake) {
+		Awake();
+	}
+}
+
+noDel_ptr<Sprite> Behaviour::CreateSprite(Sprite* sprite) {
+	return SceneManager::GetScene(gameObject->GetSceneType())->CreateSprite(sprite);
 }

@@ -7,10 +7,19 @@
 #pragma once
 #include "../InputConfig.h"
 
+enum class eRenderOrder {
+	Background = -30,
+	BackObject = -20,
+	BackUI = -10,
+	Object = 0,
+	UI = 10,
+	FrontObject = 20,
+	FrontUI = 30,
+};
 
-
-class Scene : public GameObjectManager,public SpriteManager, public MeshManager, public SoundManager {
+class Scene : public GameObjectManager,public SpriteManager, public MeshManager {
 public:
+	bool isInitialized = false;
 
 public:
 	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -20,7 +29,7 @@ public:
 	virtual ~Scene();
 
 	//‰Šú‰»
-	virtual bool Initialize() = 0;
+	virtual void Initialize() = 0;
 
 	virtual void Terminate() = 0;
 
@@ -29,8 +38,4 @@ public:
 
 	//•`‰æ
 	virtual void Render();
-
-	//intŒ^‚Ì”š‚Ì{‚P[‚P‚ğw’è‚Ì•(0~maxNum)‚Ås‚¤
-	static int CountUpInRange(int target, int maxRange);
-	static int CountDownInRange(int target, int maxRange);
 };

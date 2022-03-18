@@ -1,6 +1,8 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
+
 ID3D11Device* Direct3D::pDevice = NULL;
 ID3D11DeviceContext* Direct3D::pDeviceContext = NULL;
 IDXGIDevice* Direct3D::pDXGI;	//DXGIデバイス
@@ -20,16 +22,16 @@ bool Direct3D::InitD3D(void* hdl)
 
 	UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;//DirectX11上でDirect2Dを使用するために必要
 
-	D3D11CreateDevice(NULL,			//IDXGIAdapter *pAdapter : デバイスの作成時に使用するビデオ アダプターへのポインター(既定のアダプターを使用するにはNULL)
-		D3D_DRIVER_TYPE_HARDWARE,	//D3D_DRIVER_TYPE DriverType : 作成するデバイスの種類を表す D3D_DRIVER_TYPE
-		NULL,						//HMODULE Software : ソフトウェア ラスタライザーを実装する DLL のハンドル
-		createDeviceFlags,			//UINT Flags : 有効にするランタイム レイヤー
-		NULL,						//CONST D3D_FEATURE_LEVEL *pFeatureLevels : 作成を試みる機能レベルの順序を指定する D3D_FEATURE_LEVEL の配列へのポインター
-		0,							//UINT FeatureLevels : pFeatureLevels の要素数
-		D3D11_SDK_VERSION,			//UINT SDKVersion : SDK のバージョン
-		&pDevice,					//ID3D11Device **ppDevice : 作成されたデバイスを表す ID3D11Device オブジェクトへのポインターのアドレスを返す。
-		NULL,						//D3D_FEATURE_LEVEL *pFeatureLevel : 成功した場合は、成功した pFeatureLevels 配列の最初の D3D_FEATURE_LEVEL を返す。失敗した場合は 0 を返す。
-		&pDeviceContext				//ID3D11DeviceContext **ppImmediateContext : デバイス コンテキストを表す ID3D11DeviceContext オブジェクトへのポインターのアドレスを返す。
+	D3D11CreateDevice(NULL,			//デバイスの作成時に使用するビデオ アダプターへのポインター(既定のアダプターを使用するにはNULL)
+		D3D_DRIVER_TYPE_HARDWARE,	//作成するデバイスの種類を表すD3D_DRIVER_TYPE
+		NULL,						//ソフトウェア ラスタライザーを実装するDLLのハンドル
+		createDeviceFlags,			//有効にするランタイム レイヤー
+		NULL,						//作成を試みる機能レベルの順序を指定する D3D_FEATURE_LEVEL の配列へのポインター
+		0,							//pFeatureLevels の要素数
+		D3D11_SDK_VERSION,			//SDKのバージョン
+		&pDevice,					//作成されたデバイスを表す ID3D11Deviceオブジェクトへのポインターのアドレスを返す。
+		NULL,						//成功した場合は、成功したpFeatureLevels配列の最初のD3D_FEATURE_LEVELを返す。失敗した場合は 0 を返す。
+		&pDeviceContext				//デバイス コンテキストを表すID3D11DeviceContextオブジェクトへのポインターのアドレスを返す。
 	);
 
 	//インターフェイス取得
@@ -119,7 +121,6 @@ bool Direct3D::InitD3D(void* hdl)
 	dsDesc.Texture2D.MipSlice = 0;
 	pDevice->CreateDepthStencilView(pDepthStencil, &dsDesc, &pDepthStencilView);
 
-
 	//無地(白)のテクスチャを作成
 	ZeroMemory(&descDepth, sizeof(descDepth));
 	descDepth.Width = 16;
@@ -165,7 +166,6 @@ void Direct3D::DestroyD3D()
 {
 	SAFE_RELEASE(pWhiteTextureView);
 	SAFE_RELEASE(pWhiteTexture);
-
 	SAFE_RELEASE(pRenderTargetView);
 	SAFE_RELEASE(pDepthStencil);
 	SAFE_RELEASE(pDepthStencilView);
@@ -181,7 +181,7 @@ void Direct3D::DestroyD3D()
 //
 void Direct3D::Clear() {
 	//画面クリア（実際は単色で画面を塗りつぶす処理）
-	float ClearColor[4] = { 0,0,1,1 };// クリア色作成　RGBAの順
+	float ClearColor[4] = { 0,0.5f,1,1 };// クリア色作成　RGBAの順
 	pDeviceContext->ClearRenderTargetView(pRenderTargetView, ClearColor);//画面クリア
 	pDeviceContext->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
 	//レンダーターゲットビューと深度ステンシルビューをパイプラインにバインド

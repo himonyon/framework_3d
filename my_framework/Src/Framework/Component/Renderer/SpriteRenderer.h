@@ -1,63 +1,48 @@
 #pragma once
 /*-----------------------------------------------------------
 
-	SpriteRendererクラス
-		スプライトを描画するクラス
+	SpriteRendererコンポーネント
+		スプライトを描画する
 
 -------------------------------------------------------------*/
 
-class SpriteRenderer : public Component {
-public:
-	//描画対象スプライト
-	noDel_ptr<Sprite> pRenderSprite = NULL;
+namespace MyFrameWork {
+	class SpriteRenderer : public Renderer3D {
+	private:
+		//描画対象スプライト
+		noDel_ptr<Sprite> pRenderSprite = NULL;
 
-	//画像の幅
-	float sizeX = 0;
-	float sizeY = 0;
+		//頂点バッファ
+		ID3D11Buffer* pVertexBuffer = 0;
 
-	//頂点情報
-	stVertex2D vtx[Sprite::VertexNum];
+		static const int indexNum = 6;
 
-private:
-	static ID3D11Buffer* pConstantBuffer;
-	static ID3D11RasterizerState* pRasterizerState;
-	static ID3D11SamplerState* pSamplerState;
-	static ID3D11BlendState* pBlendState;
-	static ID3D11DepthStencilState* pDepthStencilState;
-	static ID3D11InputLayout* pInputLayout;
-	static UINT	VertexStrides;
-	static UINT	VertexOffsets;
+	public:
+		stColor4 color = { 1,1,1,1 };
 
-private:
-	int renderPriority = 0; //描画順
-	bool sortSwitch = true; //描画順が変更されたかどうか
+	public:
+		SpriteRenderer();
+		~SpriteRenderer(void);
 
-public:
-	static bool Initialize();
-	static void Destroy();
+		//頂点情報
+		stVertex3D vtx[indexNum];
 
-	SpriteRenderer();
-	~SpriteRenderer(void);
+		//コンポーネント処理
+		void Execute() override;
 
-	//コンポーネントの初期化
-	void SetUpSpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite);
+		//コンポーネント初期化
+		void SetUpRenderer(noDel_ptr<Sprite> sprite);
 
-	//コンポーネント処理
-	void Execute() override;
+		//色の設定、取得
+		void SetColor(float r, float g, float b, float a) override;
+		void SetColor(stColor4 color) override;
+		stColor4 GetColor() override;
 
-	void SetSize(float width, float height);
-	void SetColor(float r, float g, float b, float a);
-	void SetColor(stColor4 color);
+		//スプライトの状態を初期状態に戻す(ColorとUV)
+		void SetDefaultUV();
 
-	void SetDefaultState(); //スプライトの状態を初期状態に戻す(ColorとUV)
-
-	void SetRenderPriority(int value); //描画順位の設定
-	int GetRenderPriority(); //描画順位の所得
-	void SetSortSwitch(bool flag);
-	bool isSortSwitch(); //描画順が変更さらたか
-
-private:
-	void Render(void); //描画
-
-	void SetVertexState();
-};
+	private:
+		//描画
+		void Render(void) override;
+	};
+}

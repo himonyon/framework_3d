@@ -2,40 +2,32 @@
 #include "../../../../environment.h"
 
 //初期化
-bool SceneTitle::Initialize() {
+void SceneTitle::Initialize() {
 	//２Dオブジェクト
-	pTest_mesh = CreateMesh(L"Data/Object/test.obj");
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
 
-	pObj2 = CreateObject(480, 480, 300, 300, pTest_sp);
-	pObj1 = CreateObject(480, 480, 100, 100, pTest_sp);
-	pObj4 = CreateObject(100, 200, 50, 50, pTest_sp);
+	pCam = CreateObject(0, 0, -3.0f);
+	pCam->AddComponent<Camera>();
+	pCam->GetComponent<Camera>()->SetMain();
 
-	pObj5 = CreateObject(1000, 500, 50, 50, CreateSprite(new Sprite(L"Data/Image/Chips_Cover.spr")));
-	pObj5->AddComponent<Collider2D>();
-	pObj5->GetComponent<Collider2D>()->SetUpCollider2D(true);
-
-	//コライダーテスト
-	pObj2->AddComponent<Collider2D>();
-	pObj2->GetComponent<Collider2D>()->SetUpCollider2D(true);
-
-	//アニメーションテスト
-	pObj2->AddComponent<Animator>();
-	noDel_ptr<Animator> an = pObj2->GetComponent<Animator>();
-	an->AddAnimation("Test", new SpriteAnimation(L"Data/Animation/test.anim", true));
-	an->PlayAnim("Test");
+	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
+	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/Chips.fbx"));
+	pObj5 = CreateObject(1, 0,0, 1,1,pTest_sp);
 
 	//ビヘイビア
 	pObj1->AddComponent<Move>();
 	pObj1->AddComponent<Scale>();
 
-	pObj3 = CreateObject(100, 500, 60, 60, pTest_sp);
+	pText = CreateObject(500, 50, 0, nullptr, "text");;
+	pText->AddComponent<Font>();
+	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 	//サウンド
-	pSound0 = CreateSound(L"Data/Sound/title_bgm.wav");
+	pSound0 = std::make_unique<Sound>(L"Data/Sound/title_bgm.wav");
+	pSound0->SetVolume(0.2f);
 	pSound0->Play();
 
-	return true;
+	isInitialized = true;
 }
 
 void SceneTitle::Terminate() {
@@ -43,13 +35,37 @@ void SceneTitle::Terminate() {
 
 //処理
 void SceneTitle::Execute() {
-	Font::Print(200, 200, L"%d", Mouse::GetX());
+	int aa = 99;
 
-	if (Keyboard::Trg(DIK_SPACE)) {
-		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(100);
+	if (Input::On(InputConfig::input["decide"])) {
+		pCam->transform->position.y += 0.1f;
 	}
-	if (Keyboard::Trg(DIK_C)) {
-		pObj1->GetComponent<SpriteRenderer>()->SetRenderPriority(-100);
+	if (Input::On(InputConfig::input["cancel"])) {
+		pCam->transform->position.y -= 0.1f;
+	}
+
+	if (Input::On(InputConfig::input["up"])) {
+		pCam->transform->position.z += 0.1f;
+	}
+	if (Input::On(InputConfig::input["down"])) {
+ 		pCam->transform->position.z -= 0.1f;
+	}
+	if (Input::On(InputConfig::input["right"])) {
+		pCam->transform->position.x += 0.1f;
+	}
+	if (Input::On(InputConfig::input["left"])) {
+		pCam->transform->position.x -= 0.1f;
+	} 
+
+	if (Keyboard::On(DIK_F)) {
+		pCam->transform->scale.x += 0.2f;
+		pCam->transform->scale.y += 0.2f;
+		pCam->transform->scale.z += 0.2f;
+	}
+	if (Keyboard::On(DIK_G)) {
+		pCam->transform->scale.x -= 0.2f;
+		pCam->transform->scale.y -= 0.2f;
+		pCam->transform->scale.z -= 0.2f;
 	}
 
 	Scene::Execute();

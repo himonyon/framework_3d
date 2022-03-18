@@ -3,10 +3,10 @@
 class SceneGame : public Scene{
 private:
 	noDel_ptr<GameObject> pSample0;
-	noDel_ptr<Sound> pSound0;
+	std::unique_ptr<Sound> pSound0;
 private:
 	//‰Šú‰»
-	bool Initialize();
+	void Initialize();
 
 	//íœ
 	void Terminate();

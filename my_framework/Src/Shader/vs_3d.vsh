@@ -1,56 +1,59 @@
-//グローバル
-cbuffer global_0:register(b0)
+struct VS_IN
 {
-	matrix g_mW;//ワールド行列
-	matrix g_mWVP; //ワールドから射影までの変換行列
-	float4 g_LightDir;  //ライトの方向ベクトル
-	float4 g_Eye;//カメラ位置
+	float4 pos : POSITION0;
+	float4 nor : NORMAL0;
+	float4 color : COLOR0;
+	float2 texture_pos : TEXTURE0;
 };
 
-cbuffer global_1:register(b1)
+struct VS_OUT
 {
-	float4 g_Ambient = float4(0, 0, 0, 0);//アンビエント光
-	float4 g_Diffuse = float4(1, 0, 0, 0); //拡散反射(色）
-	float4 g_Specular = float4(1, 1, 1, 1);//鏡面反射
+	float4 pos : SV_POSITION;
+	float4 color : COLOR;
+	float2 texture_pos : TEXTURE0;
 };
 
-
-//バーテックスバッファー入力構造体
-struct VS_INPUT
+cbuffer ConstantBuffer
 {
-	float4 position : POSITION0;
-	float4 normal : NORMAL0;
-	float2 tex : TEXTURE0;
-};
+	float4x4 World;				// ワールド変換行列
+	float4x4 View;				// ビュー変換行列
+	float4x4 Projection;			// 透視射影変換行列
+	float4 CameraPos;			// カメラ座標
+	float4 LightVector;		// ライト方向
+	float4 LightColor;			// ライトカラー
+	float4 MaterialAmbient;	// アンビエント
+	float4 MaterialDiffuse;	// ディフューズ
+	float4 MaterialSpecular;	// スペキュラー
+	float4 color;
+}
 
-//バーテックスバッファー出力構造体
-struct VS_OUTPUT
+VS_OUT main(VS_IN input)
 {
-	float4 position : SV_POSITION;
-	float4 normal : NORMAL;
-	float2 tex : TEXTURE0;
-	float3 eyeVector : TEXCOORD0;
-};
+	VS_OUT output;
 
-//
-//バーテックスシェーダー
-//
-VS_OUTPUT main(VS_INPUT input)
-{
-	VS_OUTPUT output;
-	//射影変換（ワールド→ビュー→プロジェクション）
-	output.position = mul(input.position, g_mWVP);
+	// ローカル座標 * ワールド座標変換行列
+	output.pos = mul(input.pos, World);
+	// ワールド座標 * ビュー座標変換行列
+	output.pos = mul(output.pos, View);
+	// ビュー座標 * プロジェクション座標変換行列
+	output.pos = mul(output.pos, Projection);
 
-	//法線をワールド空間に
-	output.normal = mul(input.normal, g_mW);
+	// 頂点カラー
+	output.color = color;
 
-	//視線ベクトル
-	float3 PosWorld = mul(input.position, g_mW);
-	output.eyeVector = g_Eye - PosWorld;
+	// Texture座標指定
+	output.texture_pos = input.texture_pos;
 
-	output.normal = normalize(output.normal);
-
-	output.tex = input.tex;
+	float4 normal;
+	// 移動が計算に反映させない
+	input.nor.w = 0.0;
+	// 頂点の法線にワールド行列を掛け合わせて
+	// ワールド座標上での法線の向きに変換する
+	normal = mul(input.nor, World).xyzw;
+	normal = normalize(normal);
+	// saturate => 引数で指定した値を0～1間での範囲に収める
+	// dot => 内積計算
+	output.color *= saturate(dot(normal, LightVector));
 
 	return output;
 }

@@ -1,6 +1,8 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
+
 Component::Component(eComponentType type) {
 	this->type = type;
 }

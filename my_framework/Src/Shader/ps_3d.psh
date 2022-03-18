@@ -1,43 +1,41 @@
-//グローバル
-Texture2D g_texDecal: register(t0);
-SamplerState g_samLinear : register(s0);
-
-struct PS_INPUT {
-	float4 position : SV_POSITION;
-	float4 normal : NORMAL;
-	float2 tex : TEXTURE0;
-	float3 eyeVector : TEXCOORD0;
+struct PS_IN
+{
+	float4 pos : SV_POSITION;
+	float4 color : COLOR;
+	float2 texture_pos : TEXTURE0;
 };
 
-//グローバル
-cbuffer global_0:register(b0)
+cbuffer ConstantBuffer
 {
-	matrix g_mW;//ワールド行列
-	matrix g_mWVP; //ワールドから射影までの変換行列
-	float4 g_LightDir;  //ライトの方向ベクトル
-	float4 g_Eye;//カメラ位置
-};
+	float4x4 World;				// ワールド変換行列
+	float4x4 View;				// ビュー変換行列
+	float4x4 Projection;			// 透視射影変換行列
+	float4 CameraPos;			// カメラ座標
+	float4 LightVector;		// ライト方向
+	float4 LightColor;			// ライトカラー
+	float4 MaterialAmbient;	// アンビエント
+	float4 MaterialDiffuse;	// ディフューズ
+	float4 MaterialSpecular;	// スペキュラー
+	float4 color;
+}
 
-cbuffer global_1:register(b1)
+Texture2D    Texture : register(t0[0]); // Textureをスロット0の0番目のテクスチャレジスタに設定
+SamplerState Sampler : register(s0[0]); // Samplerをスロット0の0番目のサンプラレジスタに設定
+
+float4 main(PS_IN input) : SV_Target
 {
-	float4 g_Ambient = float4(0, 0, 0, 0);//アンビエント光
-	float4 g_Diffuse = float4(1, 0, 0, 0); //拡散反射(色）
-	float4 g_Specular = float4(1, 1, 1, 1);//鏡面反射
-};
+	float ambient_factor = MaterialAmbient[3];
+	float diffuse_factor = MaterialDiffuse[3];
 
+	float4 ambient_color = MaterialAmbient * ambient_factor;
+	float4 diffuse_color = input.color * (LightColor * MaterialDiffuse) * diffuse_factor;
 
-float4 main(PS_INPUT input) : SV_TARGET
-{
-	float3 LightDir = normalize(g_LightDir);
-	float3 ViewDir = normalize(input.eyeVector);
-	float4 NL = saturate(dot(input.normal, g_LightDir));
+	// テクスチャカラーの取得
+	float4 tex_color = Texture.Sample(Sampler, input.texture_pos);
 
-	float3 Reflect = normalize(2 * NL * input.normal - g_LightDir);
-	float4 specular = pow(saturate(dot(Reflect, ViewDir)), 4);
+	float4 outCol = diffuse_color + ambient_color;
+	outCol *= Texture.Sample(Sampler, input.texture_pos);
 
-	float4 Color = g_Diffuse * NL + specular * g_Specular;
-
-	Color += g_texDecal.Sample(g_samLinear, input.tex);
-
-	return Color;
+	// アンビエントカラー + ディフューズカラー + テクスチャカラー
+	return outCol;
 }

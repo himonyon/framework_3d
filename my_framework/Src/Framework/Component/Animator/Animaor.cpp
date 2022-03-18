@@ -1,6 +1,8 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
+
 Animator::Animator() : Component(eComponentType::Animator) {
 }
 Animator::~Animator() {
@@ -23,7 +25,8 @@ void Animator::Execute() {
 
 void Animator::AddAnimation(std::string name, SpriteAnimation* anim) {
 	AnimBox* animBox = new AnimBox(name, anim);
-	animBox->anim->pAnimRenderer = gameObject->GetComponent<SpriteRenderer>();
+	///アニメーションさせる対象設定
+	animBox->anim->SetAnimRenderer(gameObject->GetComponent<Renderer2D>());
 	animBoxes.emplace_back(animBox);
 }
 
@@ -65,7 +68,6 @@ void Animator::StopAnim(std::string name) {
 Animator::AnimBox::AnimBox(std::string name, SpriteAnimation* anim){
 	this->name = name;
 	this->anim = anim;
-
 }
 Animator::AnimBox::~AnimBox() {
 	delete anim;

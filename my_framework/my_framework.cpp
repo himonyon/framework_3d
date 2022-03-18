@@ -5,6 +5,8 @@
 #include "my_framework.h"
 #include "environment.h"
 
+using namespace MyFrameWork;
+
 #define MAX_LOADSTRING 100
 
 // グローバル変数:

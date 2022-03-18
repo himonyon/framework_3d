@@ -7,68 +7,83 @@
 
 -------------------------------------------------------------*/
 
-class GameObjectManager {
-private:
-	int sceneType = 0;
+namespace MyFrameWork {
 
-	bool isAddComponent = false; //新たにコンポーネントを追加したか
-	bool isStartFucnEnable = false; //スタート関数を実行するか
-	bool isSpriteSortEnable = false; //スプライトのソートを実行するか
+	class GameObjectManager {
+	private:
+		int sceneType = 0;
 
-public:
-	GameObjectManager() {};
-	~GameObjectManager();
+		bool isStartFucnEnable = false; //スタート関数を実行するか
+		bool isSortEnable = false; //スプライトのソートを実行するか
 
-	void Execute();
-	void Render();
+	public:
+		GameObjectManager() {};
+		~GameObjectManager();
 
-	//オブジェクトの削除予約
-	void ReserveDestroyObject(int objID);
+		//処理
+		void Execute();
+		//描画
+		void Render();
 
-	//オブジェクトクリエイタ
-	//空オブジェクト作成
-	noDel_ptr<GameObject> CreateObject(float x, float y, float z,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
-	//スプライトオブジェクト作成
-	noDel_ptr<GameObject> CreateObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
-	//メッシュオブジェクト作成
-	noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh, 
-		noDel_ptr<Transform> parent = nullptr, bool local = false);
+		//オブジェクトの削除予約
+		void ReserveDestroyObject(std::string name);
 
-private:
-	//配列から特定のIDのコンポーネントを抜く
-	void PullOutComponent(noDel_ptr<GameObject> obj);
+		//オブジェクトの有効予約
+		void ReserveEnableObject(std::string name);
 
-	//コンポーネント処理の有効無効を確認する
-	bool CheckComponentEnable(noDel_ptr<Component> com);
+		//オブジェクトクリエイタ
+		//空オブジェクト作成
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z,
+			noDel_ptr<Transform> parent = nullptr, std::string name = "");
+		//スプライトオブジェクト作成
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, float width, float height, noDel_ptr<Sprite> sprite,
+			noDel_ptr<Transform> parent = nullptr, std::string name = "");
+		//メッシュオブジェクト作成
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+			noDel_ptr<Transform> parent = nullptr, std::string name = "");
+		//イメージ(UI)オブジェクト作成
+		noDel_ptr<GameObject> CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
+			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 
-	//描画順の変更(クイックソート)
-	void RenderOrderSort(int start, int end);
-	
-	//オブジェクトに追加されたコンポーネントをこのクラスの配列に格納
-	void RegistComponent(noDel_ptr<GameObject> obj);
+	private:
+		//配列から特定のIDのコンポーネントを抜く
+		void PullOutComponent(noDel_ptr<GameObject> obj);
+
+		//コンポーネント処理の有効無効を確認する
+		bool CheckComponentEnable(noDel_ptr<Component> com);
+
+		//描画順の変更(クイックソート)
+		void RenderOrderSort(int start, int end);
 
 
-public:
-	//getter,setter
-	void SetSceneType(int val) { sceneType = val; }
-	void SetAddComponentTrigger() { isAddComponent = true; }
-	void SetStartFuncEnable() { isStartFucnEnable = true; }
-	void SetSpriteSortEnable() { isSpriteSortEnable = true; }
+	public:
+		//オブジェクトに追加されたコンポーネントをこのクラスの配列に格納
+		void RegistComponent(noDel_ptr<Component> com);
 
-private:
-	std::unordered_map<int, GameObject*> umObjects;
+		//ゲームオブジェクトを取得する
+		noDel_ptr<GameObject> GetGameObject(std::string name);
 
-	//コンポーネントの配列
-	std::unordered_map<int,noDel_ptr<Component>> umTransform;
-	std::unordered_map<int,noDel_ptr<Component>> umCollider2D;
-	std::unordered_map<int,noDel_ptr<Component>> umPhysics2D;
-	std::vector<noDel_ptr<Component>> vSpriteRenderer;
-	std::unordered_map<int,noDel_ptr<Component>> umMeshRenderer;
-	std::unordered_map<int,noDel_ptr<Component>> umBehaviour;
-	std::unordered_map<int,noDel_ptr<Component>> umAnimator;
+		//getter,setter
+		void SetSceneType(int val) { sceneType = val; }
+		int GetSceneType() const { return sceneType; }
+		void SetStartFuncEnable() { isStartFucnEnable = true; }
+		void SetSortEnable() { isSortEnable = true; }
 
-public:
-	std::vector<int> vDestroyID; //削除するオブジェクトID
-};
+	private:
+		//ゲームオブジェクト配列
+		std::unordered_map<std::string, GameObject*> umObjects;
+
+		//コンポーネントの配列
+		std::unordered_map<int, noDel_ptr<Component>> umTransform;
+		std::unordered_map<int, noDel_ptr<Component>> umCollider2D;
+		std::unordered_map<int, noDel_ptr<Component>> umPhysics2D;
+		std::vector<noDel_ptr<Component>> v2DRenderer;
+		std::unordered_map<int, noDel_ptr<Component>> um3DRenderer;
+		std::unordered_map<int, noDel_ptr<Component>> umBehaviour;
+		std::unordered_map<int, noDel_ptr<Component>> umAnimator;
+
+		//予約して一括操作するためのコンテナ
+		std::vector<std::string> vDestroyName; //削除するオブジェクト名
+		std::vector<std::string> vEnableName; //有効・無効するオブジェクト名(Behaviourの即時実行を防ぐ)
+	};
+}

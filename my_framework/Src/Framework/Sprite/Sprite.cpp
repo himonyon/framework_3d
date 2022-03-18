@@ -1,5 +1,6 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
+
 Sprite::Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name) {
 	HRESULT hr;
 

@@ -2,13 +2,13 @@
 #include "../../environment.h"
 
 //èâä˙âª
-bool SceneGame::Initialize() {
-	pSample0 = CreateObject(0,0,0);
+void SceneGame::Initialize() {
+	pSample0 = CreateImageObject(500, 500, 50, 50, CreateSprite(new Sprite(L"Data/Image/Chips_Cover.spr")));
 
-	pSound0 = noDel_ptr<Sound>(CreateSound(L"Data/Sound/title_bgm.wav"));
+	pSound0 = std::make_unique<Sound>(L"Data/Sound/title_bgm.wav");
 	pSound0->Play();
 
-	return true;
+	isInitialized = true;
 }
 
 void SceneGame::Terminate() {
@@ -17,7 +17,7 @@ void SceneGame::Terminate() {
 
 //èàóù
 void SceneGame::Execute() {
-	if (Input::Trg(InputConfig::cancel)) {
+	if (Input::Trg(InputConfig::input["decide"])) {
 		SceneManager::SwitchScene(eSceneTable::Title);
 	}
 

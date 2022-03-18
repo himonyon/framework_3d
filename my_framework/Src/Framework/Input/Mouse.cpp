@@ -1,6 +1,7 @@
 #include "../../../framework.h"
 #include "../../../environment.h"
 
+using namespace MyFrameWork;
 
 int	Mouse::x = 0;
 int	Mouse::y = 0;
@@ -28,14 +29,18 @@ int Mouse::GetDY() {
 //キーボードとジョイスティックと併用するためボタンを+500に設定しているため-500をかけて利用
 bool Mouse::On(int mouse) {
 	mouse -= 500;
+	if (mouse < 0) return false;
 	return (mouse & on);
 }
 bool Mouse::Trg(int mouse) {
 	mouse -= 500;
+	if (mouse < 0) return false;
+	if (mouse < 0) mouse = 0;
 	return (mouse & trg);
 }
 bool Mouse::Rel(int mouse) {
 	mouse -= 500;
+	if (mouse < 0) return false;
 	return (mouse & rel);
 }
 

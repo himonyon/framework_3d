@@ -1,6 +1,7 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
+using namespace MyFrameWork;
 
 Collider2D::Collider2D() : Component(eComponentType::Collider) {
 	sizeX = 0;
@@ -30,7 +31,8 @@ Collider2D::~Collider2D() {
 }
 
 void Collider2D::SetUpCollider2D(bool collision) {
-	noDel_ptr<SpriteRenderer> sr = gameObject->GetComponent<SpriteRenderer>();
+	noDel_ptr<Renderer2D> sr = gameObject->GetComponent<Renderer2D>();
+
 	if (sr != nullptr) {
 		sizeX = sr->sizeX;
 		sizeY = sr->sizeY;
@@ -47,37 +49,12 @@ void Collider2D::SetUpCollider2D(float sizeX, float sizeY, bool collision) {
 	this->isCollision = collision;
 }
 
+void Collider2D::Execute() {
+	ClearHitState();
+}
 void Collider2D::Execute(noDel_ptr<Collider2D> hitCollider) {
-	//前フレームでの衝突をリセット&beforeCollsionの更新
-	for (auto& m : messages) {
-		if (m == L"Clear") {
-			b_hitCollisions.clear();
-			b_hitTriggers.clear();
-
-			b_hitCollisions.resize(hitCollisions.size());
-			b_hitTriggers.resize(hitTriggers.size());
-
-			std::copy(hitCollisions.begin(), hitCollisions.end(), b_hitCollisions.begin());
-			std::copy(hitTriggers.begin(), hitTriggers.end(), b_hitTriggers.begin());
-
-			if (b_hitCollisions.size() != 0) {
-				for (auto& com : gameObject->components) {
-					if (com->type == eComponentType::Behaviour) 
-						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"CollisionExit");
-				}
-			}
-			if (b_hitTriggers.size() != 0) {
-				for (auto& com : gameObject->components) {
-					if (com->type == eComponentType::Behaviour)
-						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"TriggerExit");
-				}
-			}
-
-			hitCollisions.clear();
-			hitTriggers.clear();
-			messages.clear();
-		}
-	}
+	//Objectの座標系が違えば処理しない
+	if (gameObject->IsScreenObj() != hitCollider->gameObject->IsScreenObj()) return;
 
 	//当たり判定チェック
 	IsCollide(hitCollider);
@@ -108,7 +85,7 @@ void Collider2D::IsCollide(noDel_ptr<Collider2D> hitCollider)
 	//スプライトの中心同士の座標の差分(differencial)
 	float dx = fabsf(transform->position.x - hitPos.x);
 	//2つのスプライトの幅(半分)をスケールの合計
-	float sx = sizeX * 0.5f * transform->scale.x + hitCollider->sizeX * 0.5f * hitScl.x;
+	float sx = sizeX * 0.5f * abs(transform->scale.x) + hitCollider->sizeX * 0.5f * abs(hitScl.x);
 
 	if (dx < sx)	//差分が幅より小さければ横(X)方向で当たっている
 	{
@@ -201,4 +178,37 @@ void Collider2D::AddHitTriggers(noDel_ptr<Collider2D> hitColider) {
 		if (v == hitColider) return;
 	}
 	hitTriggers.emplace_back(hitColider);
+}
+
+void Collider2D::ClearHitState() {
+	//前フレームでの衝突をリセット&beforeCollsionの更新
+	for (auto& m : messages) {
+		if (m == L"Clear") {
+			b_hitCollisions.clear();
+			b_hitTriggers.clear();
+
+			b_hitCollisions.resize(hitCollisions.size());
+			b_hitTriggers.resize(hitTriggers.size());
+
+			std::copy(hitCollisions.begin(), hitCollisions.end(), b_hitCollisions.begin());
+			std::copy(hitTriggers.begin(), hitTriggers.end(), b_hitTriggers.begin());
+
+			if (b_hitCollisions.size() != 0) {
+				for (auto& com : gameObject->components) {
+					if (com->type == eComponentType::Behaviour)
+						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"CollisionExit");
+				}
+			}
+			if (b_hitTriggers.size() != 0) {
+				for (auto& com : gameObject->components) {
+					if (com->type == eComponentType::Behaviour)
+						MessageSystem::SendMessageToCom(noDel_ptr<Component>(com), L"TriggerExit");
+				}
+			}
+
+			hitCollisions.clear();
+			hitTriggers.clear();
+			messages.clear();
+		}
+	}
 }

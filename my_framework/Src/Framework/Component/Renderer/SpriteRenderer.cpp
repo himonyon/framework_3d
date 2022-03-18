@@ -1,265 +1,138 @@
 #include "../../../../framework.h"
 #include "../../../../environment.h"
 
-//頂点要素
-D3D11_INPUT_ELEMENT_DESC hInElementDesc_Sprite[] =
+using namespace MyFrameWork;
+
+SpriteRenderer::SpriteRenderer()
 {
-	{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-};
-
-
-ID3D11Buffer* SpriteRenderer::pConstantBuffer = NULL;
-ID3D11RasterizerState* SpriteRenderer::pRasterizerState = 0;
-ID3D11SamplerState* SpriteRenderer::pSamplerState = 0;
-ID3D11BlendState* SpriteRenderer::pBlendState = 0;
-ID3D11DepthStencilState* SpriteRenderer::pDepthStencilState = 0;
-ID3D11InputLayout* SpriteRenderer::pInputLayout = 0;
-UINT SpriteRenderer::VertexStrides = sizeof(stVertex2D);
-UINT SpriteRenderer::VertexOffsets = 0;
-
-bool SpriteRenderer::Initialize() {
-	//ラスタライザの設定
-	D3D11_RASTERIZER_DESC hRasterizerDesc = {
-		D3D11_FILL_SOLID,	//フィルモード
-		D3D11_CULL_NONE,	//カリングモード
-		FALSE,
-		0,
-		0.0f,
-		FALSE,
-		FALSE,
-		FALSE,
-		FALSE,
-		FALSE
-	};
-
-	//ラスタライザの作成
-	Direct3D::getDevice()->CreateRasterizerState(&hRasterizerDesc, &pRasterizerState);
-
-	//ブレンドステートの設定
-	D3D11_BLEND_DESC BlendDesc;
-	ZeroMemory(&BlendDesc, sizeof(BlendDesc));
-	BlendDesc.AlphaToCoverageEnable = FALSE;
-	BlendDesc.IndependentBlendEnable = FALSE;
-	BlendDesc.RenderTarget[0].BlendEnable = TRUE;
-	BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
-
-	//ブレンドステートの作成
-	Direct3D::getDevice()->CreateBlendState(&BlendDesc, &pBlendState);
-
-	// サンプラステートの設定
-	D3D11_SAMPLER_DESC smpDesc;
-	memset(&smpDesc, 0, sizeof(smpDesc));
-	smpDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	smpDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	smpDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	smpDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	smpDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	smpDesc.MinLOD = 0;
-	smpDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	// サンプラステートの生成
-	Direct3D::getDevice()->CreateSamplerState(&smpDesc, &pSamplerState);
-
-	//深度ステンシルステートの設定
-	D3D11_DEPTH_STENCIL_DESC dsDesc;
-	ZeroMemory(&dsDesc, sizeof(dsDesc));
-	dsDesc.DepthEnable = true;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	dsDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-
-	//深度ステンシルステートの作成
-	Direct3D::getDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState);
-
-	//頂点レイアウトの作成
-	Shader::VertexShader* vs = Shader::getVertexShader(Shader::eVertexShader::VS_2D);
-	Direct3D::getDevice()->CreateInputLayout(hInElementDesc_Sprite, ARRAYSIZE(hInElementDesc_Sprite), vs->getCode(), vs->getLength(), &pInputLayout);
-
-	//コンスタントバッファー作成
-	D3D11_BUFFER_DESC cb;
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(float) * 4;
-	cb.CPUAccessFlags = 0;
-	cb.MiscFlags = 0;
-	cb.StructureByteStride = sizeof(float) * 4;
-	cb.Usage = D3D11_USAGE_DEFAULT;
-
-
-	if (FAILED(Direct3D::getDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer)))
-	{
-		return FALSE;
-	}
-
-	//スクリーン座標をビューポート座標へ変換する係数
-	float w = (float)SCREEN_WIDTH;
-	float h = (float)SCREEN_HEIGHT;
-	float scr[4];
-	scr[0] = 2.0f / w;
-	scr[1] = -2.0f / h;
-	scr[2] = -w * 0.5f;
-	scr[3] = -h * 0.5f;
-	//定数バッファへ値をセット
-	Direct3D::getDeviceContext()->UpdateSubresource(pConstantBuffer, 0, NULL, scr, 0, 0);
-
-	return TRUE;
-}
-
-void SpriteRenderer::Destroy() {
-	SAFE_RELEASE(pRasterizerState);
-	SAFE_RELEASE(pBlendState);
-	SAFE_RELEASE(pSamplerState);
-	SAFE_RELEASE(pDepthStencilState);
-	SAFE_RELEASE(pInputLayout);
-	SAFE_RELEASE(pConstantBuffer);
-}
-
-SpriteRenderer::SpriteRenderer() 
-	: Component(eComponentType::SpriteRenderer)
-{
-	renderPriority = 0;
-	sortSwitch = true;
-
-	this->sizeX = sizeX;
-	this->sizeY = sizeY;
-
-	for (int i = 0; i < Sprite::VertexNum; i++) {
-		vtx[i].r = 1; vtx[i].g = 1; vtx[i].b = 1; vtx[i].a = 1;
+	for (int i = 0; i < 6; i++) {
+		vtx[i].nor = { 0,0,0 };
+		vtx[i].col = { 1,1,1,1 };
+		vtx[i].pos.z = 0;
 	}
 }
 
 SpriteRenderer::~SpriteRenderer() {
+	SAFE_RELEASE(pVertexBuffer);
 }
 
 //コンポーネントの初期化
-void SpriteRenderer::SetUpSpriteRenderer(float sizeX, float sizeY, noDel_ptr<Sprite> sprite) {
-	this->sizeX = sizeX;
-	this->sizeY = sizeY;
+void SpriteRenderer::SetUpRenderer(noDel_ptr<Sprite> sprite) {
 
 	if (sprite != nullptr) {
 		pRenderSprite = sprite;
-		SetDefaultState();
+		SetDefaultUV();
 	}
+
+	for (int i = 0; i < 6; i++) {
+		vtx[i].nor = { 0,0,0 };
+		vtx[i].col = { 1,1,1,1 };
+		vtx[i].pos.z = 0;
+	}
+
+	vtx[0].pos.x = -0.5f;
+	vtx[0].pos.y = 0.5f;
+	vtx[1].pos.x = 0.5f;
+	vtx[1].pos.y = 0.5f;
+	vtx[2].pos.x = -0.5f;
+	vtx[2].pos.y = -0.5f;
+	vtx[3].pos.x = 0.5f;
+	vtx[3].pos.y = -0.5f;
+
+	//バーテックスバッファー作成
+	D3D11_BUFFER_DESC bd;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(stVertex3D) * 6;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+	bd.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &vtx[0];
+	InitData.SysMemPitch = 0;		
+	InitData.SysMemSlicePitch = 0;	
+	Direct3D::getDevice()->CreateBuffer(&bd, &InitData, &pVertexBuffer);
 }
+
 
 void SpriteRenderer::Execute() {
 	Render();
 }
 
-void SpriteRenderer::SetVertexState() {
-	float PI = 3.14f;
-
-	//座標
-	float vtx_x = 0;
-	float vtx_y = 0;
-
-	stVector3* pos = &transform->position;
-	stVector3* scale = &transform->scale;
-	stVector3* rot = &transform->rotation;
-
-
-	//各頂点の座標を設定
-	vtx_x = pos->x + (-sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (-sizeY * 0.5f) * scale->y;
-	vtx[0].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[0].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
-
-	vtx_x = pos->x + (+sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (-sizeY * 0.5f) * scale->y;
-	vtx[1].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[1].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
-
-	vtx_x = pos->x + (-sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
-	vtx[2].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[2].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
-
-	vtx_x = pos->x + (+sizeX * 0.5f) * scale->x;
-	vtx_y = pos->y + (+sizeY * 0.5f) * scale->y;
-	vtx[3].x = (vtx_x - pos->x) * cosf(rot->z) - (vtx_y - pos->y) * sinf(rot->z) + pos->x;
-	vtx[3].y = (vtx_x - pos->x) * sinf(rot->z) + (vtx_y - pos->y) * cosf(rot->z) + pos->y;
-}
-
 void SpriteRenderer::Render() {
 	if (pRenderSprite == NULL) return;
 
-	//頂点座標の設定
-	SetVertexState();
+	//移動・回転・スケーリングの設定
+	stVector3 _drawPos = GetPosOnCam();
+	stVector3 _drawRot = GetRotOnCam();
+	stVector3 _drawScale = GetScaleOnCam();
 
-	if(vtx[1].x < 0 || vtx[0].x > WINDOW_WIDTH || vtx[0].y > WINDOW_HEIGHT || vtx[2].y < 0) return;
+	StartRendering();
 
-	//頂点バッファの更新
-	Direct3D::getDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, vtx, 0, 0);
-
-	//ブレンドステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetBlendState(pBlendState, NULL, 0xffffffff);
-	//深度ステンシルステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetDepthStencilState(pDepthStencilState, 0);
-	//ラスタライザーをコンテキストに設定
-	Direct3D::getDeviceContext()->RSSetState(pRasterizerState);
-	//頂点インプットレイアウトをセット
-	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout);
-	//このコンスタントバッファーを使うシェーダーの登録
-	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &pConstantBuffer);
-	//バーテックスバッファーをセット
-	Direct3D::getDeviceContext()->IASetVertexBuffers(0, 1, pRenderSprite->GetPPVertexBuffer(), &VertexStrides, &VertexOffsets);
-	//プリミティブ・トポロジーをセット
+	// プリミティブの形状を指定
 	Direct3D::getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	//サンプラーステートをコンテキストに設定
-	Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &pSamplerState);
-	//テクスチャーをコンテキストに設定
-	Direct3D::setShaderResource(pRenderSprite->pTextureView);
-	//使用するシェーダーの登録	
-	Direct3D::getDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_2D)->getShader(), NULL, 0);
-	Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_2D)->getShader(), NULL, 0);
+
+	inputCB.ambient = { 1,1,1,1 };
+	inputCB.diffuse = { 1,1,1,1 };
+	inputCB.specular = { 1,1,1,1 };
+	inputCB.color = { 1,1,1,1 };
+
+	// IA(InputAssemblerStage)に入力レイアウトを設定する
+	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout);
+	//バーテックスバッファーをセット
+	UINT stride = sizeof(stVertex3D);
+	UINT offset = 0;
+	Direct3D::getDeviceContext()->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
+	Direct3D::getDeviceContext()->IASetIndexBuffer(pSpriteIndexBuffer,DXGI_FORMAT_R32_UINT,0);
+
+	// ワールドマトリクス設定
+	XMMATRIX world_matrix;
+	XMMATRIX translate = XMMatrixTranslation(_drawPos.x, _drawPos.y, _drawPos.z);
+	XMMATRIX rotate_x = XMMatrixRotationX(XMConvertToRadians(_drawRot.x));
+	XMMATRIX rotate_y = XMMatrixRotationY(XMConvertToRadians(_drawRot.y));
+	XMMATRIX rotate_z = XMMatrixRotationZ(XMConvertToRadians(_drawRot.z));
+	XMMATRIX scale_mat = XMMatrixScaling(_drawScale.x, _drawScale.y, _drawScale.z);
+	world_matrix = scale_mat * rotate_x * rotate_y * rotate_z * translate;
+
+	// ワールドマトリクスをコンスタントバッファに設定
+	XMStoreFloat4x4(&inputCB.world, XMMatrixTranspose(world_matrix));
+
+	// コンスタントバッファ更新
+	Direct3D::getDeviceContext()->UpdateSubresource(pConstantBuffer, 0, NULL, &inputCB, 0, 0);
+	// コンテキストにコンスタントバッファを設定
+	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+	Direct3D::getDeviceContext()->PSSetConstantBuffers(0, 1, &pConstantBuffer);
+
+	//テクスチャーをシェーダーに渡す
+	if (pRenderSprite->GetTexture() != NULL)
+	{
+		Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &pSamplerState);
+		Direct3D::getDeviceContext()->PSSetShaderResources(0, 1, &pRenderSprite->pTextureView);
+	}
 
 	//プリミティブをレンダリング
-	Direct3D::getDeviceContext()->Draw(4, 0);
+	Direct3D::getDeviceContext()->Draw(4,  0);
 }
 
-//setter/getter
-void SpriteRenderer::SetSize(float width, float height) {
-	sizeX = width;
-	sizeY = height;
-}
+
 void SpriteRenderer::SetColor(float r, float g, float b, float a) {
-	for (int i = 0; i < Sprite::VertexNum; i++) {
-		vtx[i].r = r;
-		vtx[i].g = g;
-		vtx[i].b = b;
-		vtx[i].a = a;
-	}
+	color.r = r; color.g = g; color.b = b; color.a = a;
 }
 void SpriteRenderer::SetColor(stColor4 color) {
-	for (int i = 0; i < Sprite::VertexNum; i++) {
-		this->vtx[i].r = color.r;
-		this->vtx[i].g = color.g;
-		this->vtx[i].b = color.b;
-		this->vtx[i].a = color.a;
-	}
+	this->color.r = color.r; this->color.g = color.g; this->color.b= color.b; this->color.a = color.a;
 }
-void SpriteRenderer::SetDefaultState() {
+stColor4 SpriteRenderer::GetColor() {
+	return { color.r, color.g, color.b, color.a };
+}
+void SpriteRenderer::SetDefaultUV() {
 	if (pRenderSprite == NULL) return; //スプライトがない場合return
-	for (int i = 0; i < Sprite::VertexNum; i++) {
-		vtx[i] = pRenderSprite->GetVertexState(i);
-	}
-}
-void SpriteRenderer::SetRenderPriority(int value) {
-	if (renderPriority != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSpriteSortEnable();
-	renderPriority = value;
-}
-int SpriteRenderer::GetRenderPriority() {
-	return renderPriority;
-}
-void SpriteRenderer::SetSortSwitch(bool flag) {
-	sortSwitch = flag;
-}
-bool SpriteRenderer::isSortSwitch() {
-	return sortSwitch;
+	
+	vtx[0].tex.x = pRenderSprite->GetVertexState(0).u;
+	vtx[0].tex.y = pRenderSprite->GetVertexState(0).v;
+	vtx[1].tex.x = pRenderSprite->GetVertexState(1).u;
+	vtx[1].tex.y = pRenderSprite->GetVertexState(1).v;
+	vtx[2].tex.x = pRenderSprite->GetVertexState(2).u;
+	vtx[2].tex.y = pRenderSprite->GetVertexState(2).v;
+	vtx[3].tex.x = pRenderSprite->GetVertexState(3).u;
+	vtx[3].tex.y = pRenderSprite->GetVertexState(3).v;
 }
