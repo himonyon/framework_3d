@@ -116,7 +116,7 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	instance->transform->SetUpTransform(x, y, z, parent);
 	//SpriteRendererの作成
 	instance->AddComponent<SpriteRenderer>();
-	instance->GetComponent<SpriteRenderer>()->SetUpRenderer2D(width, height, sprite);
+	instance->GetComponent<SpriteRenderer>()->SetUpRenderer(sprite);
 	//オブジェクト登録
 	umObjects[instance->GetName()] = instance;
 	return noDel_ptr<GameObject>(instance);

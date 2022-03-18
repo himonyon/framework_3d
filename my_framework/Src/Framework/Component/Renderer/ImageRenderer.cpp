@@ -81,7 +81,7 @@ void ImageRenderer::Render() {
 	//ラスタライザーをコンテキストに設定
 	Direct3D::getDeviceContext()->RSSetState(pRasterizerState);
 	//頂点インプットレイアウトをセット
-	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout1);
+	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout);
 	//このコンスタントバッファーを使うシェーダーの登録
 	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 	//バーテックスバッファーをセット

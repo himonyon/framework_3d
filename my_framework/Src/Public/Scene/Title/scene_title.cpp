@@ -6,13 +6,12 @@ void SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
 
-	pCam = CreateObject(0, 0, 0.0f);
+	pCam = CreateObject(0, 0, -3.0f);
 	pCam->AddComponent<Camera>();
 	pCam->GetComponent<Camera>()->SetMain();
 
 	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
 	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/Chips.fbx"));
-	pObj4 = CreateObject(1, 0,0, CreateMesh("Data/Object/Chips.obj"));
 	pObj5 = CreateObject(1, 0,0, 1,1,pTest_sp);
 
 	//ビヘイビア
@@ -39,10 +38,10 @@ void SceneTitle::Execute() {
 	int aa = 99;
 
 	if (Input::On(InputConfig::input["decide"])) {
-		pCam->transform->position.x += 0.1f;
+		pCam->transform->position.y += 0.1f;
 	}
 	if (Input::On(InputConfig::input["cancel"])) {
-		pCam->transform->position.x -= 0.1f;
+		pCam->transform->position.y -= 0.1f;
 	}
 
 	if (Input::On(InputConfig::input["up"])) {
@@ -59,10 +58,14 @@ void SceneTitle::Execute() {
 	} 
 
 	if (Keyboard::On(DIK_F)) {
-		pCam->transform->rotation.x += 0.1f;
+		pCam->transform->scale.x += 0.2f;
+		pCam->transform->scale.y += 0.2f;
+		pCam->transform->scale.z += 0.2f;
 	}
 	if (Keyboard::On(DIK_G)) {
-		pCam->transform->rotation.x -= 0.1f;
+		pCam->transform->scale.x -= 0.2f;
+		pCam->transform->scale.y -= 0.2f;
+		pCam->transform->scale.z -= 0.2f;
 	}
 
 	Scene::Execute();

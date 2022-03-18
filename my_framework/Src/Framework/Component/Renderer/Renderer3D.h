@@ -7,33 +7,25 @@
 -------------------------------------------------------------*/
 
 namespace MyFrameWork {
-	class Renderer2D : public Component {
-	private:
-		static D3D11_INPUT_ELEMENT_DESC hInElementDesc_Sprite[];
-		static D3D11_INPUT_ELEMENT_DESC hInElementDesc_Model[];
-
-	public:
-		//描画対象スプライト
-		noDel_ptr<Sprite> pRenderSprite = NULL;
-
-		//画像の幅
-		float sizeX = 0;
-		float sizeY = 0;
+	class Renderer3D : public Component {
+		static XMMATRIX View;
+		static XMMATRIX Proj;
 
 	protected:
-		static ID3D11Buffer* pConstantBuffer; //Image用
-		static ID3D11Buffer* pConstantBuffer_sprite;
-		static ID3D11Buffer* pIndexBuffer;
+		static ID3D11Buffer* pConstantBuffer;
+		static ID3D11Buffer* pSpriteIndexBuffer;
 		static ID3D11RasterizerState* pRasterizerState;
 		static ID3D11SamplerState* pSamplerState;
 		static ID3D11BlendState* pBlendState;
 		static ID3D11DepthStencilState* pDepthStencilState;
-		static ID3D11InputLayout* pInputLayout; //Image用
-		static ID3D11InputLayout* pInputLayout1; //Sprite用
-		static UINT	VertexStrides;
-		static UINT	VertexOffsets;
+		static ID3D11InputLayout* pInputLayout;
 
-		int renderPriority = 0;
+		//コンスタントバッファ格納用
+		static stCBuffer3D inputCB;
+
+	public:
+		//画面の上下左右の位置座標
+		static float WorldWHPos[4];
 
 	public:
 		//初期化
@@ -41,26 +33,49 @@ namespace MyFrameWork {
 		//破棄
 		static void Destroy();
 
-		Renderer2D();
-		virtual ~Renderer2D(void);
+		Renderer3D();
+		virtual ~Renderer3D(void);
 
-		//サイズ設定
-		void SetSize(float width, float height);
+		virtual void Render(void) {};
 
-		//描画順位の設定
-		void SetRenderPriority(int value);
-		virtual int GetRenderPriority();
 
 		//色の設定
 		virtual void SetColor(float r, float g, float b, float a) {};
 		virtual void SetColor(stColor4 color) {};
 		virtual stColor4 GetColor() { return { 0,0,0,0 }; };
 
-		//UVの初期化
-		virtual void SetDefaultUV() {};
+		//Getter,Setter
+		static ID3D11InputLayout* GetInputLayout() { return pInputLayout; }
+		static ID3D11RasterizerState* GetRasterizerState() { return pRasterizerState; }
+		static ID3D11BlendState* GetBlendState() { return pBlendState; }
+		static ID3D11DepthStencilState* GetDepthStencilState() { return pDepthStencilState; }
+		static ID3D11Buffer* GetConstantBuffer() { return pConstantBuffer; }
+		static ID3D11SamplerState** GetSampleLinear() { return &pSamplerState; }
+		static stCBuffer3D& GetInputCB() { return inputCB; }
 
-	private:
-		//描画
-		virtual void Render(void) {};
+	protected:
+		//座標、回転、スケールの描画座標(カメラ適用)
+		stVector3 GetPosOnCam();
+		stVector3 GetRotOnCam();
+		stVector3 GetScaleOnCam();
+
+		static void StartRendering();
+
+	public:
+		static XMVECTOR CalcScreenToWorld(
+			XMVECTOR& pout,
+			int Sx,
+			int Sy,
+			float fZ,
+			int Screen_w,
+			int Screen_h
+		);
+		// XZ平面とスクリーン座標の交点算出関数
+		static stVector3 CalcScreenToXZ(
+			int Sx,
+			int Sy,
+			int Screen_w,
+			int Screen_h
+		);
 	};
 }

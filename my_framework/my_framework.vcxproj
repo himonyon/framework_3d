@@ -159,6 +159,7 @@
     <ClInclude Include="Src\Framework\Component\Renderer\ImageRenderer.h" />
     <ClInclude Include="Src\Framework\Component\Renderer\MeshRenderer.h" />
     <ClInclude Include="Src\Framework\Component\Renderer\Renderer2D.h" />
+    <ClInclude Include="Src\Framework\Component\Renderer\Renderer3D.h" />
     <ClInclude Include="Src\Framework\Component\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Src\Framework\Component\Transform\Transform.h" />
     <ClInclude Include="Src\Framework\Direct3D\Direct3D.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Src\Framework\Component\Renderer\ImageRenderer.cpp" />
     <ClCompile Include="Src\Framework\Component\Renderer\MeshRenderer.cpp" />
     <ClCompile Include="Src\Framework\Component\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="Src\Framework\Component\Renderer\Renderer3D.cpp" />
     <ClCompile Include="Src\Framework\Component\Renderer\SpriteRenderer.cpp" />
     <ClCompile Include="Src\Framework\Component\Transform\Transform.cpp" />
     <ClCompile Include="Src\Framework\Direct3D\Direct3D.cpp" />

@@ -30,7 +30,7 @@ bool Main::Init(void* hWnd) {
 	Font::Initialize(hWnd);
 	Shader::InitShader();
 	Renderer2D::Initialize();
-	MeshRenderer::Initialize();
+	Renderer3D::Initialize();
 	Sound::InitSound();
 	DirectInput::InitInput(hWnd);
 	InputConfig::SetUpConfig();
@@ -49,7 +49,7 @@ void Main::Destroy() {
 	DirectInput::DestroyInput();
 	Sound::DestroySound();
 	Renderer2D::Destroy();
-	MeshRenderer::Destroy();
+	Renderer3D::Destroy();
 	Shader::DestroyShader();
 	Font::Destroy();
 	Direct3D::DestroyD3D();

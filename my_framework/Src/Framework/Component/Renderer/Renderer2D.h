@@ -10,7 +10,6 @@ namespace MyFrameWork {
 	class Renderer2D : public Component {
 	private:
 		static D3D11_INPUT_ELEMENT_DESC hInElementDesc_Sprite[];
-		static D3D11_INPUT_ELEMENT_DESC hInElementDesc_Model[];
 
 	public:
 		//描画対象スプライト
@@ -21,15 +20,12 @@ namespace MyFrameWork {
 		float sizeY = 0;
 
 	protected:
-		static ID3D11Buffer* pConstantBuffer; //Image用
-		static ID3D11Buffer* pConstantBuffer_sprite;
-		static ID3D11Buffer* pIndexBuffer;
+		static ID3D11Buffer* pConstantBuffer;
 		static ID3D11RasterizerState* pRasterizerState;
 		static ID3D11SamplerState* pSamplerState;
 		static ID3D11BlendState* pBlendState;
 		static ID3D11DepthStencilState* pDepthStencilState;
-		static ID3D11InputLayout* pInputLayout; //Image用
-		static ID3D11InputLayout* pInputLayout1; //Sprite用
+		static ID3D11InputLayout* pInputLayout;
 		static UINT	VertexStrides;
 		static UINT	VertexOffsets;
 
