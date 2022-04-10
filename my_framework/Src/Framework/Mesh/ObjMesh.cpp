@@ -3,7 +3,11 @@
 
 #include <iomanip>
 
+#if _DEBUG
 #pragma comment(lib,"DirectXTex/Bin/Debug/DirectXTex.lib")
+#else
+#pragma comment(lib,"DirectXTex/Bin/Release/DirectXTex.lib")
+#endif
 
 using namespace MyFrameWork;
 
@@ -58,7 +62,7 @@ void ObjMesh::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 	for (auto index : umIndices)
 	{
 		// IA(InputAssemblerStage)に入力レイアウトを設定する
-		Direct3D::getDeviceContext()->IASetInputLayout(MeshRenderer::GetInputLayout());
+		Direct3D::getDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
 		// IAに設定する頂点バッファの指定
 		Direct3D::getDeviceContext()->IASetVertexBuffers(
 			0,						// バッファ送信のスロット番号
@@ -81,13 +85,13 @@ void ObjMesh::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 		XMMATRIX scale_mat = ::XMMatrixScaling(scl.x, scl.y, scl.z);
 		mWorld = scale_mat * rotate_x * rotate_y * rotate_z * translate;
 
-		stCBuffer3D _inputCB = MeshRenderer::GetInputCB();
+		stCBuffer3D _inputCB = Renderer3D::GetInputCB();
 
 		// ワールドマトリクスをコンスタントバッファに設定
 		XMStoreFloat4x4(&_inputCB.world, XMMatrixTranspose(mWorld));
 
 		SetMaterial(umMaterials[index.first]);
-		ID3D11Buffer* _constantBuffer = MeshRenderer::GetConstantBuffer();
+		ID3D11Buffer* _constantBuffer = Renderer3D::GetConstantBuffer();
 		// コンスタントバッファ更新
 		Direct3D::getDeviceContext()->UpdateSubresource(_constantBuffer, 0, NULL, &_inputCB, 0, 0);
 
@@ -98,11 +102,12 @@ void ObjMesh::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 		// マテリアルにテクスチャがあるなら設定する
 		if (umTextures.count(umMaterials[index.first].TextureKeyWord) > 0)
 		{
+			Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
 			SetTexture(umTextures[umMaterials[index.first].TextureKeyWord]);
 		}
 		else
 		{
-			SetTexture(nullptr);
+			Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D_NOTEX)->getShader(), nullptr, 0);
 		}
 
 		// 描画
@@ -493,14 +498,15 @@ bool ObjMesh::LoadTexture(std::string key_word, std::string file_name) {
 }
 
 void ObjMesh::SetMaterial(stMaterial material) {
-	stCBuffer3D cb = MeshRenderer::GetInputCB();
+	stCBuffer3D cb = Renderer3D::GetInputCB();
 	cb.ambient = XMFLOAT4(material.Ambient[0], material.Ambient[1], material.Ambient[2], 1);
 	cb.diffuse = XMFLOAT4(material.Diffuse[0], material.Diffuse[1], material.Diffuse[2], 1);
 	cb.specular = XMFLOAT4(material.Specular[0], material.Specular[1], material.Specular[2], 1);
 }
 void ObjMesh::SetTexture(ID3D11ShaderResourceView* texture) {
 	// Samplerの設定
-	Direct3D::getDeviceContext()->PSSetSamplers(0,	1,MeshRenderer::GetSampleLinear());
+	ID3D11SamplerState* _sampleState = Renderer3D::GetSampleLinear();
+	Direct3D::getDeviceContext()->PSSetSamplers(0,	1, &_sampleState);
 
 	// PixelShaderで使用するテクスチャの設定
 	Direct3D::getDeviceContext()->PSSetShaderResources(0,1,	&texture);

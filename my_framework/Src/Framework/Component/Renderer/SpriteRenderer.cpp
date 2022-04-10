@@ -3,9 +3,9 @@
 
 using namespace MyFrameWork;
 
-SpriteRenderer::SpriteRenderer()
+SpriteRenderer::SpriteRenderer() : SpriteState(eComponentType::SpriteRenderer)
 {
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < Sprite::VertexNum; i++) {
 		vtx[i].nor = { 0,0,0 };
 		vtx[i].col = { 1,1,1,1 };
 		vtx[i].pos.z = 0;
@@ -17,14 +17,14 @@ SpriteRenderer::~SpriteRenderer() {
 }
 
 //コンポーネントの初期化
-void SpriteRenderer::SetUpRenderer(noDel_ptr<Sprite> sprite) {
+void SpriteRenderer::SetUpSpriteRenderer(noDel_ptr<Sprite> sprite) {
 
 	if (sprite != nullptr) {
 		pRenderSprite = sprite;
 		SetDefaultUV();
 	}
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < Sprite::VertexNum; i++) {
 		vtx[i].nor = { 0,0,0 };
 		vtx[i].col = { 1,1,1,1 };
 		vtx[i].pos.z = 0;
@@ -42,7 +42,7 @@ void SpriteRenderer::SetUpRenderer(noDel_ptr<Sprite> sprite) {
 	//バーテックスバッファー作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(stVertex3D) * 6;
+	bd.ByteWidth = sizeof(stVertex3D) * 4;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
@@ -67,23 +67,24 @@ void SpriteRenderer::Render() {
 	stVector3 _drawRot = GetRotOnCam();
 	stVector3 _drawScale = GetScaleOnCam();
 
-	StartRendering();
+	Renderer3D::StartRendering();
 
 	// プリミティブの形状を指定
 	Direct3D::getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	inputCB.ambient = { 1,1,1,1 };
-	inputCB.diffuse = { 1,1,1,1 };
-	inputCB.specular = { 1,1,1,1 };
-	inputCB.color = { 1,1,1,1 };
+	stCBuffer3D& _inputCB = Renderer3D::GetInputCB();
+	_inputCB.ambient = { 1,1,1,1 };
+	_inputCB.diffuse = { color.r, color.g, color.b, color.a };
+	_inputCB.specular = { 1,1,1,1 };
+	_inputCB.color = { color.r, color.g, color.b, color.a };
 
 	// IA(InputAssemblerStage)に入力レイアウトを設定する
-	Direct3D::getDeviceContext()->IASetInputLayout(pInputLayout);
+	Direct3D::getDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(stVertex3D);
 	UINT offset = 0;
 	Direct3D::getDeviceContext()->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
-	Direct3D::getDeviceContext()->IASetIndexBuffer(pSpriteIndexBuffer,DXGI_FORMAT_R32_UINT,0);
+	Direct3D::getDeviceContext()->IASetIndexBuffer(Renderer3D::GetSpriteIndexBuffer(),DXGI_FORMAT_R32_UINT,0);
 
 	// ワールドマトリクス設定
 	XMMATRIX world_matrix;
@@ -95,18 +96,20 @@ void SpriteRenderer::Render() {
 	world_matrix = scale_mat * rotate_x * rotate_y * rotate_z * translate;
 
 	// ワールドマトリクスをコンスタントバッファに設定
-	XMStoreFloat4x4(&inputCB.world, XMMatrixTranspose(world_matrix));
+	XMStoreFloat4x4(&_inputCB.world, XMMatrixTranspose(world_matrix));
 
 	// コンスタントバッファ更新
-	Direct3D::getDeviceContext()->UpdateSubresource(pConstantBuffer, 0, NULL, &inputCB, 0, 0);
+	Direct3D::getDeviceContext()->UpdateSubresource(Renderer3D::GetConstantBuffer(), 0, NULL, &_inputCB, 0, 0);
 	// コンテキストにコンスタントバッファを設定
-	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &pConstantBuffer);
-	Direct3D::getDeviceContext()->PSSetConstantBuffers(0, 1, &pConstantBuffer);
+	ID3D11Buffer* _cb = Renderer3D::GetConstantBuffer();
+	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &_cb);
+	Direct3D::getDeviceContext()->PSSetConstantBuffers(0, 1, &_cb);
 
 	//テクスチャーをシェーダーに渡す
 	if (pRenderSprite->GetTexture() != NULL)
 	{
-		Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &pSamplerState);
+		ID3D11SamplerState* _samplerState = Renderer3D::GetSampleLinear();
+		Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &_samplerState);
 		Direct3D::getDeviceContext()->PSSetShaderResources(0, 1, &pRenderSprite->pTextureView);
 	}
 

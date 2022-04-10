@@ -31,11 +31,11 @@ Collider2D::~Collider2D() {
 }
 
 void Collider2D::SetUpCollider2D(bool collision) {
-	noDel_ptr<Renderer2D> sr = gameObject->GetComponent<Renderer2D>();
+	noDel_ptr<SpriteState> sr = gameObject->GetComponent<SpriteState>();
 
 	if (sr != nullptr) {
-		sizeX = sr->sizeX;
-		sizeY = sr->sizeY;
+		sizeX = sr->size.x;
+		sizeY = sr->size.y;
 	}
 	else {
 		sizeX = 0;

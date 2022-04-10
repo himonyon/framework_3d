@@ -1,7 +1,11 @@
 #include "../../../environment.h"
 #include "../../../DirectXTex/DirectXTex.h"
 
+#if _DEBUG
 #pragma comment(lib,"DirectXTex/Bin/Debug/DirectXTex.lib")
+#else
+#pragma comment(lib,"DirectXTex/Bin/Release/DirectXTex.lib")
+#endif
 
 using namespace MyFrameWork;
 
@@ -20,7 +24,6 @@ FbxMeshFile::FbxMeshFile(const char* fileName) {
 	{
 		return;
 	}
-
 }
 
 FbxMeshFile::~FbxMeshFile() {
@@ -42,7 +45,7 @@ void FbxMeshFile::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 	{
 		// インデックスバッファの数 = マテリアルの数だけメッシュを描画する
 			// IA(InputAssemblerStage)に入力レイアウトを設定する
-		Direct3D::getDeviceContext()->IASetInputLayout(MeshRenderer::GetInputLayout());
+		Direct3D::getDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
 		// IAに設定する頂点バッファの指定
 		Direct3D::getDeviceContext()->IASetVertexBuffers(
 			0,								// バッファ送信のスロット番号
@@ -66,39 +69,30 @@ void FbxMeshFile::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 		world_matrix = scale_mat * rotate_x * rotate_y * rotate_z * translate;
 
 		// ワールドマトリクスをコンスタントバッファに設定
-		XMStoreFloat4x4(&MeshRenderer::GetInputCB().world, XMMatrixTranspose(world_matrix));
+		XMStoreFloat4x4(&Renderer3D::GetInputCB().world, XMMatrixTranspose(world_matrix));
 
+		///色設定
 		SetMaterialColor(umMaterials[mesh.materialName]);
 
 		// テクスチャ設定
 		// Samplerの設定
-		Direct3D::getDeviceContext()->PSSetSamplers(
-			0,					// スロット番号
-			1,					// サンプラーの数
-			MeshRenderer::GetSampleLinear());	// ID3D11SamplerState
+		ID3D11SamplerState* _sampleState = Renderer3D::GetSampleLinear();
+		Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &_sampleState);	// ID3D11SamplerState
 
 		if (umMaterialLinks.count(mesh.materialName) > 0)
 		{
-			// PixelShaderで使用するテクスチャの設定
-			Direct3D::getDeviceContext()->PSSetShaderResources(
-				0,								// スロット番号
-				1,								// リソースの数
-				&umMaterialLinks[mesh.materialName]);
+			Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
+			Direct3D::getDeviceContext()->PSSetShaderResources(0,1,&umMaterialLinks[mesh.materialName]);
 		}
 		else
 		{
-			
-			// PixelShaderで使用するテクスチャの設定
-			Direct3D::getDeviceContext()->PSSetShaderResources(
-				0,								// スロット番号
-				1,								// リソースの数
-				nullptr);
+			Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D_NOTEX)->getShader(), nullptr, 0);
 		}
 
 		// コンスタントバッファ更新
-		Direct3D::getDeviceContext()->UpdateSubresource(MeshRenderer::GetConstantBuffer(), 0, NULL, &MeshRenderer::GetInputCB(), 0, 0);
+		Direct3D::getDeviceContext()->UpdateSubresource(Renderer3D::GetConstantBuffer(), 0, NULL, &Renderer3D::GetInputCB(), 0, 0);
 
-		ID3D11Buffer* constant_buffer = MeshRenderer::GetConstantBuffer();
+		ID3D11Buffer* constant_buffer = Renderer3D::GetConstantBuffer();
 		// コンテキストにコンスタントバッファを設定
 		Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &constant_buffer);
 		Direct3D::getDeviceContext()->PSSetConstantBuffers(0, 1, &constant_buffer);
@@ -271,6 +265,24 @@ void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh) {
 	// 頂点座標の数の取得
 	int polygonVertexCount = pMesh->GetPolygonVertexCount();
 
+	//中心情報(姿勢)取得
+	FbxNode* node = pMesh->GetNode();
+	FbxDouble3 _centerPos = node->LclTranslation.Get(); //座標
+	FbxDouble3 _centerRot = node->LclRotation.Get(); //回転
+	FbxDouble3 _centerScl = node->LclScaling.Get(); //スケール
+
+	//cmからｍへ長さを変換
+	for (auto& scl : _centerScl.mData) scl /= 100;
+	for (auto& pos : _centerPos.mData) pos /= 100;
+
+	//回転行列の作成
+	XMMATRIX _rotXM = XMMatrixRotationX(_centerRot[0]);
+	XMMATRIX _rotYM = XMMatrixRotationY(_centerRot[1]);
+	XMMATRIX _rotZM = XMMatrixRotationZ(_centerRot[2]);
+	XMMATRIX _rotM = _rotXM * _rotYM * _rotXM;
+	XMMATRIX _newPos;
+	//---------------------------------------------------------
+
 	//各頂点の座標の設定
 	for (int i = 0; i < polygonVertexCount; i++)
 	{
@@ -278,10 +290,19 @@ void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh) {
 		// インデックスバッファから頂点番号を取得
 		int index = indices[i];
 
-		// 頂点座標リストから座標を取得する
-		vertex.pos.x = (float)-vertices[index][0];
-		vertex.pos.y = (float)vertices[index][1];
-		vertex.pos.z = (float)vertices[index][2];
+		// 頂点座標リストから座標を取得 & モデルの姿勢を反映させる
+		vertex.pos.x = (float)-vertices[index][0] + _centerPos[0];
+		vertex.pos.y = (float)vertices[index][1] + _centerPos[1];
+		vertex.pos.z = (float)vertices[index][2] + _centerPos[2];
+
+		//回転を含んだ新たな座標を取得
+		XMMATRIX _translate = XMMatrixTranslation(vertex.pos.x, vertex.pos.y, vertex.pos.z);
+		_newPos = _translate * _rotM;
+		XMFLOAT4X4 _temp;
+		XMStoreFloat4x4(&_temp, XMMatrixTranspose(_newPos));
+		vertex.pos.x = _temp._14;
+		vertex.pos.y = _temp._24;
+		vertex.pos.z = _temp._34;
 
 		// 追加
 		meshData.vertices.emplace_back(vertex);
@@ -291,6 +312,22 @@ void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh) {
 	FbxArray<FbxVector4> normals;
 	// 法線リストの取得
 	pMesh->GetPolygonVertexNormals(normals);
+	//中心情報(姿勢)取得
+	FbxNode* node = pMesh->GetNode();
+	FbxDouble3 _centerPos = node->LclTranslation.Get(); //座標
+	FbxDouble3 _centerRot = node->LclRotation.Get(); //回転
+	FbxDouble3 _centerScl = node->LclScaling.Get(); //スケール
+
+	//cmからｍへ長さを変換
+	for (auto& scl : _centerScl.mData) scl /= 100;
+	for (auto& pos : _centerPos.mData) pos /= 100;
+
+	//回転行列の作成
+	XMMATRIX _rotXM = XMMatrixRotationX(_centerRot[0]);
+	XMMATRIX _rotYM = XMMatrixRotationY(_centerRot[1]);
+	XMMATRIX _rotZM = XMMatrixRotationZ(_centerRot[2]);
+	XMMATRIX _rotM = _rotXM * _rotYM * _rotXM;
+	XMMATRIX _newNor;
 
 	// 法線設定
 	for (int i = 0; i < normals.Size(); i++)
@@ -298,6 +335,16 @@ void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh) {
 		meshData.vertices[i].nor.x = (float)-normals[i][0];
 		meshData.vertices[i].nor.y = (float)normals[i][1];
 		meshData.vertices[i].nor.z = (float)normals[i][2];
+
+		//回転を含んだ新たな法線を取得
+		XMMATRIX _normal = XMMatrixTranslation(meshData.vertices[i].nor.x,
+			meshData.vertices[i].nor.y, meshData.vertices[i].nor.z);
+		_newNor = _normal * _rotM;
+		XMFLOAT4X4 _temp;
+		XMStoreFloat4x4(&_temp, XMMatrixTranspose(_newNor));
+		meshData.vertices[i].nor.x = _temp._14;
+		meshData.vertices[i].nor.y = _temp._24;
+		meshData.vertices[i].nor.z = _temp._34;
 	}
 }
 void FbxMeshFile::LoadColors(stMeshData& meshData, FbxMesh* pMesh) {
@@ -377,8 +424,8 @@ void FbxMeshFile::LoadMaterial(FbxSurfaceMaterial* material)
 		MaxOrder,
 	};
 
-	FbxDouble3 colors[(int)eMaterialOrder::MaxOrder];
-	FbxDouble factors[(int)eMaterialOrder::MaxOrder];
+	FbxDouble3 colors[(int)eMaterialOrder::MaxOrder] = {};
+	FbxDouble factors[(int)eMaterialOrder::MaxOrder] = {};
 	FbxProperty prop = material->FindProperty(FbxSurfaceMaterial::sAmbient);
 
 	if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
@@ -569,7 +616,7 @@ void FbxMeshFile::SetMaterialName(stMeshData& meshData, FbxMesh* pMesh)
 }
 void FbxMeshFile::SetMaterialColor(stMaterial& material)
 {
-	stCBuffer3D& _inputCB = MeshRenderer::GetInputCB();
+	stCBuffer3D& _inputCB = Renderer3D::GetInputCB();
 	_inputCB.diffuse = XMFLOAT4(material.Diffuse[0], material.Diffuse[1], material.Diffuse[2], material.Diffuse[3]);
 	_inputCB.ambient = XMFLOAT4(material.Ambient[0], material.Ambient[1], material.Ambient[2], material.Ambient[3]);
 }

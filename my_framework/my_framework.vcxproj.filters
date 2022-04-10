@@ -249,6 +249,12 @@
     <ClInclude Include="Src\Framework\Component\Renderer\Renderer3D.h">
       <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\SpriteState.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\Rendere.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="my_framework.cpp">
@@ -380,6 +386,12 @@
     <ClCompile Include="Src\Framework\Component\Renderer\Renderer3D.cpp">
       <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\SpriteState.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\Rendere.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="my_framework.rc">
@@ -405,6 +417,9 @@
       <Filter>ソース ファイル\Src\Shader</Filter>
     </FxCompile>
     <FxCompile Include="Src\Shader\vs_3d.vsh">
+      <Filter>ソース ファイル\Src\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\ps_3d_notex.psh">
       <Filter>ソース ファイル\Src\Shader</Filter>
     </FxCompile>
   </ItemGroup>

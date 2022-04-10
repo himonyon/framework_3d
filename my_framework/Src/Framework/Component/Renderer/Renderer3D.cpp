@@ -57,6 +57,7 @@ bool Renderer3D::Initialize() {
 	ZeroMemory(&dsDesc, sizeof(dsDesc));
 	dsDesc.DepthEnable = true;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+
 	//深度ステンシルステートの作成
 	Direct3D::getDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState);
 
@@ -102,12 +103,12 @@ bool Renderer3D::Initialize() {
 	//Spriteのインデックスバッファーを作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(int) * 6;
+	bd.ByteWidth = sizeof(int) * Sprite::VertexNum;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	bd.StructureByteStride = 0;
-	int* faceBuffer = new int[6]{ 0,1,2,3,4,5 };
+	int* faceBuffer = new int[Sprite::VertexNum]{ 0,1,2,3 };
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = faceBuffer;
 	InitData.SysMemPitch = 0;
@@ -130,7 +131,6 @@ void Renderer3D::Destroy() {
 }
 
 Renderer3D::Renderer3D()
-	: Component(eComponentType::Renderer3D)
 {
 }
 
@@ -155,7 +155,7 @@ void Renderer3D::StartRendering() {
 	WorldWHPos[2] = _screenLT.y; WorldWHPos[3] = _screenRB.y;
 
 	// ライトの設定
-	XMVECTOR light = XMVector3Normalize(XMVectorSet(0.0f, 0.5f, -5.0f, 0.0f));
+	XMVECTOR light = XMVector3Normalize(XMVectorSet(0.0f, 0.5f, -0.5f, 0.0f));
 	// コンスタントバッファの設定
 	XMStoreFloat4x4(&inputCB.view, XMMatrixTranspose(mView));
 	XMStoreFloat4x4(&inputCB.projection, XMMatrixTranspose(mProj));
@@ -177,48 +177,6 @@ void Renderer3D::StartRendering() {
 	// VerteXShader、PixelShaderを設定
 	Direct3D::getDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_3D)->getShader(), nullptr, 0);									// ClassInstanceの数
 	Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
-}
-
-stVector3 Renderer3D::GetPosOnCam() {
-	//現在の座標を頂点座標にセット
-	stVector3 pos;
-	pos.x = transform->position.x;
-	pos.y = transform->position.y;
-	pos.z = transform->position.z;
-	//カメラ座標を加えてスクリーン座標を設定する
-	if (Camera::main != nullptr) {
-		pos.x -= Camera::main->transform->position.x;
-		pos.y -= Camera::main->transform->position.y;
-		pos.z -= Camera::main->transform->position.z;
-	}
-	return stVector3{ pos.x, pos.y, pos.z };
-}
-stVector3 Renderer3D::GetRotOnCam() {
-	stVector3 rot;
-	rot.x = transform->rotation.x;
-	rot.y = transform->rotation.y;
-	rot.z = transform->rotation.z;
-
-	if (Camera::main != nullptr) {
-		rot.x -= Camera::main->transform->rotation.x;
-		rot.y -= Camera::main->transform->rotation.y;
-		rot.z -= Camera::main->transform->rotation.z;
-	}
-	return stVector3{ rot.x, rot.y, rot.z };
-}
-stVector3 Renderer3D::GetScaleOnCam() {
-	stVector3 scl;
-	scl.x = transform->scale.x;
-	scl.y = transform->scale.y;
-	scl.z = transform->scale.z;
-
-	if (Camera::main != nullptr) {
-		scl.x *= Camera::main->transform->scale.x;
-		scl.y *= Camera::main->transform->scale.y;
-		scl.z *= Camera::main->transform->scale.z;
-	}
-
-	return stVector3{ scl.x, scl.y, scl.z };
 }
 
 

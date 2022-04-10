@@ -18,7 +18,7 @@ namespace MyFrameWork {
 
 		int curKeyIndex = -1; //現在到達しているキーフレーム配列番号
 
-		noDel_ptr<Renderer2D> pAnimRenderer = NULL; //表示するスプライトレンダラー
+		noDel_ptr<SpriteState> pAnimRenderer = NULL; //表示するスプライトレンダラー
 
 	private:
 		//アニメーションのキーフレームクラス
@@ -77,7 +77,7 @@ namespace MyFrameWork {
 		void AnimOff();
 
 		//アニメーションさせる対象レンダラー設定
-		void SetAnimRenderer(noDel_ptr<Renderer2D>);
+		void SetAnimRenderer(noDel_ptr<SpriteState>);
 
 		//Getter,Setter
 		bool IsLoop() { return isLoop; }

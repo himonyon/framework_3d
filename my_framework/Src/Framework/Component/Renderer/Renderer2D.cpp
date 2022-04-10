@@ -17,8 +17,6 @@ ID3D11SamplerState* Renderer2D::pSamplerState = 0;
 ID3D11BlendState* Renderer2D::pBlendState = 0;
 ID3D11DepthStencilState* Renderer2D::pDepthStencilState = 0;
 ID3D11InputLayout* Renderer2D::pInputLayout = 0;
-UINT Renderer2D::VertexStrides = sizeof(stVertex2D);
-UINT Renderer2D::VertexOffsets = 0;
 
 bool Renderer2D::Initialize() {
 	//ラスタライザの設定
@@ -120,23 +118,8 @@ void Renderer2D::Destroy() {
 }
 
 Renderer2D::Renderer2D()
-	: Component(eComponentType::Renderer2D)
 {
 }
 
 Renderer2D::~Renderer2D() {
-}
-
-//setter/getter
-void Renderer2D::SetSize(float width, float height) {
-	sizeX = width;
-	sizeY = height;
-}
-
-void Renderer2D::SetRenderPriority(int value) {
-	if (renderPriority != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
-	renderPriority = value;
-}
-int Renderer2D::GetRenderPriority() {
-	return renderPriority;
 }

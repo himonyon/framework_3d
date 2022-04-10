@@ -15,15 +15,15 @@ struct VS_OUT
 
 cbuffer ConstantBuffer
 {
-	float4x4 World;				// ワールド変換行列
-	float4x4 View;				// ビュー変換行列
-	float4x4 Projection;			// 透視射影変換行列
-	float4 CameraPos;			// カメラ座標
+	float4x4 World;			// ワールド変換行列
+	float4x4 View;			// ビュー変換行列
+	float4x4 Projection;	// 透視射影変換行列
+	float4 CameraPos;		// カメラ座標
 	float4 LightVector;		// ライト方向
-	float4 LightColor;			// ライトカラー
+	float4 LightColor;		// ライトカラー
 	float4 MaterialAmbient;	// アンビエント
 	float4 MaterialDiffuse;	// ディフューズ
-	float4 MaterialSpecular;	// スペキュラー
+	float4 MaterialSpecular;// スペキュラー
 	float4 color;
 }
 

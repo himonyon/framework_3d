@@ -11,8 +11,11 @@ void SceneTitle::Initialize() {
 	pCam->GetComponent<Camera>()->SetMain();
 
 	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
-	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/Chips.fbx"));
-	pObj5 = CreateObject(1, 0,0, 1,1,pTest_sp);
+	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/yz.fbx"));
+	pObj2->transform->scale.x = 0.2f;
+	pObj2->transform->scale.y = 0.2f;
+	pObj2->transform->scale.z = 0.2f;
+	pObj5 = CreateObject(1, 0,0,pTest_sp);
 
 	//ビヘイビア
 	pObj1->AddComponent<Move>();
@@ -38,10 +41,10 @@ void SceneTitle::Execute() {
 	int aa = 99;
 
 	if (Input::On(InputConfig::input["decide"])) {
-		pCam->transform->position.y += 0.1f;
+		pCam->transform->rotation.x += 1;
 	}
 	if (Input::On(InputConfig::input["cancel"])) {
-		pCam->transform->position.y -= 0.1f;
+		pCam->transform->rotation.y -= 1;
 	}
 
 	if (Input::On(InputConfig::input["up"])) {

@@ -7,14 +7,10 @@
 -------------------------------------------------------------*/
 
 namespace MyFrameWork {
-	class MeshRenderer : public Renderer3D {
+	class MeshRenderer : public Renderer {
 	public:
 		//描画対象メッシュ
 		noDel_ptr<Mesh> pRenderMesh = NULL;
-
-	private:
-		//カラー
-		stColor4 col; 
 
 	public:
 		MeshRenderer();

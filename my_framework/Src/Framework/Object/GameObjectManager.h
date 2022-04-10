@@ -8,12 +8,12 @@
 -------------------------------------------------------------*/
 
 namespace MyFrameWork {
-
 	class GameObjectManager {
 	private:
 		int sceneType = 0;
 
 		bool isStartFucnEnable = false; //スタート関数を実行するか
+
 		bool isSortEnable = false; //スプライトのソートを実行するか
 
 	public:
@@ -36,7 +36,7 @@ namespace MyFrameWork {
 		noDel_ptr<GameObject> CreateObject(float x, float y, float z,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//スプライトオブジェクト作成
-		noDel_ptr<GameObject> CreateObject(float x, float y, float z, float width, float height, noDel_ptr<Sprite> sprite,
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Sprite> sprite,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//メッシュオブジェクト作成
 		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
@@ -48,13 +48,17 @@ namespace MyFrameWork {
 	private:
 		//配列から特定のIDのコンポーネントを抜く
 		void PullOutComponent(noDel_ptr<GameObject> obj);
+		//Vector型の配列からコンポーネントを抜く
+		void PullOutComponentToVector(std::vector<noDel_ptr<Component>>& renderer, noDel_ptr<Component> com);
 
 		//コンポーネント処理の有効無効を確認する
 		bool CheckComponentEnable(noDel_ptr<Component> com);
 
 		//描画順の変更(クイックソート)
-		void RenderOrderSort(int start, int end);
+		void RenderOrderSort(std::vector<noDel_ptr<Component>>& renderer, int start, int end);
 
+		//Vector型にコンポーネントを登録する
+		void RegistComponentToVector(std::vector<noDel_ptr<Component>>& renderer, noDel_ptr<Component> com);
 
 	public:
 		//オブジェクトに追加されたコンポーネントをこのクラスの配列に格納
@@ -77,8 +81,9 @@ namespace MyFrameWork {
 		std::unordered_map<int, noDel_ptr<Component>> umTransform;
 		std::unordered_map<int, noDel_ptr<Component>> umCollider2D;
 		std::unordered_map<int, noDel_ptr<Component>> umPhysics2D;
-		std::vector<noDel_ptr<Component>> v2DRenderer;
-		std::unordered_map<int, noDel_ptr<Component>> um3DRenderer;
+		std::vector<noDel_ptr<Component>> vImageRenderer;
+		std::vector<noDel_ptr<Component>> vSpriteRenderer;
+		std::vector<noDel_ptr<Component>> vMeshRenderer;
 		std::unordered_map<int, noDel_ptr<Component>> umBehaviour;
 		std::unordered_map<int, noDel_ptr<Component>> umAnimator;
 

@@ -7,7 +7,7 @@
 -------------------------------------------------------------*/
 
 namespace MyFrameWork {
-	class Renderer3D : public Component {
+	class Renderer3D {
 		static XMMATRIX View;
 		static XMMATRIX Proj;
 
@@ -34,15 +34,7 @@ namespace MyFrameWork {
 		static void Destroy();
 
 		Renderer3D();
-		virtual ~Renderer3D(void);
-
-		virtual void Render(void) {};
-
-
-		//色の設定
-		virtual void SetColor(float r, float g, float b, float a) {};
-		virtual void SetColor(stColor4 color) {};
-		virtual stColor4 GetColor() { return { 0,0,0,0 }; };
+		~Renderer3D(void);
 
 		//Getter,Setter
 		static ID3D11InputLayout* GetInputLayout() { return pInputLayout; }
@@ -50,14 +42,9 @@ namespace MyFrameWork {
 		static ID3D11BlendState* GetBlendState() { return pBlendState; }
 		static ID3D11DepthStencilState* GetDepthStencilState() { return pDepthStencilState; }
 		static ID3D11Buffer* GetConstantBuffer() { return pConstantBuffer; }
-		static ID3D11SamplerState** GetSampleLinear() { return &pSamplerState; }
+		static ID3D11Buffer* GetSpriteIndexBuffer() { return pSpriteIndexBuffer; }
+		static ID3D11SamplerState* GetSampleLinear() { return pSamplerState; }
 		static stCBuffer3D& GetInputCB() { return inputCB; }
-
-	protected:
-		//座標、回転、スケールの描画座標(カメラ適用)
-		stVector3 GetPosOnCam();
-		stVector3 GetRotOnCam();
-		stVector3 GetScaleOnCam();
 
 		static void StartRendering();
 

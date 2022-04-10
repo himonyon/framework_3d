@@ -26,7 +26,7 @@ void Animator::Execute() {
 void Animator::AddAnimation(std::string name, SpriteAnimation* anim) {
 	AnimBox* animBox = new AnimBox(name, anim);
 	///アニメーションさせる対象設定
-	animBox->anim->SetAnimRenderer(gameObject->GetComponent<Renderer2D>());
+	animBox->anim->SetAnimRenderer(gameObject->GetComponent<SpriteState>());
 	animBoxes.emplace_back(animBox);
 }
 
