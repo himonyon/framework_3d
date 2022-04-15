@@ -6,15 +6,12 @@ void SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
 
-	pCam = CreateObject(0, 0, -3.0f);
+	pCam = CreateObject(0, 0, -2.0f);
 	pCam->AddComponent<Camera>();
 	pCam->GetComponent<Camera>()->SetMain();
 
 	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
-	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/yz.fbx"));
-	pObj2->transform->scale.x = 0.2f;
-	pObj2->transform->scale.y = 0.2f;
-	pObj2->transform->scale.z = 0.2f;
+	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/tank_tex_anim.fbx"));
 	pObj5 = CreateObject(1, 0,0,pTest_sp);
 
 	//ビヘイビア

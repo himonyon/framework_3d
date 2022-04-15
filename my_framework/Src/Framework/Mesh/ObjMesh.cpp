@@ -1,6 +1,7 @@
 #include "../../../environment.h"
 #include "../../../DirectXTex/DirectXTex.h"
 
+#include <sstream>
 #include <iomanip>
 
 #if _DEBUG

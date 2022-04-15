@@ -44,6 +44,8 @@ namespace MyFrameWork {
 		void LoadIndices(stMeshData& meshData, FbxMesh* pMesh);
 		//vertexデータ読み込み
 		void LoadVertices(stMeshData& meshData, FbxMesh* pMesh);
+		//メッシュのTransformを算出
+		void LoadMeshTransform(FbxNode* node, FbxDouble3& pos, FbxDouble3& rot, FbxDouble3& scl);
 		//法線読み込み
 		void LoadNormals(stMeshData& meshData, FbxMesh* pMesh);
 		//カラー読み込み

@@ -267,23 +267,18 @@ void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh) {
 
 	//中心情報(姿勢)取得
 	FbxNode* node = pMesh->GetNode();
-	FbxDouble3 _centerPos = node->LclTranslation.Get(); //座標
-	FbxDouble3 _centerRot = node->LclRotation.Get(); //回転
-	FbxDouble3 _centerScl = node->LclScaling.Get(); //スケール
-
-	//cmからｍへ長さを変換
-	for (auto& scl : _centerScl.mData) scl /= 100;
-	for (auto& pos : _centerPos.mData) pos /= 100;
+	FbxDouble3 _meshPos, _meshRot, _meshScl; //メッシュ座標
+	LoadMeshTransform(node, _meshPos, _meshRot, _meshScl);
 
 	//回転行列の作成
-	XMMATRIX _rotXM = XMMatrixRotationX(_centerRot[0]);
-	XMMATRIX _rotYM = XMMatrixRotationY(_centerRot[1]);
-	XMMATRIX _rotZM = XMMatrixRotationZ(_centerRot[2]);
+	XMMATRIX _rotXM = XMMatrixRotationX(float(_meshRot[0]));
+	XMMATRIX _rotYM = XMMatrixRotationY(float(_meshRot[1]));
+	XMMATRIX _rotZM = XMMatrixRotationZ(float(_meshRot[2]));
 	XMMATRIX _rotM = _rotXM * _rotYM * _rotXM;
 	XMMATRIX _newPos;
 	//---------------------------------------------------------
 
-	//各頂点の座標の設定
+	//各頂点の座標の設定a
 	for (int i = 0; i < polygonVertexCount; i++)
 	{
 		stVertex3D vertex;
@@ -291,9 +286,9 @@ void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh) {
 		int index = indices[i];
 
 		// 頂点座標リストから座標を取得 & モデルの姿勢を反映させる
-		vertex.pos.x = (float)-vertices[index][0] + _centerPos[0];
-		vertex.pos.y = (float)vertices[index][1] + _centerPos[1];
-		vertex.pos.z = (float)vertices[index][2] + _centerPos[2];
+		vertex.pos.x = (float)-vertices[index][0] * float(_meshScl[0]) + float(_meshPos[0]);
+		vertex.pos.y = (float)vertices[index][1] * float(_meshScl[1]) + float(_meshPos[1]);
+		vertex.pos.z = (float)vertices[index][2] * float(_meshScl[2]) + float(_meshPos[2]);
 
 		//回転を含んだ新たな座標を取得
 		XMMATRIX _translate = XMMatrixTranslation(vertex.pos.x, vertex.pos.y, vertex.pos.z);
@@ -314,27 +309,22 @@ void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh) {
 	pMesh->GetPolygonVertexNormals(normals);
 	//中心情報(姿勢)取得
 	FbxNode* node = pMesh->GetNode();
-	FbxDouble3 _centerPos = node->LclTranslation.Get(); //座標
-	FbxDouble3 _centerRot = node->LclRotation.Get(); //回転
-	FbxDouble3 _centerScl = node->LclScaling.Get(); //スケール
-
-	//cmからｍへ長さを変換
-	for (auto& scl : _centerScl.mData) scl /= 100;
-	for (auto& pos : _centerPos.mData) pos /= 100;
+	FbxDouble3 _meshPos, _meshRot, _meshScl; //メッシュ座標
+	LoadMeshTransform(node, _meshPos, _meshRot, _meshScl);
 
 	//回転行列の作成
-	XMMATRIX _rotXM = XMMatrixRotationX(_centerRot[0]);
-	XMMATRIX _rotYM = XMMatrixRotationY(_centerRot[1]);
-	XMMATRIX _rotZM = XMMatrixRotationZ(_centerRot[2]);
+	XMMATRIX _rotXM = XMMatrixRotationX(float(_meshRot.mData[0]));
+	XMMATRIX _rotYM = XMMatrixRotationY(float(_meshRot.mData[1]));
+	XMMATRIX _rotZM = XMMatrixRotationZ(float(_meshRot.mData[2]));
 	XMMATRIX _rotM = _rotXM * _rotYM * _rotXM;
 	XMMATRIX _newNor;
 
 	// 法線設定
 	for (int i = 0; i < normals.Size(); i++)
 	{
-		meshData.vertices[i].nor.x = (float)-normals[i][0];
-		meshData.vertices[i].nor.y = (float)normals[i][1];
-		meshData.vertices[i].nor.z = (float)normals[i][2];
+		meshData.vertices[i].nor.x = (float)-normals[i][0] * float(_meshScl[0]) + float(_meshPos[0]);
+		meshData.vertices[i].nor.y = (float)normals[i][1] * float(_meshScl[1]) + float(_meshPos[1]);
+		meshData.vertices[i].nor.z = (float)normals[i][2] * float(_meshScl[2]) + float(_meshPos[2]);
 
 		//回転を含んだ新たな法線を取得
 		XMMATRIX _normal = XMMatrixTranslation(meshData.vertices[i].nor.x,
@@ -347,6 +337,47 @@ void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh) {
 		meshData.vertices[i].nor.z = _temp._34;
 	}
 }
+
+void FbxMeshFile::LoadMeshTransform(FbxNode* node, FbxDouble3& pos, FbxDouble3& rot, FbxDouble3& scl) {
+	FbxNode* parent = node->GetParent();
+	FbxDouble3 _parentPos, _parentRot, _parentScl; //親座標
+
+	// 各座標取得
+	pos = node->LclTranslation.Get(); //座標
+	rot = node->LclRotation.Get(); //回転
+	scl = node->LclScaling.Get(); //スケール
+	while (parent != NULL) {
+		_parentPos = parent->LclTranslation.Get();
+		_parentRot = parent->LclRotation.Get();
+		_parentScl = parent->LclScaling.Get();
+
+		//親座標と結合
+		for (int i = 0; i < 3; i++) {
+			pos[i] += _parentPos[i];
+			rot[i] += _parentRot[i];
+			scl[i] *= _parentScl[i];
+		}
+		//親がいなくなるまで探索
+		parent = parent->GetParent();
+	}
+
+	//親再設定
+	parent = node->GetParent();
+
+	//cmからｍへ長さを変換
+	for (auto& scl : scl.mData) scl /= 100;
+	//親がメッシュを持っている場合座標を長さ変換
+	if (parent->GetMesh() == NULL) for (auto& pos : pos.mData) pos /= 100;
+
+	//差分を計算（スケーリング後の親との結合のため）
+	FbxDouble3 _geometry = node->GeometricTranslation.Get();
+	for (auto& pos : _geometry.mData) pos /= 100; //単位変換
+	pos = { pos[0] - _geometry[0],pos[1] - _geometry[1], pos[2] - _geometry[2] };
+	FbxDouble3 _defOnScl = { pos[0] * (1 - scl[0]), pos[1] * (1 - scl[1]), pos[2] * (1 - scl[2]) };
+	pos = { pos[0] - _defOnScl[0],pos[1] - _defOnScl[1], pos[2] - _defOnScl[2] };
+	pos = { _geometry[0] + pos[0],_geometry[1] + pos[1], _geometry[2] + pos[2] };
+}
+
 void FbxMeshFile::LoadColors(stMeshData& meshData, FbxMesh* pMesh) {
 	// 頂点カラーデータの数を確認
 	int color_count = pMesh->GetElementVertexColorCount();
