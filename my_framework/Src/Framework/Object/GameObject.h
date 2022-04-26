@@ -50,7 +50,7 @@ namespace MyFrameWork {
 		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Sprite> sprite,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//メッシュオブジェクト作成
-		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Model> model,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//イメージ(UI)オブジェクトの作成
 		noDel_ptr<GameObject> CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,

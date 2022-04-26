@@ -51,7 +51,7 @@ void SpriteRenderer::SetUpSpriteRenderer(noDel_ptr<Sprite> sprite) {
 	InitData.pSysMem = &vtx[0];
 	InitData.SysMemPitch = 0;		
 	InitData.SysMemSlicePitch = 0;	
-	Direct3D::getDevice()->CreateBuffer(&bd, &InitData, &pVertexBuffer);
+	Direct3D::GetDevice()->CreateBuffer(&bd, &InitData, &pVertexBuffer);
 }
 
 
@@ -70,7 +70,7 @@ void SpriteRenderer::Render() {
 	Renderer3D::StartRendering();
 
 	// プリミティブの形状を指定
-	Direct3D::getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Direct3D::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	stCBuffer3D& _inputCB = Renderer3D::GetInputCB();
 	_inputCB.ambient = { 1,1,1,1 };
@@ -79,12 +79,12 @@ void SpriteRenderer::Render() {
 	_inputCB.color = { color.r, color.g, color.b, color.a };
 
 	// IA(InputAssemblerStage)に入力レイアウトを設定する
-	Direct3D::getDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
+	Direct3D::GetDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(stVertex3D);
 	UINT offset = 0;
-	Direct3D::getDeviceContext()->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
-	Direct3D::getDeviceContext()->IASetIndexBuffer(Renderer3D::GetSpriteIndexBuffer(),DXGI_FORMAT_R32_UINT,0);
+	Direct3D::GetDeviceContext()->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
+	Direct3D::GetDeviceContext()->IASetIndexBuffer(Renderer3D::GetSpriteIndexBuffer(),DXGI_FORMAT_R32_UINT,0);
 
 	// ワールドマトリクス設定
 	XMMATRIX world_matrix;
@@ -99,22 +99,22 @@ void SpriteRenderer::Render() {
 	XMStoreFloat4x4(&_inputCB.world, XMMatrixTranspose(world_matrix));
 
 	// コンスタントバッファ更新
-	Direct3D::getDeviceContext()->UpdateSubresource(Renderer3D::GetConstantBuffer(), 0, NULL, &_inputCB, 0, 0);
+	Direct3D::GetDeviceContext()->UpdateSubresource(Renderer3D::GetConstantBuffer(), 0, NULL, &_inputCB, 0, 0);
 	// コンテキストにコンスタントバッファを設定
 	ID3D11Buffer* _cb = Renderer3D::GetConstantBuffer();
-	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &_cb);
-	Direct3D::getDeviceContext()->PSSetConstantBuffers(0, 1, &_cb);
+	Direct3D::GetDeviceContext()->VSSetConstantBuffers(0, 1, &_cb);
+	Direct3D::GetDeviceContext()->PSSetConstantBuffers(0, 1, &_cb);
 
 	//テクスチャーをシェーダーに渡す
 	if (pRenderSprite->GetTexture() != NULL)
 	{
 		ID3D11SamplerState* _samplerState = Renderer3D::GetSampleLinear();
-		Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &_samplerState);
-		Direct3D::getDeviceContext()->PSSetShaderResources(0, 1, &pRenderSprite->pTextureView);
+		Direct3D::GetDeviceContext()->PSSetSamplers(0, 1, &_samplerState);
+		Direct3D::GetDeviceContext()->PSSetShaderResources(0, 1, &pRenderSprite->pTextureView);
 	}
 
 	//プリミティブをレンダリング
-	Direct3D::getDeviceContext()->Draw(4,  0);
+	Direct3D::GetDeviceContext()->Draw(4,  0);
 }
 
 

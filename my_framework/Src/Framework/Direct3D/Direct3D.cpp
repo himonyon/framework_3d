@@ -190,24 +190,24 @@ void Direct3D::Clear() {
 //
 //
 //
-ID3D11Device* Direct3D::getDevice(void) {
+ID3D11Device* Direct3D::GetDevice(void) {
 	return pDevice;
 }
-ID3D11DeviceContext* Direct3D::getDeviceContext(void) {
+ID3D11DeviceContext* Direct3D::GetDeviceContext(void) {
 	return pDeviceContext;
 }
-IDXGISwapChain* Direct3D::getSwapChain(void) {
+IDXGISwapChain* Direct3D::GetSwapChain(void) {
 	return pSwapChain;
 }
-ID3D11RenderTargetView* Direct3D::getRenderTargetView(void) {
+ID3D11RenderTargetView* Direct3D::GetRenderTargetView(void) {
 	return pRenderTargetView;
 }
-ID3D11DepthStencilView* Direct3D::getDepthStencilView(void) {
+ID3D11DepthStencilView* Direct3D::GetDepthStencilView(void) {
 	return pDepthStencilView;
 }
 
-void Direct3D::setShaderResource(ID3D11ShaderResourceView* p, int slot)
+void Direct3D::SetShaderResource(ID3D11ShaderResourceView* p, int slot)
 {
 	ID3D11ShaderResourceView* hpShaderResourceViews[] = { p ? p : pWhiteTextureView };
-	Direct3D::getDeviceContext()->PSSetShaderResources(slot, 1, hpShaderResourceViews);
+	Direct3D::GetDeviceContext()->PSSetShaderResources(slot, 1, hpShaderResourceViews);
 }

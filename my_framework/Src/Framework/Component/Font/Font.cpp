@@ -51,7 +51,7 @@ bool Font::Initialize(void* hdl) {
 
 
 	IDXGISurface* pBackBuffer = NULL;
-	hr = Direct3D::getSwapChain()->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	hr = Direct3D::GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 	if (FAILED(hr))
 	{
 		Destroy();

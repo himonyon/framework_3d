@@ -38,14 +38,21 @@ namespace MyFrameWork {
 		//スプライトオブジェクト作成
 		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Sprite> sprite,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
-		//メッシュオブジェクト作成
-		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		//モデルオブジェクト作成
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Model> model,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//イメージ(UI)オブジェクト作成
 		noDel_ptr<GameObject> CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 
 	private:
+		//メッシュオブジェクト作成
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+			noDel_ptr<Transform> parent = nullptr, std::string name = "");
+		//指定メッシュの子メッシュオブジェクトを作成
+		void CreateObjectForChildByRootMesh(float x, float y, float z, noDel_ptr<Mesh> mesh,
+			noDel_ptr<Transform> parent, std::string name, int& createCount);
+
 		//配列から特定のIDのコンポーネントを抜く
 		void PullOutComponent(noDel_ptr<GameObject> obj);
 		//Vector型の配列からコンポーネントを抜く

@@ -33,7 +33,7 @@ bool Renderer3D::Initialize() {
 	};
 
 	//ラスタライザの作成
-	Direct3D::getDevice()->CreateRasterizerState(&hRasterizerDesc, &pRasterizerState);
+	Direct3D::GetDevice()->CreateRasterizerState(&hRasterizerDesc, &pRasterizerState);
 
 	//ブレンドステートの設定
 	D3D11_BLEND_DESC BlendDesc;
@@ -50,7 +50,7 @@ bool Renderer3D::Initialize() {
 	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
 
 	//ブレンドステートの作成
-	Direct3D::getDevice()->CreateBlendState(&BlendDesc, &pBlendState);
+	Direct3D::GetDevice()->CreateBlendState(&BlendDesc, &pBlendState);
 
 	//深度ステンシルステートの設定
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
@@ -59,7 +59,7 @@ bool Renderer3D::Initialize() {
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 
 	//深度ステンシルステートの作成
-	Direct3D::getDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState);
+	Direct3D::GetDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState);
 
 	//頂点レイアウト作成
 	D3D11_INPUT_ELEMENT_DESC vertex_desc[]{
@@ -68,7 +68,7 @@ bool Renderer3D::Initialize() {
 		{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXTURE",	0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	if (FAILED(Direct3D::getDevice()->CreateInputLayout(vertex_desc, ARRAYSIZE(vertex_desc),
+	if (FAILED(Direct3D::GetDevice()->CreateInputLayout(vertex_desc, ARRAYSIZE(vertex_desc),
 		Shader::getVertexShader(Shader::eVertexShader::VS_3D)->getCode(), //頂点シェーダーのデータ
 		Shader::getVertexShader(Shader::eVertexShader::VS_3D)->getLength(), //頂点シェーダーのサイズ
 		&pInputLayout)))
@@ -84,7 +84,7 @@ bool Renderer3D::Initialize() {
 	buffer_desc.CPUAccessFlags = 0;
 	buffer_desc.MiscFlags = 0;
 	buffer_desc.StructureByteStride = 0;
-	if (FAILED(Direct3D::getDevice()->CreateBuffer(&buffer_desc, NULL, &pConstantBuffer)))
+	if (FAILED(Direct3D::GetDevice()->CreateBuffer(&buffer_desc, NULL, &pConstantBuffer)))
 	{
 		return false;
 	}
@@ -98,7 +98,7 @@ bool Renderer3D::Initialize() {
 	smpDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
 	// サンプラステートの生成
-	Direct3D::getDevice()->CreateSamplerState(&smpDesc, &pSamplerState);
+	Direct3D::GetDevice()->CreateSamplerState(&smpDesc, &pSamplerState);
 
 	//Spriteのインデックスバッファーを作成
 	D3D11_BUFFER_DESC bd;
@@ -113,7 +113,7 @@ bool Renderer3D::Initialize() {
 	InitData.pSysMem = faceBuffer;
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
-	Direct3D::getDevice()->CreateBuffer(&bd, &InitData, &pSpriteIndexBuffer);
+	Direct3D::GetDevice()->CreateBuffer(&bd, &InitData, &pSpriteIndexBuffer);
 
 	delete[] faceBuffer;
 
@@ -164,19 +164,19 @@ void Renderer3D::StartRendering() {
 	inputCB.lightColor = XMFLOAT4(1, 1, 1, 1);
 
 	// プリミティブの形状を指定
-	Direct3D::getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Direct3D::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//ラスタライザのセット
-	Direct3D::getDeviceContext()->RSSetState(pRasterizerState);
+	Direct3D::GetDeviceContext()->RSSetState(pRasterizerState);
 	//ブレンドステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetBlendState(pBlendState, NULL, 0xffffffff);
+	Direct3D::GetDeviceContext()->OMSetBlendState(pBlendState, NULL, 0xffffffff);
 	//深度ステンシルステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetDepthStencilState(pDepthStencilState, 0);
-	Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &pSamplerState);
+	Direct3D::GetDeviceContext()->OMSetDepthStencilState(pDepthStencilState, 0);
+	Direct3D::GetDeviceContext()->PSSetSamplers(0, 1, &pSamplerState);
 
 	// VerteXShader、PixelShaderを設定
-	Direct3D::getDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_3D)->getShader(), nullptr, 0);									// ClassInstanceの数
-	Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
+	Direct3D::GetDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_3D)->getShader(), nullptr, 0);									// ClassInstanceの数
+	Direct3D::GetDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
 }
 
 

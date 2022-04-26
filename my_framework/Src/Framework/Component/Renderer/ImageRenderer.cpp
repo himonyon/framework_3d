@@ -72,36 +72,36 @@ void ImageRenderer::Render() {
 	SetVertexState();
 
 	//頂点バッファの更新
-	Direct3D::getDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, vtx, 0, 0);
+	Direct3D::GetDeviceContext()->UpdateSubresource(pRenderSprite->GetPVertexBuffer(), 0, NULL, vtx, 0, 0);
 
 	//ブレンドステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetBlendState(Renderer2D::GetBlendState(), NULL, 0xffffffff);
+	Direct3D::GetDeviceContext()->OMSetBlendState(Renderer2D::GetBlendState(), NULL, 0xffffffff);
 	//深度ステンシルステートをコンテキストに設定
-	Direct3D::getDeviceContext()->OMSetDepthStencilState(Renderer2D::GetDepthStencilState(), 0);
+	Direct3D::GetDeviceContext()->OMSetDepthStencilState(Renderer2D::GetDepthStencilState(), 0);
 	//ラスタライザーをコンテキストに設定
-	Direct3D::getDeviceContext()->RSSetState(Renderer2D::GetRasterizerState());
+	Direct3D::GetDeviceContext()->RSSetState(Renderer2D::GetRasterizerState());
 	//頂点インプットレイアウトをセット
-	Direct3D::getDeviceContext()->IASetInputLayout(Renderer2D::GetInputLayout());
+	Direct3D::GetDeviceContext()->IASetInputLayout(Renderer2D::GetInputLayout());
 	//このコンスタントバッファーを使うシェーダーの登録
 	ID3D11Buffer* _cb = Renderer2D::GetConstantBuffer();
-	Direct3D::getDeviceContext()->VSSetConstantBuffers(0, 1, &_cb);
+	Direct3D::GetDeviceContext()->VSSetConstantBuffers(0, 1, &_cb);
 	//バーテックスバッファーをセット
 	UINT strides = sizeof(stVertex2D);
 	UINT offsets = 0;
-	Direct3D::getDeviceContext()->IASetVertexBuffers(0, 1, pRenderSprite->GetPPVertexBuffer(), &strides, &offsets);
+	Direct3D::GetDeviceContext()->IASetVertexBuffers(0, 1, pRenderSprite->GetPPVertexBuffer(), &strides, &offsets);
 	//プリミティブ・トポロジーをセット
-	Direct3D::getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Direct3D::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	//サンプラーステートをコンテキストに設定
 	ID3D11SamplerState* _sampleState = Renderer2D::GetSampleLinear();
-	Direct3D::getDeviceContext()->PSSetSamplers(0, 1, &_sampleState);
+	Direct3D::GetDeviceContext()->PSSetSamplers(0, 1, &_sampleState);
 	//テクスチャーをコンテキストに設定
-	Direct3D::setShaderResource(pRenderSprite->pTextureView);
+	Direct3D::SetShaderResource(pRenderSprite->pTextureView);
 	//使用するシェーダーの登録	
-	Direct3D::getDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_2D)->getShader(), NULL, 0);
-	Direct3D::getDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_2D)->getShader(), NULL, 0);
+	Direct3D::GetDeviceContext()->VSSetShader(Shader::getVertexShader(Shader::eVertexShader::VS_2D)->getShader(), NULL, 0);
+	Direct3D::GetDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_2D)->getShader(), NULL, 0);
 
 	//プリミティブをレンダリング
-	Direct3D::getDeviceContext()->Draw(4, 0);
+	Direct3D::GetDeviceContext()->Draw(4, 0);
 }
 
 

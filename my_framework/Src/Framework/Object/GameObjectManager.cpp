@@ -111,62 +111,110 @@ void GameObjectManager::Render() {
 
 //オブジェクトの作成
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent, std::string name) {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, z, parent);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, z, parent);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
 }
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, z, parent);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, z, parent);
 	//SpriteRendererの作成
-	instance->AddComponent<SpriteRenderer>();
-	instance->GetComponent<SpriteRenderer>()->SetUpSpriteRenderer(sprite);
+	_instance->AddComponent<SpriteRenderer>();
+	_instance->GetComponent<SpriteRenderer>()->SetUpSpriteRenderer(sprite);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
+}
+noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
+	noDel_ptr<Model> model, noDel_ptr<Transform> parent, std::string name)
+{
+	int _createCount = 0; //生成カウント
+
+	//空のオブジェクトを作成して親にする
+	noDel_ptr<GameObject> _rootObj = CreateObject(x, y, z, parent, name);
+
+	//名前がない場合、空オブジェクトの名前を設定
+	if (name == "") name = _rootObj->GetName();
+
+	noDel_ptr<GameObject> _parentObj = _rootObj; //親オブジェクト
+
+	//ルートメッシュとその子メッシュ全てオブジェクト化する
+	int _rootNum = model->GetRootCount();
+	//ルートメッシュ取得
+	for (int i = 0; i < _rootNum; i++) {
+		noDel_ptr<Mesh> _mesh = model->GetRootMesh(i);
+		if (_mesh == NULL) continue; //データがなければ処理しない
+		//ルートメッシュのオブジェクト生成
+		std::string _newName = name + "_" + std::to_string(_createCount); //新しい名前
+		noDel_ptr<GameObject> _newObj = CreateObject(x,y,z,_mesh, _parentObj->transform, _newName);
+		_parentObj = _newObj;
+		_createCount++;
+		//子メッシュの生成
+		CreateObjectForChildByRootMesh(x, y, z, _mesh, _parentObj->transform, name, _createCount);
+
+		_parentObj = _rootObj; //親オブジェクトを再設定
+	}
+
+	return _rootObj;
+}
+void GameObjectManager::CreateObjectForChildByRootMesh(float x, float y, float z, noDel_ptr<Mesh> mesh,
+	noDel_ptr<Transform> parent, std::string name, int& createCount) {
+	//子メッシュをオブジェクト化
+	int _childCount = mesh->GetChildCount();
+	for (int i = 0; i < _childCount; i++) {
+		noDel_ptr<Mesh> _child = mesh->GetChild(i);
+		if (_child == NULL) continue; //データがなければ処理しない
+		//メッシュオブジェクト生成
+		std::string _newName = name + "_" + std::to_string(createCount); //新しい名前
+		noDel_ptr<GameObject> _newObj = CreateObject(x, y, z, _child, parent, _newName);
+		noDel_ptr<GameObject> _parentObj = _newObj; //親オブジェクト
+		createCount++; //生成カウントUP
+		CreateObjectForChildByRootMesh(x, y, z, _child, _parentObj->transform, name, createCount);
+	}
 }
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, z, parent);
-	//SpriteRendererの作成
-	instance->AddComponent<MeshRenderer>();
-	instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, z, parent);
+	//MeshRendererの作成
+	_instance->AddComponent<MeshRenderer>();
+	_instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
 }
+
 noDel_ptr<GameObject> GameObjectManager::CreateImageObject(float x, float y, float width, float height,
 	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, 0, parent);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, 0, parent);
 	//SpriteRendererの作成
-	instance->AddComponent<ImageRenderer>();
-	instance->GetComponent<ImageRenderer>()->SetUpImageRenderer(width, height, sprite);
+	_instance->AddComponent<ImageRenderer>();
+	_instance->GetComponent<ImageRenderer>()->SetUpImageRenderer(width, height, sprite);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
 }
 
 //オブジェクトの破棄準備

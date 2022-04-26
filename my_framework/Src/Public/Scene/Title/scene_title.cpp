@@ -11,20 +11,22 @@ void SceneTitle::Initialize() {
 	pCam->GetComponent<Camera>()->SetMain();
 
 	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
-	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/tank_tex_anim.fbx"));
+	pObj2 = CreateObject(0, 0,0, CreateModel("Data/Object/tank_tex_anim.fbx"));
+	pObj3[0] = CreateObject(2, 0, 0, CreateModel("Data/Object/tank_tex_anim.fbx"));
+	pObj3[1] = CreateObject(-2, 0, 0, CreateModel("Data/Object/Chips.obj"));
 	pObj5 = CreateObject(1, 0,0,pTest_sp);
 
 	//ビヘイビア
 	pObj1->AddComponent<Move>();
 	pObj1->AddComponent<Scale>();
 
-	pText = CreateObject(500, 50, 0, nullptr, "text");;
+	pText = CreateObject(500, 50, 0, nullptr, "text");
 	pText->AddComponent<Font>();
 	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 	//サウンド
 	pSound0 = std::make_unique<Sound>(L"Data/Sound/title_bgm.wav");
-	pSound0->SetVolume(0.2f);
+	pSound0->SetVolume(0.1f);
 	pSound0->Play();
 
 	isInitialized = true;

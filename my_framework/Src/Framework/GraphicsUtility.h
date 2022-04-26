@@ -133,6 +133,9 @@ public:
 //カラー構造体
 struct stColor4 {
 	float r, g, b, a;
+	void SetColor(float r, float g, float b, float a) {
+		this->r = r; this->g = g; this->b = b; this->a = a;
+	}
 };
 
 //3Dオブジェクト頂点構造体
@@ -159,49 +162,59 @@ struct stVertex2D
 	float u, v;
 };
 
+//メッシュデータ
+struct stMeshData
+{
+	stMeshData() {}
+	~stMeshData()
+	{
+		if (vertexBuffer != NULL) vertexBuffer->Release();
+		if (indexBuffer != NULL) indexBuffer->Release();
+		vertexBuffer = NULL;
+		indexBuffer = NULL;
+	}
+	ID3D11Buffer* vertexBuffer = NULL;	//頂点バッファ(Shader送信用)
+	ID3D11Buffer* indexBuffer = NULL;	//インデックスバッファ(Shader送信用)
+	std::vector<stVertex3D> vertices;
+	std::vector<UINT> indices;
+};
+
 struct stMaterial
 {
 	stMaterial()
 	{
-		for (int i = 0; i < 4; i++)
-		{
-			Ambient[i] = 1.0f;
-			Diffuse[i] = 1.0f;
-			Specular[i] = 1.0f;
-		}
-		TextureKeyWord = "";
-		TextureName = "";
+		ambient.SetColor(1, 1, 1, 1);
+		diffuse.SetColor(1, 1, 1, 1);
+		specular.SetColor(1, 1, 1, 1);
+		textureKeyWord = "";
+		textureName = "";
 	}
-
+	~stMaterial()
+	{
+		if(pTexture != NULL) SAFE_RELEASE(pTexture);
+		pTexture = NULL;
+	}
 	void SetAmbient(float r, float g, float b, float factor)
 	{
-		Ambient[0] = r;
-		Ambient[1] = g;
-		Ambient[2] = b;
-		Ambient[3] = factor;
+		ambient.SetColor(r, g, b, factor);
 	}
-
 	void SetDiffuse(float r, float g, float b, float factor)
 	{
-		Diffuse[0] = r;
-		Diffuse[1] = g;
-		Diffuse[2] = b;
-		Diffuse[3] = factor;
+		diffuse.SetColor(r, g, b, factor);
 	}
-
 	void SetSpecular(float r, float g, float b, float factor)
 	{
-		Specular[0] = r;
-		Specular[1] = g;
-		Specular[2] = b;
-		Specular[3] = factor;
+		specular.SetColor(r, g, b, factor);
 	}
 
-	float Ambient[4];
-	float Diffuse[4];
-	float Specular[4];
-	std::string TextureKeyWord;
-	std::string TextureName;
+	stColor4 ambient;
+	stColor4 diffuse;
+	stColor4 specular;
+
+	std::string materialName;
+	std::string textureKeyWord;
+	std::string textureName;
+	ID3D11ShaderResourceView* pTexture = nullptr;
 };
 
 //Spriteのコンスタントバッファ

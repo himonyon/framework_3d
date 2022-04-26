@@ -74,7 +74,7 @@ Shader::VertexShader::VertexShader(const char* path) : ShaderBase(path)
 	if (!code)return;
 
 	HRESULT hr;
-	hr = Direct3D::getDevice()->CreateVertexShader(
+	hr = Direct3D::GetDevice()->CreateVertexShader(
 		code,
 		length,
 		NULL,
@@ -97,7 +97,7 @@ Shader::PixelShader::PixelShader(const char* path) : ShaderBase(path)
 	if (!code)return;
 
 	HRESULT hr;
-	hr = Direct3D::getDevice()->CreatePixelShader(
+	hr = Direct3D::GetDevice()->CreatePixelShader(
 		code,
 		length,
 		NULL,

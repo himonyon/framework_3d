@@ -53,7 +53,7 @@ Sprite::Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name) {
 
 	//テクスチャの読み込み
 	if (_texture_file != 0) {
-		hr = DirectX::CreateWICTextureFromFile(Direct3D::getDevice(), _texture_file, &pTexture, &pTextureView);
+		hr = DirectX::CreateWICTextureFromFile(Direct3D::GetDevice(), _texture_file, &pTexture, &pTextureView);
 		if (hr != S_OK)
 		{
 			pTexture = NULL;
@@ -75,7 +75,7 @@ Sprite::Sprite(const WCHAR* sprite_file, const WCHAR* sprite_name) {
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
-	hr = Direct3D::getDevice()->CreateBuffer(&bd, &InitData, &pVertexBuffer);
+	hr = Direct3D::GetDevice()->CreateBuffer(&bd, &InitData, &pVertexBuffer);
 	if (FAILED(hr))
 	{
 		assert(false);

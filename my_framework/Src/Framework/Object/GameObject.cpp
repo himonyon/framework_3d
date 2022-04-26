@@ -29,9 +29,9 @@ noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float z, noDel_
 	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, z, sprite, parent, name);
 }
 //メッシュオブジェクト作成
-noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+noDel_ptr<GameObject> GameObject::CreateObject(float x, float y, float z, noDel_ptr<Model> model,
 	noDel_ptr<Transform> parent, std::string name) {
-	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, z, mesh, parent, name);
+	return SceneManager::GetScene(belongSceneType)->CreateObject(x, y, z, model, parent, name);
 }
 //イメージオブジェクト作成
 noDel_ptr<GameObject> GameObject::CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
