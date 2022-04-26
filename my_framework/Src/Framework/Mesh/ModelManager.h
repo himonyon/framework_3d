@@ -8,19 +8,15 @@
 #pragma once
 namespace MyFrameWork {
 
-	class MeshManager {
+	class ModelManager {
 	public:
-		MeshManager() {};
-		~MeshManager() {
-			for (auto& mesh : meshes) {
-				delete mesh;
-			}
-			meshes.clear();
-		}
+		ModelManager();
+		~ModelManager();
 
-		noDel_ptr<Mesh> CreateMesh(const char* fileName);
+		noDel_ptr<Model> CreateModel(const char* fileName);
 
 	private:
-		std::vector<Mesh*> meshes;
+		MaterialManager* matManager;
+		std::unordered_map<std::string, Model*> umModels;
 	};
 }

@@ -78,7 +78,7 @@ void Main::App() {
 	Viewport.Height = (float)WINDOW_HEIGHT;
 	Viewport.MinDepth = 0.0f;
 	Viewport.MaxDepth = 1.0f;
-	Direct3D::getDeviceContext()->RSSetViewports(1, &Viewport);
+	Direct3D::GetDeviceContext()->RSSetViewports(1, &Viewport);
 
 	//•`‰æ
 	Render();
@@ -102,7 +102,7 @@ void Main::App() {
 		}
 	}
 
-	Direct3D::getSwapChain()->Present(1, 0);
+	Direct3D::GetSwapChain()->Present(1, 0);
 }
 
 void Main::Execute() {

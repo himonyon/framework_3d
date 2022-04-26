@@ -94,6 +94,12 @@
     <Filter Include="ソース ファイル\Src\Framework\Component\Camera">
       <UniqueIdentifier>{c926aec0-1316-4e1c-9a65-53c19cecda8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Component\SoundManager">
+      <UniqueIdentifier>{0a582feb-26d5-4b41-986a-657b69504bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Src\Framework\Material">
+      <UniqueIdentifier>{284ce2e8-e4fa-49e8-bd98-2d61c5432682}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -156,9 +162,6 @@
     <ClInclude Include="Src\Framework\Sound\Sound.h">
       <Filter>ソース ファイル\Src\Framework\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Sound\SoundManager.h">
-      <Filter>ソース ファイル\Src\Framework\Sound</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Utility\noDel_ptr.h">
       <Filter>ソース ファイル\Src\Utility</Filter>
     </ClInclude>
@@ -172,9 +175,6 @@
       <Filter>ソース ファイル\Src\Public\Scene\Game</Filter>
     </ClInclude>
     <ClInclude Include="Src\Framework\Mesh\Mesh.h">
-      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Framework\Mesh\MeshManager.h">
       <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Src\Public\Scene\SceneManager.h">
@@ -243,11 +243,32 @@
     <ClInclude Include="Src\Framework\Mesh\FbxMesh.h">
       <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Framework\Mesh\ObjMesh.h">
-      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Framework\Component\Renderer\Renderer3D.h">
       <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\SpriteState.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\Renderer\Rendere.h">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\Model.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\ModelManager.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\ModelCreator.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Component\SoundManager\SoundManager.h">
+      <Filter>ソース ファイル\Src\Framework\Component\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Material\MaterialManager.h">
+      <Filter>ソース ファイル\Src\Framework\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Framework\Mesh\ObjMesh.h">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,11 +395,29 @@
     <ClCompile Include="Src\Framework\Mesh\ObjMesh.cpp">
       <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Framework\Mesh\MeshManager.cpp">
-      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Framework\Component\Renderer\Renderer3D.cpp">
       <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\SpriteState.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\Renderer\Rendere.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\Model.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\ModelManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Mesh\ModelCreator.cpp">
+      <Filter>ソース ファイル\Src\Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Component\SoundManager\SoundManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\Component\SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Framework\Material\MaterialManager.cpp">
+      <Filter>ソース ファイル\Src\Framework\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +444,9 @@
       <Filter>ソース ファイル\Src\Shader</Filter>
     </FxCompile>
     <FxCompile Include="Src\Shader\vs_3d.vsh">
+      <Filter>ソース ファイル\Src\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\ps_3d_notex.psh">
       <Filter>ソース ファイル\Src\Shader</Filter>
     </FxCompile>
   </ItemGroup>

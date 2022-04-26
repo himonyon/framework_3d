@@ -17,7 +17,7 @@ enum class eRenderOrder {
 	FrontUI = 30,
 };
 
-class Scene : public GameObjectManager,public SpriteManager, public MeshManager {
+class Scene : public GameObjectManager,public SpriteManager, public ModelManager {
 public:
 	bool isInitialized = false;
 

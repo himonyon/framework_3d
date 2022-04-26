@@ -74,84 +74,147 @@ void GameObjectManager::Execute() {
 
 	//スプライトの描画順の変更
 	if (isSortEnable) {
-		RenderOrderSort(0, (int)v2DRenderer.size() - 1);
+		RenderOrderSort(vImageRenderer ,0, (int)vImageRenderer.size() - 1);
+		RenderOrderSort(vSpriteRenderer ,0, (int)vSpriteRenderer.size() - 1);
+		RenderOrderSort(vMeshRenderer ,0, (int)vMeshRenderer.size() - 1);
 		isSortEnable = false;
 	}
 }
 
 void GameObjectManager::Render() {
-	//メッシュの描画
-	for (auto& mesh : um3DRenderer) {
-		if (!CheckComponentEnable(mesh.second)) continue;
-		mesh.second->Execute();
+	///背面UIオブジェクトの描画
+	for (auto& image : vImageRenderer) {
+		if (image->gameObject->IsFrontObj()) continue;
+		if (!CheckComponentEnable(image)) continue;
+		image->Execute();
 	}
 
-	///スプライトの描画
-	for (auto& sprite : v2DRenderer) {
+	//スプライトの描画
+	for (auto& sprite : vSpriteRenderer) {
 		if (!CheckComponentEnable(sprite)) continue;
 		sprite->Execute();
+	}
+
+	//メッシュの描画
+	for (auto& mesh : vMeshRenderer) {
+		if (!CheckComponentEnable(mesh)) continue;
+		mesh->Execute();
+	}
+
+	///前面UIオブジェクトの描画
+	for (auto& image : vImageRenderer) {
+		if (image->gameObject->IsFrontObj() == false) continue;
+		if (!CheckComponentEnable(image)) continue;
+		image->Execute();
 	}
 }
 
 //オブジェクトの作成
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Transform> parent, std::string name) {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, z, parent);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, z, parent);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
 }
-noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, float width, float height,
-	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
+noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z, noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, z, parent);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, z, parent);
 	//SpriteRendererの作成
-	instance->AddComponent<SpriteRenderer>();
-	instance->GetComponent<SpriteRenderer>()->SetUpRenderer(sprite);
+	_instance->AddComponent<SpriteRenderer>();
+	_instance->GetComponent<SpriteRenderer>()->SetUpSpriteRenderer(sprite);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
+}
+noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
+	noDel_ptr<Model> model, noDel_ptr<Transform> parent, std::string name)
+{
+	int _createCount = 0; //生成カウント
+
+	//空のオブジェクトを作成して親にする
+	noDel_ptr<GameObject> _rootObj = CreateObject(x, y, z, parent, name);
+
+	//名前がない場合、空オブジェクトの名前を設定
+	if (name == "") name = _rootObj->GetName();
+
+	noDel_ptr<GameObject> _parentObj = _rootObj; //親オブジェクト
+
+	//ルートメッシュとその子メッシュ全てオブジェクト化する
+	int _rootNum = model->GetRootCount();
+	//ルートメッシュ取得
+	for (int i = 0; i < _rootNum; i++) {
+		noDel_ptr<Mesh> _mesh = model->GetRootMesh(i);
+		if (_mesh == NULL) continue; //データがなければ処理しない
+		//ルートメッシュのオブジェクト生成
+		std::string _newName = name + "_" + std::to_string(_createCount); //新しい名前
+		noDel_ptr<GameObject> _newObj = CreateObject(x,y,z,_mesh, _parentObj->transform, _newName);
+		_parentObj = _newObj;
+		_createCount++;
+		//子メッシュの生成
+		CreateObjectForChildByRootMesh(x, y, z, _mesh, _parentObj->transform, name, _createCount);
+
+		_parentObj = _rootObj; //親オブジェクトを再設定
+	}
+
+	return _rootObj;
+}
+void GameObjectManager::CreateObjectForChildByRootMesh(float x, float y, float z, noDel_ptr<Mesh> mesh,
+	noDel_ptr<Transform> parent, std::string name, int& createCount) {
+	//子メッシュをオブジェクト化
+	int _childCount = mesh->GetChildCount();
+	for (int i = 0; i < _childCount; i++) {
+		noDel_ptr<Mesh> _child = mesh->GetChild(i);
+		if (_child == NULL) continue; //データがなければ処理しない
+		//メッシュオブジェクト生成
+		std::string _newName = name + "_" + std::to_string(createCount); //新しい名前
+		noDel_ptr<GameObject> _newObj = CreateObject(x, y, z, _child, parent, _newName);
+		noDel_ptr<GameObject> _parentObj = _newObj; //親オブジェクト
+		createCount++; //生成カウントUP
+		CreateObjectForChildByRootMesh(x, y, z, _child, _parentObj->transform, name, createCount);
+	}
 }
 noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, z, parent);
-	//SpriteRendererの作成
-	instance->AddComponent<MeshRenderer>();
-	instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, z, parent);
+	//MeshRendererの作成
+	_instance->AddComponent<MeshRenderer>();
+	_instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
 }
+
 noDel_ptr<GameObject> GameObjectManager::CreateImageObject(float x, float y, float width, float height,
 	noDel_ptr<Sprite> sprite, noDel_ptr<Transform> parent, std::string name)
 {
-	GameObject* instance = new GameObject(name);
-	instance->SetSceneType(sceneType);
+	GameObject* _instance = new GameObject(name);
+	_instance->SetSceneType(sceneType);
 	//Transformの作成
-	instance->AddComponent<Transform>();
-	instance->transform = noDel_ptr<Transform>(instance->GetComponent<Transform>());
-	instance->transform->SetUpTransform(x, y, 0, parent);
+	_instance->AddComponent<Transform>();
+	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
+	_instance->transform->SetUpTransform(x, y, 0, parent);
 	//SpriteRendererの作成
-	instance->AddComponent<ImageRenderer>();
-	instance->GetComponent<ImageRenderer>()->SetUpRenderer2D(width, height, sprite);
+	_instance->AddComponent<ImageRenderer>();
+	_instance->GetComponent<ImageRenderer>()->SetUpImageRenderer(width, height, sprite);
 	//オブジェクト登録
-	umObjects[instance->GetName()] = instance;
-	return noDel_ptr<GameObject>(instance);
+	umObjects[_instance->GetName()] = _instance;
+	return noDel_ptr<GameObject>(_instance);
 }
 
 //オブジェクトの破棄準備
@@ -170,20 +233,21 @@ noDel_ptr<GameObject> GameObjectManager::GetGameObject(std::string name) {
 //配列から特定の要素を抜き出す
 void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 	std::unordered_map<int, noDel_ptr<Component>>* umap = nullptr;
-	bool isOnce = true;
+	bool isOnce = true; //複数同一コンポーネントがない場合はTRUE
 	for (Component* com : obj->components) {
 		if (com->type == eComponentType::Transform) umap = &umTransform;
-		else if (com->type == eComponentType::Renderer2D) {
-			for (int i = 0; i < v2DRenderer.size(); i++) {
-				if (v2DRenderer[i]->GetInstanceID() == com->GetInstanceID()) {
-					v2DRenderer.erase(v2DRenderer.begin() + i);
-					isSortEnable = true;
-					break;
-				}
-			}
+		else if (com->type == eComponentType::UIRenderer) {
+			PullOutComponentToVector(vImageRenderer, noDel_ptr<Component>(com));
 			continue;
 		}
-		else if (com->type == eComponentType::Renderer3D) umap = &um3DRenderer;
+		else if (com->type == eComponentType::SpriteRenderer) {
+			PullOutComponentToVector(vSpriteRenderer, noDel_ptr<Component>(com));
+			continue;
+		}
+		else if (com->type == eComponentType::MeshRenderer) {
+			PullOutComponentToVector(vMeshRenderer, noDel_ptr<Component>(com));
+			continue;
+		}
 		else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 		else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
 		else if (com->type == eComponentType::Behaviour) {
@@ -207,6 +271,15 @@ void GameObjectManager::PullOutComponent(noDel_ptr<GameObject> obj) {
 		}
 	}
 }
+void GameObjectManager::PullOutComponentToVector(std::vector<noDel_ptr<Component>>& renderer, noDel_ptr<Component> com) {
+	for (int i = 0; i < renderer.size(); i++) {
+		if (renderer[i]->GetInstanceID() == com->GetInstanceID()) {
+			renderer.erase(renderer.begin() + i);
+			isSortEnable = true;
+			break;
+		}
+	}
+}
 
 //コンポーネントの登録と各種初期設定(コンストラクタ時には読み取れないgameObjectが使えるためここで設定)
 void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
@@ -216,12 +289,18 @@ void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 
 	com->SetRegistState(true); //登録状況を変更
 	if (com->type == eComponentType::Transform) umap = &umTransform;
-	else if (com->type == eComponentType::Renderer2D) {
-		v2DRenderer.emplace_back(com);
-		isSortEnable = true;
+	else if (com->type == eComponentType::UIRenderer) {
+		RegistComponentToVector(vImageRenderer, com);
 		return;
 	}
-	else if (com->type == eComponentType::Renderer3D) umap = &um3DRenderer;
+	else if (com->type == eComponentType::SpriteRenderer) {
+		RegistComponentToVector(vSpriteRenderer, com);
+		return;
+	}
+	else if (com->type == eComponentType::MeshRenderer) {
+		RegistComponentToVector(vMeshRenderer, com);
+		return;
+	}
 	else if (com->type == eComponentType::Collider) umap = &umCollider2D;
 	else if (com->type == eComponentType::Physics) umap = &umPhysics2D;
 	else if (com->type == eComponentType::Behaviour) umap = &umBehaviour;
@@ -234,6 +313,11 @@ void GameObjectManager::RegistComponent(noDel_ptr<Component> com) {
 	if (com->type == eComponentType::Behaviour) {
 		com->Execute((int)eBehaviourState::Awake);
 	}
+}
+
+void GameObjectManager::RegistComponentToVector(std::vector<noDel_ptr<Component>>& renderer, noDel_ptr<Component> com) {
+	renderer.emplace_back(com);
+	isSortEnable = true;
 }
 
 //コンポーネント有効無効判定
@@ -250,22 +334,22 @@ bool GameObjectManager::CheckComponentEnable(noDel_ptr<Component> com) {
 }
 
 //描画順変更
-void GameObjectManager::RenderOrderSort(int start, int end) {
+void GameObjectManager::RenderOrderSort(std::vector<noDel_ptr<Component>>& renderer, int start, int end) {
 	int left = start;
 	int right = end;
 	if (left >= right) return;
 
 	//走査を気にしてStaticCastにしている
-	int pivot = static_noDel_cast<Renderer2D>(v2DRenderer[left])->GetRenderPriority();
+	int pivot = renderer[left]->gameObject->GetRenderOrder();
 
 	while (true) {
-		while (static_noDel_cast<Renderer2D>(v2DRenderer[left])->GetRenderPriority() < pivot) left++;
-		while (static_noDel_cast<Renderer2D>(v2DRenderer[right])->GetRenderPriority() > pivot) right--;
+		while (renderer[left]->gameObject->GetRenderOrder() < pivot) left++;
+		while (renderer[right]->gameObject->GetRenderOrder() > pivot) right--;
 
 		if (left < right) {
-			noDel_ptr<Component> temp = v2DRenderer[left];
-			v2DRenderer[left] = v2DRenderer[right];
-			v2DRenderer[right] = temp;
+			noDel_ptr<Component> temp = renderer[left];
+			renderer[left] = renderer[right];
+			renderer[right] = temp;
 
 			left++;
 			right--;
@@ -276,7 +360,7 @@ void GameObjectManager::RenderOrderSort(int start, int end) {
 	}
 
 	// 左側再帰
-	RenderOrderSort(start, left - 1);
+	RenderOrderSort(renderer, start, left - 1);
 
-	RenderOrderSort(right + 1, end);
+	RenderOrderSort(renderer, right + 1, end);
 }

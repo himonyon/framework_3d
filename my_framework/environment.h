@@ -59,6 +59,9 @@ using namespace MyFrameWork;
 //シェーダー設定
 #include "Src/Framework/Shader/Shader.h"
 
+//マテリアル
+#include"Src/Framework/Material/MaterialManager.h"
+
 //スプライト
 #include "Src/Framework/Sprite/Sprite.h"
 #include "Src/Framework/Sprite/SpriteManager.h"
@@ -67,7 +70,12 @@ using namespace MyFrameWork;
 #include "Src//Framework//Mesh/Mesh.h"
 #include "Src//Framework//Mesh/FbxMesh.h"
 #include "Src//Framework//Mesh/ObjMesh.h"
-#include "Src//Framework//Mesh/MeshManager.h"
+#include "Src//Framework//Mesh/Model.h"
+#include "Src//Framework//Mesh/ModelCreator.h"
+#include "Src//Framework//Mesh/ModelManager.h"
+
+//サウンド
+#include "Src/Framework/Sound/Sound.h"
 
 //Objectクラス
 #include "Src/Framework/Object/Object.h"
@@ -84,12 +92,15 @@ using namespace MyFrameWork;
 #include "Src/Framework/Component/Physics/Physics2D.h"
 #include "Src/Framework/Component/Renderer/Renderer2D.h"
 #include "Src/Framework/Component/Renderer/Renderer3D.h"
+#include "Src/Framework/Component/Renderer/Rendere.h"
 #include "Src/Framework/Component/Renderer/MeshRenderer.h"
+#include "Src/Framework/Component/Renderer/SpriteState.h"
 #include "Src/Framework/Component/Renderer/SpriteRenderer.h"
 #include "Src/Framework/Component/Renderer/ImageRenderer.h"
 #include "Src/Framework/Component/Behaviour/Behaviour.h"
 #include "Src/Framework/Component/Font/Font.h"
 #include "Src/Framework/Component/Camera/Camera.h"
+#include "Src/Framework/Component/SoundManager/SoundManager.h"
 
 //スプライトアニメーション
 #include "Src/Framework/Animation/SpriteAnimation.h"
@@ -112,10 +123,6 @@ using namespace MyFrameWork;
 #include "Src//Framework//Input/Mouse.h"
 #include "Src//Framework//Input/Joystick.h"
 #include "Src//Framework//Input/Input.h"
-
-//サウンド
-#include "Src/Framework/Sound/Sound.h"
-#include "Src/Framework/Sound/SoundManager.h"
 
 //Direct3D
 #include "Src/Framework/Direct3D/Direct3D.h"

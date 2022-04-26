@@ -20,6 +20,7 @@ namespace MyFrameWork {
 		{
 			PS_2D,
 			PS_3D,
+			PS_3D_NOTEX,
 			PS_MAX,
 		};
 

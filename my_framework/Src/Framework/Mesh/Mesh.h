@@ -8,18 +8,30 @@
 
 namespace MyFrameWork {
 	class Mesh {
+	private:
+		noDel_ptr<Mesh> pParent; //親メッシュ
+		std::vector<noDel_ptr<Mesh>> vChildren; //子メッシュ
+
 	protected:
-		ID3D11Buffer* pVertexBuffer;					//!< @brief 頂点バッファ(Shader送信用)
-		std::vector<ID3D11Buffer*> vIndexBuffers;		//インデックスバッファ(Shader送信用)
-		std::unordered_map<std::string, stMaterial> umMaterials;
-		std::vector<stVertex3D> vVertices;	//頂点バッファ
-		std::unordered_map<std::string, std::vector<UINT>> umIndices; //インデックスバッファ
-		std::unordered_map<std::string, ID3D11ShaderResourceView*> umTextures;
+		//メッシュデータ
+		stMeshData* meshData = NULL;
+
+		//マテリアル
+		noDel_ptr<stMaterial> pMaterial = NULL;
 
 	public:
 		Mesh();
 		virtual ~Mesh();
 
 		virtual void Render(stVector3 pos, stVector3 rot, stVector3 scl) = 0;
+
+		//Setter,Getter
+		void SetMaterial(noDel_ptr<stMaterial> mat) { pMaterial = mat; };
+		noDel_ptr<stMaterial> GetMaterial() { return noDel_ptr<stMaterial>(pMaterial); }
+
+		void SetParent(noDel_ptr<Mesh> parent);
+		noDel_ptr<Mesh> GetParent();
+		noDel_ptr<Mesh> GetChild(int index);
+		int GetChildCount();
 	};
 }

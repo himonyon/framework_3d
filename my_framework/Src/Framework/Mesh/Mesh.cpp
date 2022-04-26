@@ -3,17 +3,24 @@
 using namespace MyFrameWork;
 
 Mesh::Mesh() {
+	meshData = new stMeshData;
 }
 
 Mesh::~Mesh() {
-	if(pVertexBuffer != nullptr) pVertexBuffer->Release();
+	if (meshData != NULL) delete meshData;
+}
 
-	for (auto& index : vIndexBuffers) {
-		if (index != nullptr) index->Release();
-	}
-
-
-	for (auto& tex : umTextures) {
-		if (tex.second != nullptr) tex.second->Release();;
-	}
+void Mesh::SetParent(noDel_ptr<Mesh> parent) {
+	pParent = parent;
+	parent->vChildren.emplace_back(noDel_ptr<Mesh>(this));
+}
+noDel_ptr<Mesh> Mesh::GetParent() {
+	return pParent;
+}
+noDel_ptr<Mesh> Mesh::GetChild(int index) {
+	if (index > (int)vChildren.size()) return NULL;
+	return vChildren[index];
+}
+int Mesh::GetChildCount() {
+	return (int)vChildren.size();
 }

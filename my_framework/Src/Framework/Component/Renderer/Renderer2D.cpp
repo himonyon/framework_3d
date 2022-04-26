@@ -17,8 +17,6 @@ ID3D11SamplerState* Renderer2D::pSamplerState = 0;
 ID3D11BlendState* Renderer2D::pBlendState = 0;
 ID3D11DepthStencilState* Renderer2D::pDepthStencilState = 0;
 ID3D11InputLayout* Renderer2D::pInputLayout = 0;
-UINT Renderer2D::VertexStrides = sizeof(stVertex2D);
-UINT Renderer2D::VertexOffsets = 0;
 
 bool Renderer2D::Initialize() {
 	//ラスタライザの設定
@@ -36,7 +34,7 @@ bool Renderer2D::Initialize() {
 	};
 
 	//ラスタライザの作成
-	Direct3D::getDevice()->CreateRasterizerState(&hRasterizerDesc, &pRasterizerState);
+	Direct3D::GetDevice()->CreateRasterizerState(&hRasterizerDesc, &pRasterizerState);
 
 	//ブレンドステートの設定
 	D3D11_BLEND_DESC BlendDesc;
@@ -53,7 +51,7 @@ bool Renderer2D::Initialize() {
 	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
 
 	//ブレンドステートの作成
-	Direct3D::getDevice()->CreateBlendState(&BlendDesc, &pBlendState);
+	Direct3D::GetDevice()->CreateBlendState(&BlendDesc, &pBlendState);
 
 	// サンプラステートの設定
 	D3D11_SAMPLER_DESC smpDesc;
@@ -67,7 +65,7 @@ bool Renderer2D::Initialize() {
 	smpDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	// サンプラステートの生成
-	Direct3D::getDevice()->CreateSamplerState(&smpDesc, &pSamplerState);
+	Direct3D::GetDevice()->CreateSamplerState(&smpDesc, &pSamplerState);
 
 	//深度ステンシルステートの設定
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
@@ -77,11 +75,11 @@ bool Renderer2D::Initialize() {
 	dsDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
 
 	//深度ステンシルステートの作成
-	Direct3D::getDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState);
+	Direct3D::GetDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState);
 
 	//頂点レイアウトの作成
 	Shader::VertexShader* vs = Shader::getVertexShader(Shader::eVertexShader::VS_2D);
-	Direct3D::getDevice()->CreateInputLayout(hInElementDesc_Sprite, ARRAYSIZE(hInElementDesc_Sprite), vs->getCode(), vs->getLength(), &pInputLayout);
+	Direct3D::GetDevice()->CreateInputLayout(hInElementDesc_Sprite, ARRAYSIZE(hInElementDesc_Sprite), vs->getCode(), vs->getLength(), &pInputLayout);
 
 	//コンスタントバッファー作成
 	D3D11_BUFFER_DESC cb;
@@ -91,7 +89,7 @@ bool Renderer2D::Initialize() {
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = sizeof(float) * 4;
 	cb.Usage = D3D11_USAGE_DEFAULT;
-	if (FAILED(Direct3D::getDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer)))
+	if (FAILED(Direct3D::GetDevice()->CreateBuffer(&cb, NULL, &pConstantBuffer)))
 	{
 		return FALSE;
 	}
@@ -105,7 +103,7 @@ bool Renderer2D::Initialize() {
 	scr[2] = -w * 0.5f;
 	scr[3] = -h * 0.5f;
 	//定数バッファへ値をセット
-	Direct3D::getDeviceContext()->UpdateSubresource(pConstantBuffer, 0, NULL, scr, 0, 0);
+	Direct3D::GetDeviceContext()->UpdateSubresource(pConstantBuffer, 0, NULL, scr, 0, 0);
 
 	return TRUE;
 }
@@ -120,23 +118,8 @@ void Renderer2D::Destroy() {
 }
 
 Renderer2D::Renderer2D()
-	: Component(eComponentType::Renderer2D)
 {
 }
 
 Renderer2D::~Renderer2D() {
-}
-
-//setter/getter
-void Renderer2D::SetSize(float width, float height) {
-	sizeX = width;
-	sizeY = height;
-}
-
-void Renderer2D::SetRenderPriority(int value) {
-	if (renderPriority != value) SceneManager::GetScene(gameObject->GetSceneType())->SetSortEnable();
-	renderPriority = value;
-}
-int Renderer2D::GetRenderPriority() {
-	return renderPriority;
 }

@@ -5,7 +5,7 @@ void Move::Start() {
 	gameObject->AddComponent<Physics2D>();
 	gameObject->AddComponent<Collider2D>();
 	gameObject->GetComponent<Collider2D>()->SetUpCollider2D(false);
-	gameObject->GetComponent<ImageRenderer>()->SetRenderPriority(10);
+	gameObject->SetRenderOrder(10);
 }
 
 void Move::Update() {

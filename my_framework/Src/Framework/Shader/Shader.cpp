@@ -19,6 +19,7 @@ bool Shader::InitShader() {
 	{
 		pixelShader[(unsigned int)ePixelShader::PS_2D] = new PixelShader("Src/Shader/ps_2d.cso");
 		pixelShader[(unsigned int)ePixelShader::PS_3D] = new PixelShader("Src/Shader/ps_3d.cso");
+		pixelShader[(unsigned int)ePixelShader::PS_3D_NOTEX] = new PixelShader("Src/Shader/ps_3d_notex.cso");
 	}
 	return (vertexShader != NULL && pixelShader != NULL);
 }
@@ -73,7 +74,7 @@ Shader::VertexShader::VertexShader(const char* path) : ShaderBase(path)
 	if (!code)return;
 
 	HRESULT hr;
-	hr = Direct3D::getDevice()->CreateVertexShader(
+	hr = Direct3D::GetDevice()->CreateVertexShader(
 		code,
 		length,
 		NULL,
@@ -96,7 +97,7 @@ Shader::PixelShader::PixelShader(const char* path) : ShaderBase(path)
 	if (!code)return;
 
 	HRESULT hr;
-	hr = Direct3D::getDevice()->CreatePixelShader(
+	hr = Direct3D::GetDevice()->CreatePixelShader(
 		code,
 		length,
 		NULL,

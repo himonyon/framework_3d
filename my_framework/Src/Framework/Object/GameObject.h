@@ -29,6 +29,12 @@ namespace MyFrameWork {
 		//静的なオブジェクトかどうか
 		bool isScreenObj = false;
 
+		//2Dの場合の描画分け
+		bool isFrontObj = true;
+
+		//描画順
+		int renderOrder = 0;
+
 	public:
 		GameObject(std::string name);
 		~GameObject(void);
@@ -41,10 +47,10 @@ namespace MyFrameWork {
 		noDel_ptr<GameObject> CreateObject(float x, float y, float z,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//スプライトオブジェクト作成
-		noDel_ptr<GameObject> CreateObject(float x, float y, float z, float width, float height, noDel_ptr<Sprite> sprite,
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Sprite> sprite,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//メッシュオブジェクト作成
-		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Model> model,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//イメージ(UI)オブジェクトの作成
 		noDel_ptr<GameObject> CreateImageObject(float x, float y, float width, float height, noDel_ptr<Sprite> sprite,
@@ -81,8 +87,15 @@ namespace MyFrameWork {
 		void SetObjEnable(bool flag); //実行状態の設定
 		bool IsObjEnable(); //実行状態になっているかどうか
 
+		void SetRenderOrder(int order) { renderOrder = order; }
+		int GetRenderOrder() { return renderOrder; }
+
 		void SetSceneType(int value) { belongSceneType = value; }
 		int GetSceneType() { return belongSceneType; }
+
+		//TRUE: front_Obj  FALSE : back_Obj
+		void SetFrontRenderOrderType(bool value) { isFrontObj = value; }
+		bool IsFrontObj() { return isFrontObj; }
 
 		void SetScreenObjType() { isScreenObj = true; }
 		bool IsScreenObj() { return isScreenObj; }

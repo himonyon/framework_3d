@@ -31,11 +31,11 @@ Collider2D::~Collider2D() {
 }
 
 void Collider2D::SetUpCollider2D(bool collision) {
-	noDel_ptr<Renderer2D> sr = gameObject->GetComponent<Renderer2D>();
+	noDel_ptr<SpriteState> sr = gameObject->GetComponent<SpriteState>();
 
 	if (sr != nullptr) {
-		sizeX = sr->sizeX;
-		sizeY = sr->sizeY;
+		sizeX = sr->size.x;
+		sizeY = sr->size.y;
 	}
 	else {
 		sizeX = 0;
@@ -81,7 +81,6 @@ void Collider2D::IsCollide(noDel_ptr<Collider2D> hitCollider)
 	float ry = 0.0f;	//重なっている長方形(Rectangle)の高さ
 
 	//横(X)方向
-
 	//スプライトの中心同士の座標の差分(differencial)
 	float dx = fabsf(transform->position.x - hitPos.x);
 	//2つのスプライトの幅(半分)をスケールの合計

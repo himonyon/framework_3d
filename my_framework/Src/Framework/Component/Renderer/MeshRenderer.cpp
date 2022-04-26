@@ -3,9 +3,8 @@
 
 using namespace MyFrameWork;
 
-MeshRenderer::MeshRenderer()
+MeshRenderer::MeshRenderer() : Renderer(eComponentType::MeshRenderer)
 {
-	col = { 1,1,1,1 };
 }
 
 MeshRenderer::~MeshRenderer() {}
@@ -28,8 +27,10 @@ void MeshRenderer::Render() {
 	stVector3 _drawRot = GetRotOnCam();
 	stVector3 _drawScale = GetScaleOnCam();
 
-	StartRendering();
-	inputCB.color = { col.r, col.g, col.b, col.a };
+	Renderer3D::StartRendering();
+
+	stCBuffer3D& _inputCB = Renderer3D::GetInputCB();
+	_inputCB.color = { color.r, color.g, color.b, color.a };
 
 	pRenderMesh->Render(_drawPos, _drawRot, _drawScale);
 }

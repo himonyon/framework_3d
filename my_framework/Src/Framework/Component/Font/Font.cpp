@@ -51,7 +51,7 @@ bool Font::Initialize(void* hdl) {
 
 
 	IDXGISurface* pBackBuffer = NULL;
-	hr = Direct3D::getSwapChain()->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	hr = Direct3D::GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 	if (FAILED(hr))
 	{
 		Destroy();
@@ -81,7 +81,7 @@ void Font::Destroy(void) {
 	SAFE_RELEASE(pD2d1Factory);
 }
 
-Font::Font() {
+Font::Font() : Renderer(eComponentType::UIRenderer) {
 	size = 18.0f;
 
 	rect.left = 0;
@@ -329,10 +329,4 @@ void Font::SetTextAlignment(eTextAlignment textAlignment) {
 		alignment = eTextAlignment::Center;
 		break;
 	}
-}
-
-int Font::GetRenderPriority() {
-	int _value = renderPriority;
-	_value += isFrontFont ? 100000 : -100000;
-	return _value;
 }

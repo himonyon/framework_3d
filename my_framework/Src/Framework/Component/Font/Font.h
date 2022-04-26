@@ -17,16 +17,12 @@ namespace MyFrameWork {
 		Center
 	};
 
-	class Font : public Renderer2D {
+	class Font : public Renderer {
 	private:
 		//Direct2D初期化用変数
 		static ID2D1Factory* pD2d1Factory;
 		static IDWriteFactory* pDWFactory;
 		static ID2D1RenderTarget* pRenderTarget;
-
-	public:
-		//ワールドオブジェクトの手前に表示するか奥に表示するか
-		bool isFrontFont = true;
 
 	private:
 		IDWriteTextFormat* pTextFormat = 0;
@@ -83,7 +79,6 @@ namespace MyFrameWork {
 		void SetFontStyle(float size, const WCHAR* fontname);
 		void SetFontSize(float size);
 		void SetTextAlignment(eTextAlignment alignment);
-		int GetRenderPriority() override;
 		float GetTextLength();
 	};
 }

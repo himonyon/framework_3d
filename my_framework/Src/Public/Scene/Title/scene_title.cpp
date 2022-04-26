@@ -6,25 +6,27 @@ void SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
 
-	pCam = CreateObject(0, 0, -3.0f);
+	pCam = CreateObject(0, 0, -2.0f);
 	pCam->AddComponent<Camera>();
 	pCam->GetComponent<Camera>()->SetMain();
 
 	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
-	pObj2 = CreateObject(0, 0,0, CreateMesh("Data/Object/Chips.fbx"));
-	pObj5 = CreateObject(1, 0,0, 1,1,pTest_sp);
+	pObj2 = CreateObject(0, 0,0, CreateModel("Data/Object/tank_tex_anim.fbx"));
+	pObj3[0] = CreateObject(2, 0, 0, CreateModel("Data/Object/tank_tex_anim.fbx"));
+	pObj3[1] = CreateObject(-2, 0, 0, CreateModel("Data/Object/Chips.obj"));
+	pObj5 = CreateObject(1, 0,0,pTest_sp);
 
 	//ビヘイビア
 	pObj1->AddComponent<Move>();
 	pObj1->AddComponent<Scale>();
 
-	pText = CreateObject(500, 50, 0, nullptr, "text");;
+	pText = CreateObject(500, 50, 0, nullptr, "text");
 	pText->AddComponent<Font>();
 	pText->GetComponent<Font>()->Print(500, 50, L"%d %d", Mouse::GetX(), Mouse::GetY());
 
 	//サウンド
 	pSound0 = std::make_unique<Sound>(L"Data/Sound/title_bgm.wav");
-	pSound0->SetVolume(0.2f);
+	pSound0->SetVolume(0.1f);
 	pSound0->Play();
 
 	isInitialized = true;
@@ -38,10 +40,10 @@ void SceneTitle::Execute() {
 	int aa = 99;
 
 	if (Input::On(InputConfig::input["decide"])) {
-		pCam->transform->position.y += 0.1f;
+		pCam->transform->rotation.x += 1;
 	}
 	if (Input::On(InputConfig::input["cancel"])) {
-		pCam->transform->position.y -= 0.1f;
+		pCam->transform->rotation.y -= 1;
 	}
 
 	if (Input::On(InputConfig::input["up"])) {
