@@ -6,14 +6,12 @@ void SceneTitle::Initialize() {
 	//２Dオブジェクト
 	pTest_sp = CreateSprite(new Sprite(L"Data/Image/bg.spr"));
 
-	pCam = CreateObject(0, 0, -2.0f);
+	pCam = CreateObject(0, 0, -40.0f);
 	pCam->AddComponent<Camera>();
 	pCam->GetComponent<Camera>()->SetMain();
 
 	pObj1 = CreateImageObject(0, 0, 100, 100, pTest_sp);
-	pObj2 = CreateObject(0, 0,0, CreateModel("Data/Object/tank_tex_anim.fbx"));
-	pObj3[0] = CreateObject(2, 0, 0, CreateModel("Data/Object/tank_tex_anim.fbx"));
-	pObj3[1] = CreateObject(-2, 0, 0, CreateModel("Data/Object/Chips.obj"));
+	pObj3[0] = CreateObject(0, 0, 0, CreateModel("Data/Object/parent0.fbx"));
 	pObj5 = CreateObject(1, 0,0,pTest_sp);
 
 	//ビヘイビア
@@ -40,7 +38,7 @@ void SceneTitle::Execute() {
 	int aa = 99;
 
 	if (Input::On(InputConfig::input["decide"])) {
-		pCam->transform->rotation.x += 1;
+		pObj3[0]->transform->rotation.x += 1;
 	}
 	if (Input::On(InputConfig::input["cancel"])) {
 		pCam->transform->rotation.y -= 1;
@@ -52,8 +50,8 @@ void SceneTitle::Execute() {
 	if (Input::On(InputConfig::input["down"])) {
  		pCam->transform->position.z -= 0.1f;
 	}
-	if (Input::On(InputConfig::input["right"])) {
-		pCam->transform->position.x += 0.1f;
+	if (Input::Trg(InputConfig::input["right"])) {
+		pCam->transform->position.x += 1;
 	}
 	if (Input::On(InputConfig::input["left"])) {
 		pCam->transform->position.x -= 0.1f;
@@ -68,6 +66,13 @@ void SceneTitle::Execute() {
 		pCam->transform->scale.x -= 0.2f;
 		pCam->transform->scale.y -= 0.2f;
 		pCam->transform->scale.z -= 0.2f;
+	}
+
+	if (Keyboard::On(DIK_W)) {
+		pCam->transform->position.y += 0.1f;
+	}
+	if (Keyboard::On(DIK_S)) {
+		pCam->transform->position.y -= 0.1f;
 	}
 
 	Scene::Execute();

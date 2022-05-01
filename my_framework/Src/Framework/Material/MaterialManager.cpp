@@ -2,6 +2,11 @@
 
 using namespace MyFrameWork;
 
+MaterialManager::MaterialManager() {
+	stMaterial* startMat = new stMaterial();
+	AddMaterial("default", startMat);
+}
+
 MaterialManager::~MaterialManager() {
 	for (auto& mat : umMaterials) {
 		delete mat.second;

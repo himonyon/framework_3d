@@ -144,7 +144,7 @@ void Renderer3D::StartRendering() {
 	XMFLOAT3 _UpVec(0.0f, 1.0f, 0.0f);//上方位置
 	XMMATRIX mView = XMMatrixLookAtLH(ToXMVECTOR(_EyePt), ToXMVECTOR(_LookatPt), ToXMVECTOR(_UpVec));
 	// プロジェクショントランスフォーム（射影変換）
-	XMMATRIX mProj = XMMatrixPerspectiveFovLH(XM_PI / 4, (FLOAT)WINDOW_WIDTH / (FLOAT)WINDOW_HEIGHT, 0.1f, 110.0f);
+	XMMATRIX mProj = XMMatrixPerspectiveFovLH(XM_PI / 4, (FLOAT)WINDOW_WIDTH / (FLOAT)WINDOW_HEIGHT, 0.1f, 1000.0f);
 
 	View = mView;
 	Proj = mProj;

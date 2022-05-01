@@ -50,16 +50,16 @@ void FbxMeshFile::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 		0);
 
 	// ワールドマトリクス設定
-	XMMATRIX world_matrix;
-	XMMATRIX translate = XMMatrixTranslation(pos.x, pos.y, pos.z);
-	XMMATRIX rotate_x = XMMatrixRotationX(XMConvertToRadians(rot.x));
-	XMMATRIX rotate_y = XMMatrixRotationY(XMConvertToRadians(rot.y));
-	XMMATRIX rotate_z = XMMatrixRotationZ(XMConvertToRadians(rot.z));
-	XMMATRIX scale_mat = XMMatrixScaling(scl.x, scl.y, scl.z);
-	world_matrix = scale_mat * rotate_x * rotate_y * rotate_z * translate;
+	XMMATRIX _world_matrix;
+	XMMATRIX _translate = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	XMMATRIX _rotateX = XMMatrixRotationX(XMConvertToRadians(rot.x));
+	XMMATRIX _rotateY = XMMatrixRotationY(XMConvertToRadians(rot.y));
+	XMMATRIX _rotateZ = XMMatrixRotationZ(XMConvertToRadians(rot.z));
+	XMMATRIX _scaleMat = XMMatrixScaling(scl.x, scl.y, scl.z);
+	_world_matrix = _scaleMat * _rotateX * _rotateY * _rotateZ * _translate;
 
 	// ワールドマトリクスをコンスタントバッファに設定
-	XMStoreFloat4x4(&Renderer3D::GetInputCB().world, XMMatrixTranspose(world_matrix));
+	XMStoreFloat4x4(&Renderer3D::GetInputCB().world, XMMatrixTranspose(_world_matrix));
 
 	///色設定
 	SetMaterialColor(*pMaterial.get());
@@ -86,6 +86,8 @@ void FbxMeshFile::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
 	// コンテキストにコンスタントバッファを設定
 	Direct3D::GetDeviceContext()->VSSetConstantBuffers(0, 1, &constant_buffer);
 	Direct3D::GetDeviceContext()->PSSetConstantBuffers(0, 1, &constant_buffer);
+
+	stCBuffer3D& cbb = Renderer3D::GetInputCB();
 
 	// 描画
 	Direct3D::GetDeviceContext()->DrawIndexed(
@@ -154,10 +156,13 @@ bool FbxMeshFile::CreateIndexBuffer() {
 }
 
 bool FbxMeshFile::CreateMesh(FbxMesh* pMesh) {
-	
+	//姿勢取得
+	FbxNode* node = pMesh->GetNode();
+	FbxAMatrix _matA = LoadMeshTransform(node);
+
 	LoadIndices(*meshData, pMesh);
-	LoadVertices(*meshData, pMesh);
-	LoadNormals(*meshData, pMesh);
+	LoadVertices(*meshData, pMesh, _matA);
+	LoadNormals(*meshData, pMesh, _matA);
 	LoadUV(*meshData, pMesh);
 	LoadColors(*meshData, pMesh);
 
@@ -175,7 +180,7 @@ void FbxMeshFile::LoadIndices(stMeshData& meshData, FbxMesh* pMesh) {
 		meshData.indices.emplace_back(i * 3);
 	}
 }
-void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh) {
+void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh, FbxAMatrix& mat) {
 	// 頂点バッファの取得
 	FbxVector4* vertices = pMesh->GetControlPoints();
 	// インデックスバッファの取得
@@ -183,116 +188,78 @@ void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh) {
 	// 頂点座標の数の取得
 	int polygonVertexCount = pMesh->GetPolygonVertexCount();
 
-	//中心情報(姿勢)取得
-	FbxNode* node = pMesh->GetNode();
-	FbxDouble3 _meshPos, _meshRot, _meshScl; //メッシュ座標
-	LoadMeshTransform(node, _meshPos, _meshRot, _meshScl);
+	
 
-	//回転行列の作成
-	XMMATRIX _rotXM = XMMatrixRotationX(float(_meshRot[0]));
-	XMMATRIX _rotYM = XMMatrixRotationY(float(_meshRot[1]));
-	XMMATRIX _rotZM = XMMatrixRotationZ(float(_meshRot[2]));
-	XMMATRIX _rotM = _rotXM * _rotYM * _rotXM;
-	XMMATRIX _newPos;
-	//---------------------------------------------------------
-
-	//各頂点の座標の設定a
+	//各頂点の座標の設定
 	for (int i = 0; i < polygonVertexCount; i++)
 	{
 		stVertex3D vertex;
 		// インデックスバッファから頂点番号を取得
 		int index = indices[i];
 
-		// 頂点座標リストから座標を取得 & モデルの姿勢を反映させる
-		vertex.pos.x = (float)-vertices[index][0] * float(_meshScl[0]) + float(_meshPos[0]);
-		vertex.pos.y = (float)vertices[index][1] * float(_meshScl[1]) + float(_meshPos[1]);
-		vertex.pos.z = (float)vertices[index][2] * float(_meshScl[2]) + float(_meshPos[2]);
+		//-------------------------------------------------------------
+		vertex.pos.x = (float)vertices[index][0];
+		vertex.pos.y = (float)vertices[index][1];
+		vertex.pos.z = (float)vertices[index][2];
 
-		//回転を含んだ新たな座標を取得
-		XMMATRIX _translate = XMMatrixTranslation(vertex.pos.x, vertex.pos.y, vertex.pos.z);
-		_newPos = _translate * _rotM;
-		XMFLOAT4X4 _temp;
-		XMStoreFloat4x4(&_temp, XMMatrixTranspose(_newPos));
-		vertex.pos.x = _temp._14;
-		vertex.pos.y = _temp._24;
-		vertex.pos.z = _temp._34;
+		FbxVector4 _temp = { vertex.pos.x, vertex.pos.y, vertex.pos.z, 1 };
+		FbxVector4 _res = mat.MultT(_temp);
+
+		vertex.pos.x = (float)-_res[0];
+		vertex.pos.y = (float)_res[1];
+		vertex.pos.z = (float)_res[2];
 
 		// 追加
 		meshData.vertices.emplace_back(vertex);
 	}
 }
-void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh) {
+void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh, FbxAMatrix& mat) {
 	FbxArray<FbxVector4> normals;
 	// 法線リストの取得
 	pMesh->GetPolygonVertexNormals(normals);
-	//中心情報(姿勢)取得
-	FbxNode* node = pMesh->GetNode();
-	FbxDouble3 _meshPos, _meshRot, _meshScl; //メッシュ座標
-	LoadMeshTransform(node, _meshPos, _meshRot, _meshScl);
-
-	//回転行列の作成
-	XMMATRIX _rotXM = XMMatrixRotationX(float(_meshRot.mData[0]));
-	XMMATRIX _rotYM = XMMatrixRotationY(float(_meshRot.mData[1]));
-	XMMATRIX _rotZM = XMMatrixRotationZ(float(_meshRot.mData[2]));
-	XMMATRIX _rotM = _rotXM * _rotYM * _rotXM;
-	XMMATRIX _newNor;
 
 	// 法線設定
 	for (int i = 0; i < normals.Size(); i++)
 	{
-		meshData.vertices[i].nor.x = (float)-normals[i][0] * float(_meshScl[0]) + float(_meshPos[0]);
-		meshData.vertices[i].nor.y = (float)normals[i][1] * float(_meshScl[1]) + float(_meshPos[1]);
-		meshData.vertices[i].nor.z = (float)normals[i][2] * float(_meshScl[2]) + float(_meshPos[2]);
+		meshData.vertices[i].nor.x = float(normals[i][0]);
+		meshData.vertices[i].nor.y = float(normals[i][1]);
+		meshData.vertices[i].nor.z = float(normals[i][2]);
 
-		//回転を含んだ新たな法線を取得
-		XMMATRIX _normal = XMMatrixTranslation(meshData.vertices[i].nor.x,
-			meshData.vertices[i].nor.y, meshData.vertices[i].nor.z);
-		_newNor = _normal * _rotM;
-		XMFLOAT4X4 _temp;
-		XMStoreFloat4x4(&_temp, XMMatrixTranspose(_newNor));
-		meshData.vertices[i].nor.x = _temp._14;
-		meshData.vertices[i].nor.y = _temp._24;
-		meshData.vertices[i].nor.z = _temp._34;
+		FbxVector4 _temp = { meshData.vertices[i].nor.x, 	meshData.vertices[i].nor.y,	meshData.vertices[i].nor.z, 1 };
+		FbxVector4 _res = mat.MultT(_temp);
+
+		meshData.vertices[i].nor.x = (float)-_res[0];
+		meshData.vertices[i].nor.y = (float)_res[1];
+		meshData.vertices[i].nor.z = (float)_res[2];
 	}
 }
-void FbxMeshFile::LoadMeshTransform(FbxNode* node, FbxDouble3& pos, FbxDouble3& rot, FbxDouble3& scl) {
-	FbxNode* parent = node->GetParent();
-	FbxDouble3 _parentPos, _parentRot, _parentScl; //親座標
-
-	// 各座標取得
-	pos = node->LclTranslation.Get(); //座標
-	rot = node->LclRotation.Get(); //回転
-	scl = node->LclScaling.Get(); //スケール
-	while (parent != NULL) {
-		_parentPos = parent->LclTranslation.Get();
-		_parentRot = parent->LclRotation.Get();
-		_parentScl = parent->LclScaling.Get();
-
-		//親座標と結合
-		for (int i = 0; i < 3; i++) {
-			pos[i] += _parentPos[i];
-			rot[i] += _parentRot[i];
-			scl[i] *= _parentScl[i];
-		}
-		//親がいなくなるまで探索
-		parent = parent->GetParent();
+FbxAMatrix FbxMeshFile::LoadMeshTransform(FbxNode* node) {
+	//ジオメトリマトリックス取得
+	FbxAMatrix _matrixGeo; 
+	_matrixGeo.SetIdentity();
+	if (node->GetNodeAttribute())
+	{
+		const FbxVector4 lT = node->GetGeometricTranslation(FbxNode::eSourcePivot);
+		const FbxVector4 lR = node->GetGeometricRotation(FbxNode::eSourcePivot);
+		const FbxVector4 lS = node->GetGeometricScaling(FbxNode::eSourcePivot);
+		_matrixGeo.SetT(lT);
+		_matrixGeo.SetR(lR);
+		_matrixGeo.SetS(lS);
 	}
 
-	//親再設定
-	parent = node->GetParent();
+	//ローカルのMatrixを取得
+	FbxAMatrix _localMatrix = node->EvaluateLocalTransform();
 
-	//cmからｍへ長さを変換
-	for (auto& scl : scl.mData) scl /= 100;
-	//親がメッシュを持っている場合座標を長さ変換
-	if (parent->GetMesh() == NULL) for (auto& pos : pos.mData) pos /= 100;
-
-	//差分を計算（スケーリング後の親との結合のため）
-	FbxDouble3 _geometry = node->GeometricTranslation.Get();
-	for (auto& pos : _geometry.mData) pos /= 100; //単位変換
-	pos = { pos[0] - _geometry[0],pos[1] - _geometry[1], pos[2] - _geometry[2] };
-	FbxDouble3 _defOnScl = { pos[0] * (1 - scl[0]), pos[1] * (1 - scl[1]), pos[2] * (1 - scl[2]) };
-	pos = { pos[0] - _defOnScl[0],pos[1] - _defOnScl[1], pos[2] - _defOnScl[2] };
-	pos = { _geometry[0] + pos[0],_geometry[1] + pos[1], _geometry[2] + pos[2] };
+	FbxNode* _pParentNode = node->GetParent();
+	FbxAMatrix _parentMatrix = _pParentNode->EvaluateLocalTransform();
+	while ((_pParentNode = _pParentNode->GetParent()) != NULL)
+	{
+		_parentMatrix = _pParentNode->EvaluateLocalTransform() * _parentMatrix;
+	}
+	//ジオメトリ・ローカル・親のマトリクスを結合
+	FbxAMatrix matrix = _parentMatrix * _localMatrix * _matrixGeo;
+	//格納
+	return matrix;
 }
 void FbxMeshFile::LoadColors(stMeshData& meshData, FbxMesh* pMesh) {
 	// 頂点カラーデータの数を確認

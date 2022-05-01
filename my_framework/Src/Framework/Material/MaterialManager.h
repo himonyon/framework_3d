@@ -9,7 +9,7 @@ namespace MyFrameWork {
 
 	class MaterialManager {
 	public:
-		MaterialManager() {};
+		MaterialManager();
 		~MaterialManager();
 
 		//ƒ}ƒeƒŠƒAƒ‹’Ç‰Á
