@@ -44,6 +44,13 @@ bool ModelCreator::CreateFbxMeshes(const char* fileName) {
 		return false;
 	}
 
+	//pFbxScene->GetGlobalSettings().SetAxisSystem(FbxAxisSystem::eMayaYUp);
+
+	FbxAxisSystem lSceneAxisSystem = pFbxScene->GetGlobalSettings().GetAxisSystem();
+	FbxAxisSystem lTargetAxisSystem(FbxAxisSystem::DirectX);
+	if (lSceneAxisSystem != lTargetAxisSystem)
+		lTargetAxisSystem.ConvertScene(pFbxScene);
+
 	//初期化
 	pFbxImporter->Initialize(fileName);
 	// sceneにインポート
@@ -54,6 +61,10 @@ bool ModelCreator::CreateFbxMeshes(const char* fileName) {
 	converter.SplitMeshesPerMaterial(pFbxScene, true);
 	// ポリゴンを三角形にする
 	converter.Triangulate(pFbxScene, true);
+
+	FbxSystemUnit SceneSystemUnit = pFbxScene->GetGlobalSettings().GetSystemUnit();
+		// シーンの単位をcmに設定する
+		FbxSystemUnit::m.ConvertScene(pFbxScene);
 
 	//マテリアル作成
 	int material_num = pFbxScene->GetSrcObjectCount<FbxSurfaceMaterial>();
@@ -284,9 +295,11 @@ bool ModelCreator::LoadTexture(FbxFileTexture* texture, std::string& keyword)
 }
 void ModelCreator::SetMaterial(noDel_ptr<Mesh> pMeshFile, FbxMesh* pFbxMesh)
 {
-	// マテリアルが無ければ終わり
+	// マテリアルが無ければデフォルトのマテリアルを設定
 	if (pFbxMesh->GetElementMaterialCount() == 0)
 	{
+		noDel_ptr<stMaterial> _defMat = matManager->GetMaterial("default");
+		pMeshFile->SetMaterial(_defMat);
 		return;
 	}
 
@@ -299,6 +312,12 @@ void ModelCreator::SetMaterial(noDel_ptr<Mesh> pMeshFile, FbxMesh* pFbxMesh)
 	noDel_ptr<stMaterial> _newMat = matManager->GetMaterial(_surface_material->GetName());
 	if (_newMat != NULL) {
 		pMeshFile->SetMaterial(_newMat);
+	}
+
+	//NULLの場合デフォルトマテリアルを設定
+	if (pMeshFile->GetMaterial() == NULL) {
+		noDel_ptr<stMaterial> _defMat = matManager->GetMaterial("default");
+		pMeshFile->SetMaterial(_defMat);
 	}
 }
 void ModelCreator::ParentSetting(std::unordered_map<FbxMesh*, noDel_ptr<Mesh>>& umMeshes) {

@@ -29,11 +29,11 @@ namespace MyFrameWork {
 		//indexデータ読み込み
 		void LoadIndices(stMeshData& meshData, FbxMesh* pMesh);
 		//vertexデータ読み込み
-		void LoadVertices(stMeshData& meshData, FbxMesh* pMesh);
+		void LoadVertices(stMeshData& meshData, FbxMesh* pMesh, FbxAMatrix& mat);
 		//メッシュのTransformを算出
-		void LoadMeshTransform(FbxNode* node, FbxDouble3& pos, FbxDouble3& rot, FbxDouble3& scl);
+		FbxAMatrix LoadMeshTransform(FbxNode* node);
 		//法線読み込み
-		void LoadNormals(stMeshData& meshData, FbxMesh* pMesh);
+		void LoadNormals(stMeshData& meshData, FbxMesh* pMesh, FbxAMatrix& mat);
 		//カラー読み込み
 		void LoadColors(stMeshData& meshData, FbxMesh* pMesh);
 		//UVの読み込み

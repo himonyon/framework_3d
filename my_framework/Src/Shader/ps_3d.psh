@@ -24,8 +24,8 @@ SamplerState Sampler : register(s0[0]); // Samplerをスロット0の0番目のサンプラレ
 
 float4 main(PS_IN input) : SV_Target
 {
-	float ambient_factor = color.a;
-	float diffuse_factor = color.a;
+	float ambient_factor = MaterialAmbient[3];
+	float diffuse_factor = MaterialDiffuse[3];
 
 	float4 ambient_color = MaterialAmbient * ambient_factor;
 	float4 diffuse_color = input.color * (LightColor * MaterialDiffuse) * diffuse_factor;
