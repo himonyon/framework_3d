@@ -47,10 +47,10 @@ namespace MyFrameWork {
 
 	private:
 		//メッシュオブジェクト作成
-		noDel_ptr<GameObject> CreateObject(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		noDel_ptr<GameObject> CreateObject(stVector3& pos, stVector3& rot, stVector3& scl, noDel_ptr<Mesh> mesh,
 			noDel_ptr<Transform> parent = nullptr, std::string name = "");
 		//指定メッシュの子メッシュオブジェクトを作成
-		void CreateObjectForChildByRootMesh(float x, float y, float z, noDel_ptr<Mesh> mesh,
+		void CreateObjectForChildByRootMesh(noDel_ptr<Mesh> mesh,
 			noDel_ptr<Transform> parent, std::string name, int& createCount);
 
 		//配列から特定のIDのコンポーネントを抜く

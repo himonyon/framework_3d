@@ -9,7 +9,10 @@
 
 using namespace MyFrameWork;
 
-FbxMeshFile::FbxMeshFile(FbxMesh* mesh) {
+FbxMeshFile::FbxMeshFile(FbxMesh* mesh, eMeshFormat format) : Mesh(format) {
+
+	fbxMeshData = noDel_ptr<FbxMesh>(mesh);
+
 	if (CreateFbx(mesh) == false)
 	{
 		return;
@@ -27,73 +30,6 @@ FbxMeshFile::FbxMeshFile(FbxMesh* mesh) {
 }
 
 FbxMeshFile::~FbxMeshFile() {
-}
-
-void FbxMeshFile::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
-	UINT strides = sizeof(stVertex3D);
-	UINT offsets = 0;
-
-	// インデックスバッファの数 = マテリアルの数だけメッシュを描画する
-		// IA(InputAssemblerStage)に入力レイアウトを設定する
-	Direct3D::GetDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
-	// IAに設定する頂点バッファの指定
-	Direct3D::GetDeviceContext()->IASetVertexBuffers(
-		0,								// バッファ送信のスロット番号
-		1,								// バッファの数
-		&meshData->vertexBuffer,	// 頂点バッファ
-		&strides,						// バッファに使用している構造体のサイズ
-		&offsets);						// 開始オフセット
-
-	Direct3D::GetDeviceContext()->IASetIndexBuffer(
-		meshData->indexBuffer,
-		DXGI_FORMAT_R32_UINT,
-		0);
-
-	// ワールドマトリクス設定
-	XMMATRIX _world_matrix;
-	XMMATRIX _translate = XMMatrixTranslation(pos.x, pos.y, pos.z);
-	XMMATRIX _rotateX = XMMatrixRotationX(XMConvertToRadians(rot.x));
-	XMMATRIX _rotateY = XMMatrixRotationY(XMConvertToRadians(rot.y));
-	XMMATRIX _rotateZ = XMMatrixRotationZ(XMConvertToRadians(rot.z));
-	XMMATRIX _scaleMat = XMMatrixScaling(scl.x, scl.y, scl.z);
-	_world_matrix = _scaleMat * _rotateX * _rotateY * _rotateZ * _translate;
-
-	// ワールドマトリクスをコンスタントバッファに設定
-	XMStoreFloat4x4(&Renderer3D::GetInputCB().world, XMMatrixTranspose(_world_matrix));
-
-	///色設定
-	SetMaterialColor(*pMaterial.get());
-
-	// テクスチャ設定
-	// Samplerの設定
-	ID3D11SamplerState* _sampleState = Renderer3D::GetSampleLinear();
-	Direct3D::GetDeviceContext()->PSSetSamplers(0, 1, &_sampleState);	// ID3D11SamplerState
-
-	if (pMaterial->pTexture != NULL)
-	{
-		Direct3D::GetDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
-		Direct3D::GetDeviceContext()->PSSetShaderResources(0,1,&pMaterial->pTexture);
-	}
-	else
-	{
-		Direct3D::GetDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D_NOTEX)->getShader(), nullptr, 0);
-	}
-
-	// コンスタントバッファ更新
-	Direct3D::GetDeviceContext()->UpdateSubresource(Renderer3D::GetConstantBuffer(), 0, NULL, &Renderer3D::GetInputCB(), 0, 0);
-
-	ID3D11Buffer* constant_buffer = Renderer3D::GetConstantBuffer();
-	// コンテキストにコンスタントバッファを設定
-	Direct3D::GetDeviceContext()->VSSetConstantBuffers(0, 1, &constant_buffer);
-	Direct3D::GetDeviceContext()->PSSetConstantBuffers(0, 1, &constant_buffer);
-
-	stCBuffer3D& cbb = Renderer3D::GetInputCB();
-
-	// 描画
-	Direct3D::GetDeviceContext()->DrawIndexed(
-		(UINT)meshData->indices.size(),	// 頂点数
-		0,								// オフセット
-		0);								// 開始頂点のインデックス
 }
 
 bool FbxMeshFile::CreateFbx(FbxMesh* mesh) {
@@ -198,16 +134,16 @@ void FbxMeshFile::LoadVertices(stMeshData& meshData, FbxMesh* pMesh, FbxAMatrix&
 		int index = indices[i];
 
 		//-------------------------------------------------------------
-		vertex.pos.x = (float)vertices[index][0];
+		vertex.pos.x = (float)-vertices[index][0];
 		vertex.pos.y = (float)vertices[index][1];
 		vertex.pos.z = (float)vertices[index][2];
 
-		FbxVector4 _temp = { vertex.pos.x, vertex.pos.y, vertex.pos.z, 1 };
+	/*	FbxVector4 _temp = { vertex.pos.x, vertex.pos.y, vertex.pos.z, 1 };
 		FbxVector4 _res = mat.MultT(_temp);
 
 		vertex.pos.x = (float)-_res[0];
 		vertex.pos.y = (float)_res[1];
-		vertex.pos.z = (float)_res[2];
+		vertex.pos.z = (float)_res[2];*/
 
 		// 追加
 		meshData.vertices.emplace_back(vertex);
@@ -221,16 +157,16 @@ void FbxMeshFile::LoadNormals(stMeshData& meshData, FbxMesh* pMesh, FbxAMatrix& 
 	// 法線設定
 	for (int i = 0; i < normals.Size(); i++)
 	{
-		meshData.vertices[i].nor.x = float(normals[i][0]);
+		meshData.vertices[i].nor.x = float(-normals[i][0]);
 		meshData.vertices[i].nor.y = float(normals[i][1]);
 		meshData.vertices[i].nor.z = float(normals[i][2]);
 
-		FbxVector4 _temp = { meshData.vertices[i].nor.x, 	meshData.vertices[i].nor.y,	meshData.vertices[i].nor.z, 1 };
+		/*FbxVector4 _temp = { meshData.vertices[i].nor.x, 	meshData.vertices[i].nor.y,	meshData.vertices[i].nor.z, 1 };
 		FbxVector4 _res = mat.MultT(_temp);
 
 		meshData.vertices[i].nor.x = (float)-_res[0];
 		meshData.vertices[i].nor.y = (float)_res[1];
-		meshData.vertices[i].nor.z = (float)_res[2];
+		meshData.vertices[i].nor.z = (float)_res[2];*/
 	}
 }
 FbxAMatrix FbxMeshFile::LoadMeshTransform(FbxNode* node) {
@@ -258,6 +194,66 @@ FbxAMatrix FbxMeshFile::LoadMeshTransform(FbxNode* node) {
 	}
 	//ジオメトリ・ローカル・親のマトリクスを結合
 	FbxAMatrix matrix = _parentMatrix * _localMatrix * _matrixGeo;
+
+	//実験--------------------------------------------------------------------
+
+	//ローカル座標
+	FbxDouble3 pp = node->LclTranslation.Get();
+	FbxDouble3 rr = node->LclRotation.Get();
+	FbxDouble3 ss = node->LclScaling.Get();
+
+	FbxDouble3 newRot = node->LclRotation.Get();
+	FbxDouble3 newScl = node->LclScaling.Get();
+
+	//ローカルのマトリクス
+	XMMATRIX _local_matrix;
+	XMMATRIX _translate = XMMatrixTranslation((float)pp[0], (float)pp[1], (float)pp[2]);
+	XMMATRIX _rotateX = XMMatrixRotationX(XMConvertToRadians((float)rr[0]));
+	XMMATRIX _rotateY = XMMatrixRotationY(XMConvertToRadians((float)rr[1]));
+	XMMATRIX _rotateZ = XMMatrixRotationZ(XMConvertToRadians((float)rr[2]));
+	XMMATRIX _scaleMat = XMMatrixScaling((float)ss[0], (float)ss[1], (float)ss[2]);
+	_local_matrix = _scaleMat * _rotateX * _rotateY * _rotateZ * _translate;
+
+	//親のマトリクス生成
+	FbxNode* _pParentNodeT = node->GetParent();
+	XMMATRIX _parent_matrix = {};
+	bool first = true;
+
+	while (_pParentNodeT != NULL)
+	{
+		pp = _pParentNodeT->LclTranslation.Get();
+		rr = _pParentNodeT->LclRotation.Get();
+		ss = _pParentNodeT->LclScaling.Get();
+
+		for (int i = 0; i < 3; i++) newRot[i] += rr[i];
+		for (int i = 0; i < 3; i++) newScl[i] *= ss[i];
+
+		_translate = XMMatrixTranslation((float)pp[0], (float)pp[1], (float)pp[2]);
+		_rotateX = XMMatrixRotationX(XMConvertToRadians((float)rr[0]));
+		_rotateY = XMMatrixRotationY(XMConvertToRadians((float)rr[1]));
+		_rotateZ = XMMatrixRotationZ(XMConvertToRadians((float)rr[2]));
+		_scaleMat = XMMatrixScaling((float)ss[0], (float)ss[1], (float)ss[2]);
+		if (first) _parent_matrix = _scaleMat * _rotateX * _rotateY * _rotateZ * _translate;
+		else _parent_matrix = _parent_matrix * (_scaleMat * _rotateX * _rotateY * _rotateZ * _translate);
+
+		first = false;
+
+		_pParentNodeT = _pParentNodeT->GetParent();
+	}
+
+	XMMATRIX _resultMat = _local_matrix * _parent_matrix;
+
+	_translate = XMMatrixTranslation((float)_resultMat.r[3].m128_f32[0], (float)_resultMat.r[3].m128_f32[1], (float)_resultMat.r[3].m128_f32[2]);
+	_rotateX = XMMatrixRotationX(XMConvertToRadians((float)newRot[0]));
+	_rotateY = XMMatrixRotationY(XMConvertToRadians((float)newRot[1]));
+	_rotateZ = XMMatrixRotationZ(XMConvertToRadians((float)newRot[2]));
+	_scaleMat = XMMatrixScaling((float)newScl[0], (float)newScl[1], (float)newScl[2]);
+	XMMATRIX _newMatrix = _scaleMat * _rotateX * _rotateY * _rotateZ * _translate;
+
+	initPos = { (float)_resultMat.r[3].m128_f32[0], (float)_resultMat.r[3].m128_f32[1], (float)_resultMat.r[3].m128_f32[2] };
+	initRot = { (float)newRot[0] ,(float)newRot[1] ,(float)newRot[2] };
+	initScl = { (float)newScl[0] ,(float)newScl[1] ,(float)newScl[2] };
+
 	//格納
 	return matrix;
 }
@@ -325,11 +321,4 @@ void FbxMeshFile::LoadUV(stMeshData& meshData, FbxMesh* pMesh)
 		meshData.vertices[i].tex.x = (float)uv[0];
 		meshData.vertices[i].tex.y = (float)(1.0 - uv[1]);
 	}
-}
-
-void FbxMeshFile::SetMaterialColor(stMaterial& material)
-{
-	stCBuffer3D& _inputCB = Renderer3D::GetInputCB();
-	_inputCB.diffuse = XMFLOAT4(material.diffuse.r, material.diffuse.g, material.diffuse.b, material.diffuse.a);
-	_inputCB.ambient = XMFLOAT4(material.ambient.r, material.ambient.g, material.ambient.b, material.ambient.a);
 }

@@ -157,18 +157,23 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 		if (_mesh == NULL) continue; //データがなければ処理しない
 		//ルートメッシュのオブジェクト生成
 		std::string _newName = name + "_" + std::to_string(_createCount); //新しい名前
-		noDel_ptr<GameObject> _newObj = CreateObject(x,y,z,_mesh, _parentObj->transform, _newName);
+		//座標
+		stVector3 _newPos = _mesh->GetInitPos();
+		stVector3 _newRot = _mesh->GetInitRot();
+		stVector3 _newScl = _mesh->GetInitScl();
+		//生成
+		noDel_ptr<GameObject> _newObj = CreateObject(_newPos, _newRot, _newScl, _mesh, _parentObj->transform, _newName);
 		_parentObj = _newObj;
 		_createCount++;
 		//子メッシュの生成
-		CreateObjectForChildByRootMesh(x, y, z, _mesh, _parentObj->transform, name, _createCount);
+		CreateObjectForChildByRootMesh(_mesh, _parentObj->transform, name, _createCount);
 
 		_parentObj = _rootObj; //親オブジェクトを再設定
 	}
 
 	return _rootObj;
 }
-void GameObjectManager::CreateObjectForChildByRootMesh(float x, float y, float z, noDel_ptr<Mesh> mesh,
+void GameObjectManager::CreateObjectForChildByRootMesh(noDel_ptr<Mesh> mesh,
 	noDel_ptr<Transform> parent, std::string name, int& createCount) {
 	//子メッシュをオブジェクト化
 	int _childCount = mesh->GetChildCount();
@@ -177,13 +182,16 @@ void GameObjectManager::CreateObjectForChildByRootMesh(float x, float y, float z
 		if (_child == NULL) continue; //データがなければ処理しない
 		//メッシュオブジェクト生成
 		std::string _newName = name + "_" + std::to_string(createCount); //新しい名前
-		noDel_ptr<GameObject> _newObj = CreateObject(x, y, z, _child, parent, _newName);
+		stVector3 _newPos = _child->GetInitPos();
+		stVector3 _newRot = _child->GetInitRot();
+		stVector3 _newScl = _child->GetInitScl();
+		noDel_ptr<GameObject> _newObj = CreateObject(_newPos, _newRot, _newScl, _child, parent, _newName);
 		noDel_ptr<GameObject> _parentObj = _newObj; //親オブジェクト
 		createCount++; //生成カウントUP
-		CreateObjectForChildByRootMesh(x, y, z, _child, _parentObj->transform, name, createCount);
+		CreateObjectForChildByRootMesh(_child, _parentObj->transform, name, createCount);
 	}
 }
-noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
+noDel_ptr<GameObject> GameObjectManager::CreateObject(stVector3& pos, stVector3& rot, stVector3& scl,
 	noDel_ptr<Mesh> mesh, noDel_ptr<Transform> parent, std::string name)
 {
 	GameObject* _instance = new GameObject(name);
@@ -191,7 +199,7 @@ noDel_ptr<GameObject> GameObjectManager::CreateObject(float x, float y, float z,
 	//Transformの作成
 	_instance->AddComponent<Transform>();
 	_instance->transform = noDel_ptr<Transform>(_instance->GetComponent<Transform>());
-	_instance->transform->SetUpTransform(x, y, z, parent);
+	_instance->transform->SetUpTransform(pos, rot, scl, parent);
 	//MeshRendererの作成
 	_instance->AddComponent<MeshRenderer>();
 	_instance->GetComponent<MeshRenderer>()->SetUpMeshRenderer(mesh);

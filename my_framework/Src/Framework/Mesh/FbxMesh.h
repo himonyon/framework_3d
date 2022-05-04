@@ -11,11 +11,12 @@
 namespace MyFrameWork {
 
 	class FbxMeshFile : public Mesh {
-	public:
-		FbxMeshFile(FbxMesh* mesh);
-		~FbxMeshFile();
+	private:
+		noDel_ptr<FbxMesh> fbxMeshData;
 
-		void Render(stVector3 pos, stVector3 rot, stVector3 scl);
+	public:
+		FbxMeshFile(FbxMesh* mesh, eMeshFormat format);
+		~FbxMeshFile();
 
 	private:
 		//Fbxモデル作成
@@ -39,7 +40,7 @@ namespace MyFrameWork {
 		//UVの読み込み
 		void LoadUV(stMeshData& meshData, FbxMesh* pMesh);
 
-		//マテリアルカラーセット
-		void SetMaterialColor(stMaterial& material);
+	public:
+		noDel_ptr<FbxMesh> GetFbxMesh() { return fbxMeshData; }
 	};
 }

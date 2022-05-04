@@ -42,6 +42,7 @@ namespace MyFrameWork {
 
 		//コンポーネントの初期設定
 		void SetUpTransform(float x, float y, float z, noDel_ptr<Transform> parent);
+		void SetUpTransform(stVector3& pos, stVector3& rot, stVector3& scl, noDel_ptr<Transform> parent);
 
 		//コンポーネント処理
 		void Execute(int state) override;
@@ -51,12 +52,14 @@ namespace MyFrameWork {
 
 		//Getter,Setter
 		noDel_ptr<Transform> GetParent() { return pParent; }
+		std::vector<noDel_ptr<Transform>> GetChildren() { return pChildren; }
 		void SetParent(noDel_ptr<Transform> obj);
 		void SetPosition(float x, float y, float z);
 		void SetPosition(float x, float y);
 		void SetLocalPosition(float x, float y, float z);
 		void SetLocalPosition(float x, float y);
 		void SetScale(float x, float y);
+		void SetScale(float x, float y, float z);
 		void SetRotation(float x, float y, float z);
 
 	private:

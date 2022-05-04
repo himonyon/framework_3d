@@ -26,5 +26,8 @@ namespace MyFrameWork {
 		//描画
 		void Render() override;
 
+		//マテリアルカラーセット
+		void SetMaterialColor(noDel_ptr<stMaterial> material);
+
 	};
 }

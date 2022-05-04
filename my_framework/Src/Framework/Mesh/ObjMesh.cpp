@@ -12,77 +12,13 @@
 
 using namespace MyFrameWork;
 
-ObjMesh::ObjMesh() {
+ObjMesh::ObjMesh(eMeshFormat format) : Mesh(format) {
+	initPos = { 0,0,0 };
+	initRot = { 0,0,0 };
+	initScl = { 1,1,1 };
 }
 
 ObjMesh::~ObjMesh() {
-}
-
-void ObjMesh::Render(stVector3 pos, stVector3 rot, stVector3 scl) {
-	UINT strides = sizeof(stVertex3D);
-	UINT offsets = 0;
-
-	// 描画する
-	// IA(InputAssemblerStage)に入力レイアウトを設定する
-	Direct3D::GetDeviceContext()->IASetInputLayout(Renderer3D::GetInputLayout());
-	// IAに設定する頂点バッファの指定
-	Direct3D::GetDeviceContext()->IASetVertexBuffers(
-		0,						// バッファ送信のスロット番号
-		1,						// バッファの数
-		&meshData->vertexBuffer,		// 頂点バッファ
-		&strides,				// バッファに使用している構造体のサイズ
-		&offsets);				// 開始オフセット
-
-	Direct3D::GetDeviceContext()->IASetIndexBuffer(
-		meshData->indexBuffer,
-		DXGI_FORMAT_R32_UINT,
-		0);
-
-	// ワールドマトリクス設定
-	XMMATRIX mWorld;
-	XMMATRIX translate = XMMatrixTranslation(pos.x, pos.y, pos.z);
-	XMMATRIX rotate_x = XMMatrixRotationX(XMConvertToRadians(rot.x));
-	XMMATRIX rotate_y = XMMatrixRotationY(XMConvertToRadians(rot.y));
-	XMMATRIX rotate_z = XMMatrixRotationZ(XMConvertToRadians(rot.z));
-	XMMATRIX scale_mat = ::XMMatrixScaling(scl.x, scl.y, scl.z);
-	mWorld = scale_mat * rotate_x * rotate_y * rotate_z * translate;
-
-	stCBuffer3D& _inputCB = Renderer3D::GetInputCB();
-
-	// ワールドマトリクスをコンスタントバッファに設定
-	XMStoreFloat4x4(&_inputCB.world, XMMatrixTranspose(mWorld));
-
-	//マテリアル情報セット
-	LoadMaterial(*pMaterial.get());
-
-	// テクスチャ設定
-	// Samplerの設定
-	ID3D11SamplerState* _sampleState = Renderer3D::GetSampleLinear();
-	Direct3D::GetDeviceContext()->PSSetSamplers(0, 1, &_sampleState);	// ID3D11SamplerState
-	// マテリアルにテクスチャがあるなら設定する
-	if (pMaterial->pTexture != NULL)
-	{
-		Direct3D::GetDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D)->getShader(), nullptr, 0);
-		Direct3D::GetDeviceContext()->PSSetShaderResources(0, 1, &pMaterial->pTexture);
-	}
-	else
-	{
-		Direct3D::GetDeviceContext()->PSSetShader(Shader::getPixelShader(Shader::ePixelShader::PS_3D_NOTEX)->getShader(), nullptr, 0);
-	}
-
-	ID3D11Buffer* _constantBuffer = Renderer3D::GetConstantBuffer();
-	// コンスタントバッファ更新
-	Direct3D::GetDeviceContext()->UpdateSubresource(_constantBuffer, 0, NULL, &_inputCB, 0, 0);
-
-	// コンテキストにコンスタントバッファを設定
-	Direct3D::GetDeviceContext()->VSSetConstantBuffers(0, 1, &_constantBuffer);
-	Direct3D::GetDeviceContext()->PSSetConstantBuffers(0, 1, &_constantBuffer);
-
-	// 描画
-	Direct3D::GetDeviceContext()->DrawIndexed(
-		(UINT)meshData->indices.size(),		// 頂点数
-		0,						// オフセット
-		0);		
 }
 
 bool ObjMesh::CreateVertexBuffer() {
@@ -239,21 +175,4 @@ void ObjMesh::ParseSlashKeywordTag(int* list, char* buffer) {
 		}
 		_counter++;
 	}
-}
-
-
-
-void ObjMesh::LoadMaterial(stMaterial& material) {
-	stCBuffer3D& cb = Renderer3D::GetInputCB();
-	cb.ambient = XMFLOAT4(material.ambient.r, material.ambient.g, material.ambient.b, 1);
-	cb.diffuse = XMFLOAT4(material.diffuse.r, material.diffuse.g, material.diffuse.b, 1);
-	cb.specular = XMFLOAT4(material.specular.r, material.specular.g, material.specular.b, 1);
-}
-void ObjMesh::LoadTexture(ID3D11ShaderResourceView* texture) {
-	// Samplerの設定
-	ID3D11SamplerState* _sampleState = Renderer3D::GetSampleLinear();
-	Direct3D::GetDeviceContext()->PSSetSamplers(0,	1, &_sampleState);
-
-	// PixelShaderで使用するテクスチャの設定
-	Direct3D::GetDeviceContext()->PSSetShaderResources(0,1,	&texture);
 }

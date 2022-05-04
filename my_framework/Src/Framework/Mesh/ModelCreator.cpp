@@ -80,7 +80,7 @@ bool ModelCreator::CreateFbxMeshes(const char* fileName) {
 	for (int i = 0; i < mesh_num; i++)
 	{
 		FbxMesh* _fbxMesh = pFbxScene->GetSrcObject<FbxMesh>(i);
-		FbxMeshFile* _mesh = new FbxMeshFile(_fbxMesh);
+		FbxMeshFile* _mesh = new FbxMeshFile(_fbxMesh, eMeshFormat::Fbx);
 		noDel_ptr<Mesh>_noDelMesh = noDel_ptr<Mesh>(_mesh);
 		_umMeshes[_fbxMesh] = _noDelMesh;
 	}
@@ -461,7 +461,7 @@ bool ModelCreator::LoadObjMeshes(std::unordered_map<std::string, ObjMesh*>& objs
 			Replace('\n', '\0', _buffer);
 			_curMatName = &_buffer[strlen("usemtl") + 1];
 			if (objs.find(_curMatName) == objs.end()) {
-				objs[_curMatName] = new ObjMesh();
+				objs[_curMatName] = new ObjMesh(eMeshFormat::Obj);
 			}
 		}
 	}

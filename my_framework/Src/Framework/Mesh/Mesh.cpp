@@ -2,10 +2,10 @@
 
 using namespace MyFrameWork;
 
-Mesh::Mesh() {
+Mesh::Mesh(eMeshFormat format) {
 	meshData = new stMeshData;
+	this->format = format;
 }
-
 Mesh::~Mesh() {
 	if (meshData != NULL) delete meshData;
 }

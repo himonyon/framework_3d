@@ -44,11 +44,11 @@ Transform::~Transform() {
 
 void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> parent) {
 	position = { x,y,z };
-	b_position = position;
-
 	rotation = { 0,0,0 };
-	b_rotation = rotation;
 	scale = { 1,1,1 };
+
+	b_position = position;
+	b_rotation = rotation;
 	b_scale = scale;
 
 	//親がいる場合、ローカル座標の設定
@@ -66,7 +66,33 @@ void Transform::SetUpTransform(float x, float y, float z, noDel_ptr<Transform> p
 	b_localRotation = localRotation;
 	b_localScale = localScale;
 }
+void Transform::SetUpTransform(stVector3& pos, stVector3& rot, stVector3& scl, noDel_ptr<Transform> parent) {
+	position = { pos.x,pos.y,pos.z };
+	rotation = { rot.x,rot.y,rot.z };
+	scale = { scl.x,scl.y,scl.z };
 
+	b_position = position;
+	b_rotation = rotation;
+	b_scale = scale;
+
+	//親がいる場合、ローカル座標の設定
+	if (parent != nullptr) {
+		SetParent(parent);
+		localPosition = position - parent->position;
+		localRotation = rotation - parent->rotation;
+		localScale = scale / parent->scale;
+	}
+	else {
+		localPosition = { 0,0,0 };
+		localRotation = { 0,0,0 };
+		localScale = { 1,1,1 };
+	}
+	
+
+	b_localPosition = localPosition;
+	b_localRotation = localRotation;
+	b_localScale = localScale;
+}
 
 void Transform::Execute(int state) {
 	if (state == (int)eTransformState::ConvertLocalToGlobal) {
@@ -91,7 +117,7 @@ void Transform::SetRelativeState() {
 			continue;
 		}
 		//移動
-		child->position = position + (child->localPosition * scale); 
+		child->position = position + (child->localPosition); 
 		child->rotation = rotation + child->localRotation;
 		child->scale = scale * child->localScale;
 
@@ -115,6 +141,7 @@ void Transform::ConvertLocalAndGlobal() {
 	stVector3 diff_localRot = localRotation - b_localRotation;
 	stVector3 diff_localScl = localScale - b_localScale;
 
+
 	if (diff_position != 0 || diff_rot != 0 || diff_scale != 0 ||
 		diff_localPos != 0 || diff_localRot != 0 || diff_localScl != 0) {
 		if (pParent != nullptr) {
@@ -122,6 +149,16 @@ void Transform::ConvertLocalAndGlobal() {
 			if (diff_position != 0) localPosition += diff_position;
 			if (diff_rot != 0) localRotation += diff_rot;
 			if (diff_scale != 0) localScale += diff_scale;
+		}
+
+		//変更があれば変更状態をOnにする
+		if (pChildren.size() != 0) isChanged = true;
+	}
+
+	if (diff_position != 0 || diff_rot != 0 || diff_scale != 0 ||
+		diff_localPos != 0 || diff_localRot != 0 || diff_localScl != 0) {
+		if (pParent != nullptr) {
+			//互いの変更を反映する
 			if (diff_localPos != 0) position = pParent->position + localPosition;
 			if (diff_localRot != 0) rotation = pParent->rotation + localRotation;
 			if (diff_localScl != 0) scale = pParent->scale * localScale;
@@ -194,6 +231,11 @@ void Transform::SetLocalPosition(float x, float y, float z) {
 void Transform::SetScale(float x, float y) {
 	scale.x = x;
 	scale.y = y;
+}
+void Transform::SetScale(float x, float y, float z) {
+	scale.x = x;
+	scale.y = y;
+	scale.z = z;
 }
 void Transform::SetRotation(float x, float y, float z) {
 	rotation.x = x;

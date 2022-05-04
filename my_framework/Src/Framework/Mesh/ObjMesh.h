@@ -9,17 +9,12 @@ namespace MyFrameWork {
 
 	class ObjMesh : public Mesh {
 	public:
-		ObjMesh();
+		ObjMesh(eMeshFormat format);
 		~ObjMesh();
-
-		void Render(stVector3 pos, stVector3 rot, stVector3 scl);
 
 	private:
 		//"/"‚Å•¶š—ñ‚ğ•ª‰ğ
 		void ParseSlashKeywordTag(int* list, char* buffer);
-
-		void LoadMaterial(stMaterial& material);
-		void LoadTexture(ID3D11ShaderResourceView* texture);
 
 	public:
 		//–Êî•ñ‚Ì‰ğÍ
